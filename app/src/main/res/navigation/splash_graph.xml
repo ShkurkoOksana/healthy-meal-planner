@@ -10,4 +10,9 @@
         android:name="com.example.healthymealplanner.screens.splash.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.healthymealplanner.screens.main.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>
