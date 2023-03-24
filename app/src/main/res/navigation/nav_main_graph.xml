@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    app:startDestination="@id/tabsFragment" >
+    app:startDestination="@id/tabsFragment">
 
     <fragment
         android:id="@+id/tabsFragment"
-        android:name="com.example.healthymealplanner.screens.main.tabs.TabsFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.TabsFragment"
         android:label="fragment_tabs"
         tools:layout="@layout/fragment_tabs" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.example.healthymealplanner.screens.splash
+package ksu.katara.healthymealplanner.screens.splash
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

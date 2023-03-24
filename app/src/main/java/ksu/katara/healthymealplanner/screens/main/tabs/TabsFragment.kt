@@ -1,4 +1,4 @@
-package com.example.healthymealplanner.screens.main.tabs
+package ksu.katara.healthymealplanner.screens.main.tabs
 
 import android.os.Bundle
 import android.view.View

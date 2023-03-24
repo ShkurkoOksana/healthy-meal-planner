@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/meal_plan"
     app:startDestination="@id/mealPlanFragment">
 
     <fragment
         android:id="@+id/mealPlanFragment"
-        android:name="com.example.healthymealplanner.screens.main.tabs.mealplan.MealPlanFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.mealplan.MealPlanFragment"
         android:label="MealPlanFragment"
-        tools:layout="@layout/fragment_meal_plan"/>
+        tools:layout="@layout/fragment_meal_plan" />
 </navigation>

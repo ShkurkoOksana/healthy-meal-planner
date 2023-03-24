@@ -14,7 +14,7 @@
         android:theme="@style/Theme.HealthyMealPlanner"
         tools:targetApi="31" >
         <activity
-            android:name=".SplashActivity"
+            android:name="ksu.katara.healthymealplanner.SplashActivity"
             android:theme="@style/SplashActivity"
             android:exported="true" >
             <intent-filter>
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".screens.main.MainActivity" />
+        <activity android:name="ksu.katara.healthymealplanner.screens.main.MainActivity" />
 
     </application>
 
