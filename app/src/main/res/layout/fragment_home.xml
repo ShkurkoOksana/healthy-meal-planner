@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <Button
@@ -32,14 +32,21 @@
             android:layout_marginTop="@dimen/medium_space"
             android:text="@string/diet_tips_title" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dietTipsRecyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_space"
-            android:layout_marginTop="@dimen/medium_space"
+            android:layout_marginTop="@dimen/medium_space" >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dietTipsRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_diet_tip"/>
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/mealPlanForTodayTitleTextView"
@@ -119,7 +126,7 @@
             android:layout_marginTop="@dimen/medium_space"
             android:text="@string/statistics_title" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="200dp" >
 
@@ -135,7 +142,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
 
     </LinearLayout>
 
