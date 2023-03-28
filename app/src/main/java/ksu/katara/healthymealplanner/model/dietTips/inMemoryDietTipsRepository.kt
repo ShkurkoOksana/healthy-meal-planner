@@ -7,7 +7,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
     private var dietTips = mutableListOf<DietTip>()
 
     override fun loadDietTips() {
-        dietTips = (1 until DIET_TIP_IMAGES.size).map {
+        dietTips = (0 until DIET_TIP_IMAGES.size).map {
             DietTip(
                 id = it.toLong(),
                 name = DIET_TIP_NAMES[it],
@@ -35,18 +35,18 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         )
 
         private val DIET_TIP_NAMES = mutableListOf(
-            "Diet",
-            "Water",
-            "Dream",
-            "Sport",
-            "Meditation",
-            "Inflammation products: sugar",
-            "Inflammation products: gluten",
-            "Inflammation products: dairy",
-            "FODMAP diet",
-            "AIP diet",
-            "Candida diet",
-            "LCHF diet"
+            "Режим питания",
+            "Вода",
+            "Сон",
+            "Спорт",
+            "Медитация",
+            "Сахар",
+            "Глютен",
+            "Молочные продукты",
+            "FODMAP протокол",
+            "Аутоимунный протокол",
+            "Антикандидный протокол",
+            "LCHF протокол"
         )
     }
 }

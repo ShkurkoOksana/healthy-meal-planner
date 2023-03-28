@@ -1,22 +1,22 @@
 <resources>
 
-    <string name="app_name">Healthy Meal Planner</string>
+    <string name="app_name">Планировщик здорового питания</string>
 
-    <string name="please_wait">Please wait…</string>
+    <string name="please_wait">Пожалуйста, подождите…</string>
 
-    <string name="home">Home</string>
-    <string name="action_go_to_profile_details"><![CDATA[Profile >]]></string>
-    <string name="diet_tips_title">Diet tips</string>
-    <string name="meal_plan_for_today_title">Meal plan for today</string>
-    <string name="action_go_to_breakfast_for_today_details">Breakfast</string>
-    <string name="action_go_to_lunch_for_today_details">Lunch</string>
-    <string name="action_go_to_dinner_for_today_details">Dinner</string>
-    <string name="action_go_to_snack_for_today_details">Snack</string>
-    <string name="statistics_title">Statistics</string>
-    <string name="action_go_diary_details">Diary details</string>
+    <string name="home">Главная</string>
+    <string name="action_go_to_profile_details"><![CDATA[Профиль >]]></string>
+    <string name="diet_tips_title">Полезные советы</string>
+    <string name="meal_plan_for_today_title">План питания на сегодня</string>
+    <string name="action_go_to_breakfast_for_today_details">Завтрак</string>
+    <string name="action_go_to_lunch_for_today_details">Обед</string>
+    <string name="action_go_to_dinner_for_today_details">Ужин</string>
+    <string name="action_go_to_snack_for_today_details">Перекус</string>
+    <string name="statistics_title">Статистика</string>
+    <string name="action_go_diary_details">Дневник</string>
 
-    <string name="meal_plan">Meal plan</string>
+    <string name="meal_plan">План питания</string>
 
-    <string name="recipes">Recipes</string>
+    <string name="recipes">Рецепты</string>
 
 </resources>
