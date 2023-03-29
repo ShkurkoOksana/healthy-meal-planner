@@ -12,7 +12,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_margin="8dp"
-        tools:src="@drawable/ic_diet_tip_unavailable"
+        tools:src="@drawable/ic_diet_tip_default_photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

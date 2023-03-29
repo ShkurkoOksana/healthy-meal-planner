@@ -26,7 +26,7 @@ class DietTipsAdapter(
         actionListener.invoke(dietTip)
     }
 
-    override fun getItemCount(): Int = dietTips.size
+    override fun getItemCount() = AMOUNT_VISIBLE_DIET_TIPS
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietTipsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -41,18 +41,32 @@ class DietTipsAdapter(
         holder.binding.root.setOnClickListener(this@DietTipsAdapter)
 
         with(holder.binding) {
-            dietTipNameTextView.text = dietTip.name
+            if (position < AMOUNT_VISIBLE_DIET_TIPS - 1) {
+                dietTipNameTextView.text = dietTip.name
 
-            Glide.with(dietTipPhotoImageView.context)
-                .load(dietTip.photo)
-                .circleCrop()
-                .placeholder(R.drawable.ic_diet_tip_unavailable)
-                .error(R.drawable.ic_diet_tip_unavailable)
-                .into(dietTipPhotoImageView)
+                Glide.with(dietTipPhotoImageView.context)
+                    .load(dietTip.photo)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_diet_tip_default_photo)
+                    .error(R.drawable.ic_diet_tip_default_photo)
+                    .into(dietTipPhotoImageView)
+            } else {
+                dietTipNameTextView.text = holder.itemView.context.getString(R.string.more_diet_tips)
+                Glide.with(dietTipPhotoImageView.context)
+                    .load(R.drawable.ic_diet_tips_more)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_diet_tips_more)
+                    .error(R.drawable.ic_diet_tips_more)
+                    .into(dietTipPhotoImageView)
+            }
         }
     }
 
     class DietTipsViewHolder(
         val binding: ItemDietTipBinding
     ) : RecyclerView.ViewHolder(binding.root)
+
+    companion object {
+        const val AMOUNT_VISIBLE_DIET_TIPS = 5
+    }
 }

@@ -9,8 +9,10 @@ import com.example.healthymealplanner.R
 import com.example.healthymealplanner.databinding.FragmentHomeBinding
 import ksu.katara.healthymealplanner.Repositories
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
+import ksu.katara.healthymealplanner.screens.main.tabs.TabsFragmentDirections
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsAdapter
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsViewModel
+import ksu.katara.healthymealplanner.utils.findTopNavController
 import ksu.katara.healthymealplanner.utils.viewModelCreator
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -24,6 +26,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
+        initView()
+    }
+
+    private fun initView() {
         initDietTipsSection()
     }
 
@@ -45,6 +51,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun onDietTipPressed(dietTip: DietTip) {
-        //TODO(realize fragment with dietTip details)
+        val dietTipId = dietTip.id
+
+        val direction = TabsFragmentDirections.actionTabsFragmentToDietTipDetailsFragment(dietTipId)
+        findTopNavController().navigate(direction)
     }
 }
