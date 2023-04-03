@@ -1,37 +1,74 @@
 package ksu.katara.healthymealplanner.model.dietTips
 
-import com.github.javafaker.Faker
 import ksu.katara.healthymealplanner.exceptions.DietTipNotFoundException
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipDetails
+import ksu.katara.healthymealplanner.tasks.SimpleTask
+import ksu.katara.healthymealplanner.tasks.Task
+import java.util.concurrent.Callable
+
+typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit
 
 class InMemoryDietTipsRepository : DietTipsRepository {
 
     private var dietTips = mutableListOf<DietTip>()
+    private var loaded = false
 
-    override fun loadDietTips() {
-        dietTips = (0 until DIET_TIP_IMAGES.size).map {
+    private val listeners = mutableSetOf<DietTipsListener>()
+
+    override fun loadDietTipsForHomeScreen(): Task<Unit> = SimpleTask {
+        Thread.sleep(2000)
+
+        dietTips = (0 until DIET_TIPS_AMOUNT_FOR_HOME_SCREEN).map {
             DietTip(
                 id = it.toLong(),
                 name = DIET_TIP_NAMES[it],
                 photo = DIET_TIP_IMAGES[it]
             )
         }.toMutableList()
+
+        dietTips.add(
+            DietTip(
+                id = DIET_TIPS_AMOUNT_FOR_HOME_SCREEN.toLong(),
+                name = "Далее",
+                photo = "https://images.unsplash.com/photo-1639763832833-242273ded085?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
+            )
+        )
+
+        loaded = true
+        notifyChanges()
     }
 
-    override fun getDietTips() = dietTips
-
-    override fun getById(id: Long): DietTipDetails {
+    override fun getById(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
+        Thread.sleep(2000)
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipNotFoundException()
-        return DietTipDetails(
-            dietTip,
+        return@Callable DietTipDetails(
+            dietTip = dietTip,
             DIET_TIP_DETAILS_BACKGROUND[id.toInt()],
             DIET_TIP_DETAILS_TITLES.getValue(DIET_TIP_NAMES[id.toInt()])[0],
-            DIET_TIP_DETAILS_DESCRIPTIONS.getValue(DIET_TIP_NAMES[id.toInt()])[0]
+            DIET_TIP_DETAILS_DESCRIPTIONS.getValue(DIET_TIP_NAMES[id.toInt()])[0],
         )
+    })
+
+    override fun addListener(listener: DietTipsListener) {
+        listeners.add(listener)
+        if (loaded) {
+            listener.invoke(dietTips)
+        }
+    }
+
+    override fun removeListener(listener: DietTipsListener) {
+        listeners.remove(listener)
+    }
+
+    private fun notifyChanges() {
+        if (!loaded) return
+        listeners.forEach { it.invoke(dietTips) }
     }
 
     companion object {
+        private val DIET_TIPS_AMOUNT_FOR_HOME_SCREEN = 5
+
         private val DIET_TIP_IMAGES = mutableListOf(
             "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2353&q=80",
             "https://images.unsplash.com/photo-1614887065001-06c958a7cddd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
@@ -66,7 +103,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
                 "Формируем корзину из цельных продуктов",
                 "Планируем рацион",
                 "Как облегчить приготовление пищи",
-                ),
+            ),
             "Вода" to mutableListOf(
                 "Признаки того, что вы пьете мало воды",
                 "Характеристики воды",

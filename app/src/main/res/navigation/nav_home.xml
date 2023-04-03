@@ -7,6 +7,6 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.HomeFragment"
-        android:label="HomeFragment"
+        android:label="Главная"
         tools:layout="@layout/fragment_home" />
 </navigation>

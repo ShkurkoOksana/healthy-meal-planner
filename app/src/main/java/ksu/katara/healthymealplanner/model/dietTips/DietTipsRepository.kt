@@ -1,13 +1,15 @@
 package ksu.katara.healthymealplanner.model.dietTips
 
-import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipDetails
+import ksu.katara.healthymealplanner.tasks.Task
 
 interface DietTipsRepository {
 
-    fun loadDietTips()
+    fun loadDietTipsForHomeScreen(): Task<Unit>
 
-    fun getDietTips(): List<DietTip>
+    fun getById(id: Long): Task<DietTipDetails>
 
-    fun getById(id: Long): DietTipDetails
+    fun addListener(listener: DietTipsListener)
+
+    fun removeListener(listener: DietTipsListener)
 }

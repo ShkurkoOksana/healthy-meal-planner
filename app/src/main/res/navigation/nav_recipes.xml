@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/recipesFragment"
         android:name="ksu.katara.healthymealplanner.screens.main.tabs.recipes.RecipesFragment"
-        android:label="RecipesFragment"
+        android:label="Рецепты"
         tools:layout="@layout/fragment_recipes" />
 </navigation>

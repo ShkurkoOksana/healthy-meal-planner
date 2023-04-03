@@ -15,7 +15,7 @@ class DietTipsAdapter(
     private val actionListener: DietTipActionListener
 ) : RecyclerView.Adapter<DietTipsAdapter.DietTipsViewHolder>(), View.OnClickListener {
 
-    var dietTips: List<DietTip> = emptyList()
+    var dietTips: List<DietTipsListItem> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
@@ -26,7 +26,7 @@ class DietTipsAdapter(
         actionListener.invoke(dietTip)
     }
 
-    override fun getItemCount() = AMOUNT_VISIBLE_DIET_TIPS
+    override fun getItemCount(): Int = dietTips.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietTipsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -36,37 +36,35 @@ class DietTipsAdapter(
     }
 
     override fun onBindViewHolder(holder: DietTipsViewHolder, position: Int) {
-        val dietTip = dietTips[position]
-        holder.itemView.tag = dietTip
-        holder.binding.root.setOnClickListener(this@DietTipsAdapter)
+            val dietTipListItem = dietTips[position]
+            val dietTip = dietTipListItem.dietTip
 
-        with(holder.binding) {
-            if (position < AMOUNT_VISIBLE_DIET_TIPS - 1) {
+            with(holder.binding) {
+                holder.itemView.tag = dietTip
+
+                if (dietTipListItem.isInProgress) {
+                    holder.binding.root.setOnClickListener(null)
+                } else {
+                    holder.binding.root.setOnClickListener(this@DietTipsAdapter)
+                }
+
                 dietTipNameTextView.text = dietTip.name
 
-                Glide.with(dietTipPhotoImageView.context)
-                    .load(dietTip.photo)
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_diet_tip_default_photo)
-                    .error(R.drawable.ic_diet_tip_default_photo)
-                    .into(dietTipPhotoImageView)
-            } else {
-                dietTipNameTextView.text = holder.itemView.context.getString(R.string.more_diet_tips)
-                Glide.with(dietTipPhotoImageView.context)
-                    .load(R.drawable.ic_diet_tips_more)
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_diet_tips_more)
-                    .error(R.drawable.ic_diet_tips_more)
-                    .into(dietTipPhotoImageView)
+                if (dietTip.photo.isNotBlank()) {
+                    Glide.with(dietTipPhotoImageView.context)
+                        .load(dietTip.photo)
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_diet_tip_details_default_background)
+                        .error(R.drawable.ic_diet_tip_details_default_background)
+                        .into(dietTipPhotoImageView)
+                } else {
+                    Glide.with(dietTipPhotoImageView.context).clear(dietTipPhotoImageView)
+                    dietTipPhotoImageView.setImageResource(R.drawable.ic_diet_tip_details_default_background)
+                }
             }
-        }
     }
 
     class DietTipsViewHolder(
         val binding: ItemDietTipBinding
     ) : RecyclerView.ViewHolder(binding.root)
-
-    companion object {
-        const val AMOUNT_VISIBLE_DIET_TIPS = 5
-    }
 }

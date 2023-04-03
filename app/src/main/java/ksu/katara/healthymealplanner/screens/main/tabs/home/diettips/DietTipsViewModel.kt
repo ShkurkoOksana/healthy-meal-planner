@@ -2,30 +2,72 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import ksu.katara.healthymealplanner.model.dietTips.DietTipsListener
 import ksu.katara.healthymealplanner.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
+import ksu.katara.healthymealplanner.screens.base.BaseViewModel
+import ksu.katara.healthymealplanner.screens.base.Event
+import ksu.katara.healthymealplanner.tasks.*
+
+data class DietTipsListItem(
+    val dietTip: DietTip,
+    val isInProgress: Boolean
+)
 
 class DietTipsViewModel(
     private val dietTipsRepository: DietTipsRepository
-) : ViewModel(), DietTipActionListener {
+) : BaseViewModel(), DietTipActionListener {
 
-    private val _dietTips = MutableLiveData<List<DietTip>>()
-    val dietTips: LiveData<List<DietTip>> = _dietTips
+    private val _dietTips = MutableLiveData<StatusResult<List<DietTipsListItem>>>()
+    val dietTips: LiveData<StatusResult<List<DietTipsListItem>>> = _dietTips
 
-    private val _actionShowDetails = MutableLiveData<DietTip>()
-    val actionShowDetails: LiveData<DietTip> = _actionShowDetails
+    private val _actionShowDetails = MutableLiveData<Event<DietTip>>()
+    val actionShowDetails: LiveData<Event<DietTip>> = _actionShowDetails
+
+    private val dietTipIdsInProgress = mutableSetOf<Long>()
+    private var dietTipsResult: StatusResult<List<DietTip>> = EmptyResult()
+        set(value) {
+            field = value
+            notifyUpdates()
+        }
+
+    private val listener: DietTipsListener = {
+        dietTipsResult = if (it.isEmpty()) {
+            EmptyResult()
+        } else {
+            SuccessResult(it)
+        }
+    }
 
     init {
+        dietTipsRepository.addListener(listener)
         loadDietTips()
     }
 
     private fun loadDietTips() {
-        dietTipsRepository.loadDietTips()
-        _dietTips.value = dietTipsRepository.getDietTips()
+        dietTipsResult = PendingResult()
+        dietTipsRepository.loadDietTipsForHomeScreen()
+            .onError {
+                dietTipsResult = ErrorResult(it)
+            }
+            .autoCancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        dietTipsRepository.removeListener(listener)
+    }
+
+    private fun isInProgress(dietTip: DietTip): Boolean {
+        return dietTipIdsInProgress.contains(dietTip.id)
+    }
+
+    private fun notifyUpdates() {
+        _dietTips.postValue(dietTipsResult.resultMap { dietTips ->
+            dietTips.map { dietTip -> DietTipsListItem(dietTip, isInProgress(dietTip)) } })
     }
 
     override fun invoke(dietTip: DietTip) {
-        _actionShowDetails.value = dietTip
+        _actionShowDetails.value = Event(dietTip)
     }
 }

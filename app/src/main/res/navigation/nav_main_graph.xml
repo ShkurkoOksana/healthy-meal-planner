@@ -13,14 +13,21 @@
         <action
             android:id="@+id/action_tabsFragment_to_dietTipDetailsFragment"
             app:destination="@id/dietTipDetailsFragment" />
+        <action
+            android:id="@+id/action_tabsFragment_to_mealPlanFragment"
+            app:destination="@id/mealPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/dietTipDetailsFragment"
         android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsFragment"
-        android:label="Diet tip details"
+        android:label="Полезные советы"
         tools:layout="@layout/fragment_diet_tip_details">
         <argument
             android:name="diet_tip_id"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/mealPlanFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.mealplan.MealPlanFragment"
+        android:label="Meal plan fragment" />
 </navigation>

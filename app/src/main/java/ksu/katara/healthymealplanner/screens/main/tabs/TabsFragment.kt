@@ -21,4 +21,5 @@ class TabsFragment : Fragment(R.layout.fragment_tabs) {
         val navController = navHost.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
     }
+
 }

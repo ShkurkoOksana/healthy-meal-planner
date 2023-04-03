@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/mealPlanFragment"
         android:name="ksu.katara.healthymealplanner.screens.main.tabs.mealplan.MealPlanFragment"
-        android:label="MealPlanFragment"
+        android:label="План питания"
         tools:layout="@layout/fragment_meal_plan" />
 </navigation>

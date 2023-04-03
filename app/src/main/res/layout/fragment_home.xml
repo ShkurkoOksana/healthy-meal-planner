@@ -33,18 +33,62 @@
             android:text="@string/diet_tips_title" />
 
         <FrameLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_space"
             android:layout_marginTop="@dimen/medium_space" >
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dietTipsRecycleView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_diet_tip"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dietTipsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_diet_tip"
+                tools:itemCount="20"
+                android:visibility="invisible" />
+
+            <ProgressBar
+                android:id="@+id/dietTipsProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/purple_700"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/dietTipTryAgainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/failed_to_load_diet_tips"/>
+
+                <Button
+                    android:id="@+id/dietTipsTryAgainButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_again"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/noDietTipsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:text="@string/no_diet_tips"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </FrameLayout>
 
