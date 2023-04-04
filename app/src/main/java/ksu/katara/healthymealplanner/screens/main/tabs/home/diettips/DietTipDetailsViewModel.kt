@@ -1,5 +1,6 @@
 package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.healthymealplanner.R
@@ -30,16 +31,15 @@ class DietTipDetailsViewModel(
     init {
         _state.value = State(
             dietTipDetailsResult = EmptyResult(),
-            deletingInProgress = false
         )
     }
 
-    fun loadDietTip(userId: Long) {
+    fun loadDietTip(dietTipId: Long) {
         if (currentState.dietTipDetailsResult !is EmptyResult) return
 
         _state.value = currentState.copy(dietTipDetailsResult = PendingResult())
 
-        dietTipsRepository.getById(userId)
+        dietTipsRepository.getById(dietTipId)
             .onSuccess {
                 _state.value = currentState.copy(dietTipDetailsResult = SuccessResult(it))
             }
@@ -52,10 +52,9 @@ class DietTipDetailsViewModel(
 
     data class State(
         val dietTipDetailsResult: StatusResult<DietTipDetails>,
-        private val deletingInProgress: Boolean
     ) {
 
         val showContent: Boolean get() = dietTipDetailsResult is SuccessResult
-        val showProgress: Boolean get() = dietTipDetailsResult is PendingResult || deletingInProgress
+        val showProgress: Boolean get() = dietTipDetailsResult is PendingResult
     }
 }

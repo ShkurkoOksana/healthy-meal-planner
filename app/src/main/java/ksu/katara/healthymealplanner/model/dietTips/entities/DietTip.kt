@@ -9,6 +9,6 @@ data class DietTip(
 data class DietTipDetails(
     val dietTip: DietTip,
     val background: String,
-    val title: String,
-    val description: String,
+    val titlesList: List<String>,
+    val descriptionsList: List<String>,
 )

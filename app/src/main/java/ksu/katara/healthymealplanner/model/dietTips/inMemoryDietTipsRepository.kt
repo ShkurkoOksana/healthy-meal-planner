@@ -41,12 +41,13 @@ class InMemoryDietTipsRepository : DietTipsRepository {
 
     override fun getById(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
         Thread.sleep(2000)
+
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipNotFoundException()
         return@Callable DietTipDetails(
             dietTip = dietTip,
             DIET_TIP_DETAILS_BACKGROUND[id.toInt()],
-            DIET_TIP_DETAILS_TITLES.getValue(DIET_TIP_NAMES[id.toInt()])[0],
-            DIET_TIP_DETAILS_DESCRIPTIONS.getValue(DIET_TIP_NAMES[id.toInt()])[0],
+            DIET_TIP_DETAILS_TITLES.getValue(DIET_TIP_NAMES[id.toInt()]),
+            DIET_TIP_DETAILS_DESCRIPTIONS.getValue(DIET_TIP_NAMES[id.toInt()]),
         )
     })
 

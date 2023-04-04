@@ -1,71 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsFragment">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/dietTipDetailsContentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal" >
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/dietTipDetailsBackgroundImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_diet_tip_details_default_background" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/dietTipDetailsViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
 
-    <TextView
-        android:id="@+id/dietTipDetailsTitleTextView"
-        style="@style/TitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/medium_space"
-        android:layout_marginEnd="@dimen/medium_space"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/dietTipDetailsDescriptionTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Title" />
-
-    <TextView
-        android:id="@+id/dietTipDetailsDescriptionTextView"
-        style="@style/DescriptionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/medium_space"
-        android:layout_marginEnd="@dimen/medium_space"
-        android:layout_marginTop="@dimen/medium_space"
-        android:layout_marginBottom="@dimen/medium_space"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dietTipDetailsTitleTextView"
-        tools:text="Description" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/dietTipDetailsProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="visible"/>
+        android:indeterminateTint="@color/purple_700"
+        android:visibility="visible" />
 
 </FrameLayout>

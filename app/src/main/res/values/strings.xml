@@ -14,15 +14,17 @@
     <string name="action_go_to_snack_for_today_details">Перекус</string>
     <string name="statistics_title">Статистика</string>
     <string name="action_go_diary_details">Дневник</string>
-    <string name="cant_load_diet_tips">Can\'t load diet tips</string>
-    <string name="cant_load_diet_tip_details">Can\'t load diet tip details</string>
+    <string name="try_again">Попробуй еще раз</string>
+    <string name="failed_to_load_diet_tips">Не удалось загрузить раздел Полезные советы</string>
+    <string name="cant_load_diet_tips">Не загружается информация в разделе Полезные советы</string>
+    <string name="no_diet_tips">Нет данных в разделе Полезные советы</string>
+    <string name="failed_to_load_diet_tip_details">Не удалось загрузить раздел деталей Полезных советов</string>
+    <string name="cant_load_diet_tip_details">Не загружается информация в разделе деталей Полезных советов</string>
+    <string name="no_diet_tip_details">Нет данных в разделе деталей Полезных советов</string>
 
     <string name="meal_plan">План питания</string>
 
     <string name="recipes">Рецепты</string>
-    <string name="try_again">Попробуй еще раз</string>
-    <string name="failed_to_load_diet_tips">Не удалось загрузить раздел Полезные советы</string>
-    <string name="no_diet_tips">Нет данных в разделе Полезные советы</string>
 
 
 </resources>

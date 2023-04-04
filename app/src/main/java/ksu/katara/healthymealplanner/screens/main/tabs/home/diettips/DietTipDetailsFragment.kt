@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
-import com.example.healthymealplanner.R
 import com.example.healthymealplanner.databinding.FragmentDietTipDetailsBinding
 import ksu.katara.healthymealplanner.Repositories
 import ksu.katara.healthymealplanner.tasks.SuccessResult
@@ -43,17 +41,8 @@ class DietTipDetailsFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) {
             binding.dietTipDetailsContentContainer.visibility = if (it.showContent) {
                 val dietTipDetails = (it.dietTipDetailsResult as SuccessResult).data
-                binding.dietTipDetailsTitleTextView.text = dietTipDetails.title
-                binding.dietTipDetailsDescriptionTextView.text = dietTipDetails.description
-                if (dietTipDetails.background.isNotBlank()) {
-                    Glide.with(this)
-                        .load(dietTipDetails.background)
-                        .into(binding.dietTipDetailsBackgroundImageView)
-                } else {
-                    Glide.with(this)
-                        .load(R.drawable.ic_diet_tip_details_default_background)
-                        .into(binding.dietTipDetailsBackgroundImageView)
-                }
+                val dietTipDetailsViewPagerAdapter = DietTipDetailsViewPagerAdapter(dietTipDetails)
+                binding.dietTipDetailsViewPager.adapter = dietTipDetailsViewPagerAdapter
 
                 View.VISIBLE
             } else {
