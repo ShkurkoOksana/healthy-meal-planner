@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/medium_space"
                 android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginTop="@dimen/large_space"
                 android:singleLine="false"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@id/dietTipDetailsDescriptionTextView"

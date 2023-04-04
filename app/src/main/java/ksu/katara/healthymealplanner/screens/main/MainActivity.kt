@@ -1,7 +1,11 @@
 package ksu.katara.healthymealplanner.screens.main
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.Window
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -12,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.healthymealplanner.R
 import com.example.healthymealplanner.databinding.ActivityMainBinding
 import ksu.katara.healthymealplanner.screens.main.tabs.TabsFragment
+import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsFragment
 import java.util.regex.Pattern
 
 /**
@@ -28,6 +33,10 @@ class MainActivity : AppCompatActivity() {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
             if (f is TabsFragment || f is NavHostFragment) return
             onNavControllerActivated(f.findNavController())
+
+            if (f is DietTipDetailsFragment) {
+                supportActionBar?.hide()
+            }
         }
     }
 
@@ -36,11 +45,25 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
         setSupportActionBar(binding.toolbar)
 
+        setFullScreen()
+
         val navController = getRootNavController()
         prepareRootNavController(navController)
         onNavControllerActivated(navController)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
+    }
+
+    private fun setFullScreen() {
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
     }
 
     override fun onDestroy() {
