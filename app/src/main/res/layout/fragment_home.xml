@@ -23,14 +23,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/dietTipsTitleTextView"
-            style="@style/TitleTextView"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_space"
-            android:layout_marginTop="@dimen/medium_space"
-            android:text="@string/diet_tips_title" />
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/dietTipsTitleTextView"
+                style="@style/TitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_space"
+                android:layout_marginTop="@dimen/medium_space"
+                android:text="@string/diet_tips_title" />
+
+            <TextView
+                android:id="@+id/dietTipsMoreTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_space"
+                android:layout_marginEnd="@dimen/large_space"
+                android:layout_gravity="end|bottom"
+                android:textColor="@color/green"
+                android:text="@string/diet_tips_more" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -43,10 +60,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_diet_tip"
+                android:visibility="invisible"
                 tools:itemCount="20"
-                android:visibility="invisible" />
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_diet_tip" />
 
             <ProgressBar
                 android:id="@+id/dietTipsProgressBar"

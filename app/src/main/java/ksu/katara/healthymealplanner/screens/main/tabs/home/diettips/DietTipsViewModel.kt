@@ -46,7 +46,7 @@ class DietTipsViewModel(
 
     private fun loadDietTips() {
         dietTipsResult = PendingResult()
-        dietTipsRepository.loadDietTipsForHomeScreen()
+        dietTipsRepository.loadDietTips()
             .onError {
                 dietTipsResult = ErrorResult(it)
             }

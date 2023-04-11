@@ -1,6 +1,5 @@
 package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.healthymealplanner.R
@@ -14,7 +13,7 @@ import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
 
 class DietTipDetailsViewModel(
-    private val dietTipsRepository: DietTipsRepository
+    private val dietTipsRepository: DietTipsRepository,
 ) : BaseViewModel() {
 
     private val _state = MutableLiveData<State>()
@@ -34,12 +33,12 @@ class DietTipDetailsViewModel(
         )
     }
 
-    fun loadDietTip(dietTipId: Long) {
+    fun loadDietTipDetails(dietTipsChapterName: String, dietTipId: Long) {
         if (currentState.dietTipDetailsResult !is EmptyResult) return
 
         _state.value = currentState.copy(dietTipDetailsResult = PendingResult())
 
-        dietTipsRepository.getById(dietTipId)
+        dietTipsRepository.getById(dietTipsChapterName, dietTipId)
             .onSuccess {
                 _state.value = currentState.copy(dietTipDetailsResult = SuccessResult(it))
             }

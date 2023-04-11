@@ -5,9 +5,9 @@ import ksu.katara.healthymealplanner.tasks.Task
 
 interface DietTipsRepository {
 
-    fun loadDietTipsForHomeScreen(): Task<Unit>
+    fun loadDietTips(): Task<Unit>
 
-    fun getById(id: Long): Task<DietTipDetails>
+    fun getById(dietTipsChapterName: String, id: Long): Task<DietTipDetails>
 
     fun addListener(listener: DietTipsListener)
 

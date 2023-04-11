@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
 
             if (f is DietTipDetailsFragment) {
                 supportActionBar?.hide()
+            } else {
+                supportActionBar?.show()
             }
         }
     }

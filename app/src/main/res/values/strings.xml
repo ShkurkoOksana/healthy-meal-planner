@@ -21,10 +21,16 @@
     <string name="failed_to_load_diet_tip_details">Не удалось загрузить раздел деталей Полезных советов</string>
     <string name="cant_load_diet_tip_details">Не загружается информация в разделе деталей Полезных советов</string>
     <string name="no_diet_tip_details">Нет данных в разделе деталей Полезных советов</string>
+    <string name="diet_tips_more">Еще</string>
+    <string name="foundation_of_healthy_lifestyle_title">Фундамент здорового образа жизни</string>
+    <string name="nutrition_risk_factor_in_development_of_disease_title">Питание как фактор риска в развитии заболеваний</string>
+    <string name="restoration_of_digestive_tract_title">Восстановление работы ЖКТ</string>
+
 
     <string name="meal_plan">План питания</string>
 
     <string name="recipes">Рецепты</string>
+    <string name="jh">Фундамент здорового образа жизни</string>
 
 
 </resources>

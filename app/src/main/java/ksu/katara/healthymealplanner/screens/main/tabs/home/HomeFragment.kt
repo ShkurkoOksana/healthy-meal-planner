@@ -3,7 +3,6 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.healthymealplanner.R
 import com.example.healthymealplanner.databinding.FragmentHomeBinding
@@ -31,7 +30,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
+        initView()
+    }
+
+    private fun initView() {
         initDietTipsRecycleViewSection()
+
+        binding.dietTipsMoreTextView.setOnClickListener {
+            onMorePressed()
+        }
+    }
+
+    private fun onMorePressed() {
+        val directions = TabsFragmentDirections.actionTabsFragmentToDietTipDetailsMoreFragment()
+        findTopNavController().navigate(directions)
     }
 
     private fun initDietTipsRecycleViewSection() {
@@ -41,8 +53,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             hideAll()
             when (it) {
                 is SuccessResult -> {
+                    dietTipsAdapter.dietTips = it.data.slice(0..AMOUNT_OF_DIET_TIPS)
+
                     binding.dietTipsRecyclerView.visibility = View.VISIBLE
-                    dietTipsAdapter.dietTips = it.data
                 }
 
                 is ErrorResult -> {
@@ -58,9 +71,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-        dietTipsViewModel.actionShowDetails.observe(viewLifecycleOwner, Observer {
+        dietTipsViewModel.actionShowDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { dietTip -> onDietTipPressed(dietTip) }
-        })
+        }
 
         val dietTipsLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -72,7 +85,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val dietTipArg = dietTip.id
 
         val direction =
-            TabsFragmentDirections.actionTabsFragmentToDietTipDetailsFragment(dietTipArg)
+            TabsFragmentDirections.actionTabsFragmentToDietTipDetailsFragment(getString(R.string.foundation_of_healthy_lifestyle_title), dietTipArg)
         findTopNavController().navigate(direction)
     }
 
@@ -81,5 +94,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         dietTipsProgressBar.visibility = View.GONE
         dietTipTryAgainContainer.visibility = View.GONE
         noDietTipsTextView.visibility = View.GONE
+    }
+
+    companion object {
+        private const val AMOUNT_OF_DIET_TIPS = 4
     }
 }

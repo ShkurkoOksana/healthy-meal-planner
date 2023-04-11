@@ -21,14 +21,16 @@ class DietTipDetailsFragment : Fragment() {
     private val args by navArgs<DietTipDetailsFragmentArgs>()
 
     private var dietTipId by Delegates.notNull<Long>()
+    private var dietTipsChapterName by Delegates.notNull<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null && getDietTipArgument() != null) {
+        if (savedInstanceState == null) {
             dietTipId = getDietTipArgument()
+            dietTipsChapterName = getDietTipsChapterNameArgument()
         }
 
-        viewModel.loadDietTip(dietTipId)
+        viewModel.loadDietTipDetails(dietTipsChapterName, dietTipId)
     }
 
     override fun onCreateView(
@@ -56,4 +58,6 @@ class DietTipDetailsFragment : Fragment() {
     }
 
     private fun getDietTipArgument(): Long = args.dietTipId
+
+    private fun getDietTipsChapterNameArgument(): String = args.dietTipsChapter
 }
