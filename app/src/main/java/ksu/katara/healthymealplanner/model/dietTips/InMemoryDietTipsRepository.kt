@@ -1,103 +1,170 @@
 package ksu.katara.healthymealplanner.model.dietTips
 
+import android.util.Log
 import ksu.katara.healthymealplanner.exceptions.DietTipNotFoundException
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
-import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipChapter
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipDetails
+import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipsChapter
 import ksu.katara.healthymealplanner.tasks.SimpleTask
 import ksu.katara.healthymealplanner.tasks.Task
 import java.util.concurrent.Callable
 
+typealias DietTipsChaptersListener = (dietTipsChapters: List<DietTipsChapter>) -> Unit
 typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit
 
 class InMemoryDietTipsRepository : DietTipsRepository {
 
+    private lateinit var dietTipsChapters: MutableList<DietTipsChapter>
+    private var dietTipsChaptersLoaded = false
+    private val dietTipsChaptersListeners = mutableSetOf<DietTipsChaptersListener>()
+
     private lateinit var dietTips: MutableList<DietTip>
-    private var loaded = false
-    private val listeners = mutableSetOf<DietTipsListener>()
+    private var dietTipsLoaded = false
+    private val dietTipsListeners = mutableSetOf<DietTipsListener>()
 
-    private var chapters = mutableListOf<DietTipChapter>()
-
-    override fun loadDietTips(): Task<Unit> = SimpleTask {
-        dietTips = mutableListOf()
-
+    override fun loadDietTipsChapters(): Task<Unit> = SimpleTask {
         Thread.sleep(2000)
 
-        chapters = (0 until DIET_TIPS_CHAPTER.size).map {
-            DietTipChapter(
-                id = it.toLong(),
-                name = DIET_TIPS_CHAPTER[it]
+        dietTipsChapters = getDietTipsChapters()
+
+        dietTipsChaptersLoaded = true
+        notifyDietTipsChaptersChanges()
+    }
+
+    private fun getDietTipsChapters(): MutableList<DietTipsChapter> {
+        dietTipsChapters = mutableListOf()
+
+        var dietTipId = 0
+
+        for ((dietTipChapterId, dietTipChapterName) in DIET_TIPS_CHAPTER_NAME.withIndex()) {
+            val dietTipsList = mutableListOf<DietTip>()
+
+            val dietTipsSize = DIET_TIPS_IMAGES.getValue(dietTipChapterName).size
+            val dietTipsPhotos = DIET_TIPS_IMAGES.getValue(dietTipChapterName)
+            val dietTipsNames = DIET_TIPS_NAMES.getValue(dietTipChapterName)
+
+            (0 until dietTipsSize).map { dietTipIndex ->
+                val dietTip = DietTip(
+                    id = dietTipId.toLong(),
+                    photo = dietTipsPhotos[dietTipIndex],
+                    name = dietTipsNames[dietTipIndex],
+                )
+
+                dietTipsList.add(dietTip)
+                dietTipId++
+            }
+
+            val dietTipsChapter = DietTipsChapter(
+                id = dietTipChapterId.toLong(),
+                name = dietTipChapterName,
+                dietTipsList = dietTipsList
             )
-        }.toMutableList()
+
+            dietTipsChapters.add(dietTipsChapter)
+        }
+
+        return dietTipsChapters
+    }
+
+    override fun loadDietTips(): Task<Unit> = SimpleTask {
+        Thread.sleep(2000)
+
+        dietTips = getDietTips()
+
+        dietTipsLoaded = true
+        notifyDietTipsChanges()
+    }
+
+    private fun getDietTips(): MutableList<DietTip> {
+        dietTips = mutableListOf()
+
+        var dietTipId = 0
 
         for (key in DIET_TIPS_IMAGES.keys) {
             for (dietTipIndex in DIET_TIPS_IMAGES.getValue(key).indices) {
                 val dietTip = DietTip(
-                    id = dietTipIndex.toLong(),
+                    id = dietTipId.toLong(),
                     name = DIET_TIPS_NAMES.getValue(key)[dietTipIndex],
                     photo = DIET_TIPS_IMAGES.getValue(key)[dietTipIndex],
-                    chapter = chapters.first { it.name == key }
                 )
 
                 dietTips.add(dietTip)
+                dietTipId++
             }
         }
 
-        loaded = true
-        notifyChanges()
+
+        return dietTips
     }
 
-    override fun getById(dietTipsChapterName: String, id: Long): Task<DietTipDetails> = SimpleTask(Callable {
+    override fun getDietTipDetailsById(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
         Thread.sleep(2000)
 
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipNotFoundException()
+
         return@Callable DietTipDetails(
             dietTip = dietTip,
-            background = DIET_TIPS_DETAILS_BACKGROUND.getValue(dietTipsChapterName)[id.toInt()],
-            titlesList = DIET_TIPS_DETAILS_TITLES.getValue(DIET_TIPS_NAMES.getValue(dietTipsChapterName)[id.toInt()]),
-            descriptionsList = DIET_TIPS_DETAILS_DESCRIPTIONS.getValue(DIET_TIPS_NAMES.getValue(dietTipsChapterName)[id.toInt()]),
+            background = DIET_TIPS_DETAILS_BACKGROUND.getValue(dietTip.name),
+            titlesList = DIET_TIPS_DETAILS_TITLES.getValue(dietTip.name),
+            descriptionsList = DIET_TIPS_DETAILS_DESCRIPTIONS.getValue(dietTip.name),
         )
     })
 
-    override fun addListener(listener: DietTipsListener) {
-        listeners.add(listener)
-        if (loaded) {
+    override fun addDietTipsChaptersListener(listener: DietTipsChaptersListener) {
+        dietTipsChaptersListeners.add(listener)
+        if (dietTipsChaptersLoaded) {
+            listener.invoke(dietTipsChapters)
+        }
+    }
+
+    override fun addDietTipsListener(listener: DietTipsListener) {
+        dietTipsListeners.add(listener)
+        if (dietTipsLoaded) {
             listener.invoke(dietTips)
         }
     }
 
-    override fun removeListener(listener: DietTipsListener) {
-        listeners.remove(listener)
+    override fun removeDietTipsChaptersListener(listener: DietTipsChaptersListener) {
+        dietTipsChaptersListeners.remove(listener)
     }
 
-    private fun notifyChanges() {
-        if (!loaded) return
-        listeners.forEach { it.invoke(dietTips) }
+    override fun removeDietTipsListener(listener: DietTipsListener) {
+        dietTipsListeners.remove(listener)
+    }
+
+    private fun notifyDietTipsChaptersChanges() {
+        if (!dietTipsChaptersLoaded) return
+        dietTipsChaptersListeners.forEach { it.invoke(dietTipsChapters) }
+    }
+
+    private fun notifyDietTipsChanges() {
+        if (!dietTipsLoaded) return
+        dietTipsListeners.forEach { it.invoke(dietTips) }
     }
 
     companion object {
-        private val DIET_TIPS_CHAPTER = mutableListOf(
+        private val DIET_TIPS_CHAPTER_NAME = mutableListOf(
             "Фундамент здорового образа жизни",
             "Питание как фактор риска в развитии заболеваний",
             "Восстановление работы ЖКТ",
         )
 
         private val DIET_TIPS_IMAGES = mutableMapOf(
-            DIET_TIPS_CHAPTER[0] to mutableListOf(
+            DIET_TIPS_CHAPTER_NAME[0] to mutableListOf(
                 "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2353&q=80",
                 "https://images.unsplash.com/photo-1614887065001-06c958a7cddd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
                 "https://images.unsplash.com/photo-1656218257936-8384471a0258?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2274&q=80",
                 "https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
                 "https://images.unsplash.com/photo-1545389336-cf090694435e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1364&q=80",
             ),
-            DIET_TIPS_CHAPTER[1] to mutableListOf(
+            DIET_TIPS_CHAPTER_NAME[1] to mutableListOf(
                 "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3431&q=80",
                 "https://plus.unsplash.com/premium_photo-1671718110418-d25ac8e87627?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
                 "https://images.unsplash.com/photo-1649073586104-2ac3fab175ea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2074&q=80",
                 "https://plus.unsplash.com/premium_photo-1661780215564-b3a919366e6b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
                 "https://images.unsplash.com/photo-1559757175-053139280de2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3431&q=80",
             ),
-            DIET_TIPS_CHAPTER[2] to mutableListOf(
+            DIET_TIPS_CHAPTER_NAME[2] to mutableListOf(
                 "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
                 "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
                 "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
@@ -105,21 +172,21 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         )
 
         private val DIET_TIPS_NAMES = mutableMapOf(
-            DIET_TIPS_CHAPTER[0] to mutableListOf(
+            DIET_TIPS_CHAPTER_NAME[0] to mutableListOf(
                 "Режим питания",
                 "Вода",
                 "Сон",
                 "Спорт",
                 "Медитация",
             ),
-            DIET_TIPS_CHAPTER[1] to mutableListOf(
+            DIET_TIPS_CHAPTER_NAME[1] to mutableListOf(
                 "Мозг",
                 "Желудок",
                 "Печень и желчный пузырь",
                 "Поджелудочная железа и кишечник",
                 "Почки",
             ),
-            DIET_TIPS_CHAPTER[2] to mutableListOf(
+            DIET_TIPS_CHAPTER_NAME[2] to mutableListOf(
                 "Система пищеварения: ротовая полость, пищевод и желудок",
                 "Система пищеварения: печень и желчный пузырь",
                 "Система пищеварения: поджелудочная железа и кишечник",
@@ -127,24 +194,112 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         )
 
         private val DIET_TIPS_DETAILS_BACKGROUND = mutableMapOf(
-            DIET_TIPS_CHAPTER[0] to mutableListOf(
-                "https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
-                "https://images.unsplash.com/photo-1527904188605-3424bcc2d107?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2050&q=80",
-                "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
-                "https://images.unsplash.com/photo-1516352267226-f5f3e4c53781?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=966&q=80",
-                "https://images.unsplash.com/photo-1585639408964-b8938d59264e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
+            "Режим питания" to mutableListOf(
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
             ),
-            DIET_TIPS_CHAPTER[1] to mutableListOf(
-                "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3431&q=80",
-                "https://plus.unsplash.com/premium_photo-1671718110418-d25ac8e87627?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
-                "https://images.unsplash.com/photo-1649073586104-2ac3fab175ea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2074&q=80",
-                "https://plus.unsplash.com/premium_photo-1661780215564-b3a919366e6b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
-                "https://images.unsplash.com/photo-1559757175-053139280de2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3431&q=80",
+            "Вода" to mutableListOf(
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
             ),
-            DIET_TIPS_CHAPTER[2] to mutableListOf(
-                "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
-                "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
-                "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
+            "Сон" to mutableListOf(
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Спорт" to mutableListOf(
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Медитация" to mutableListOf(
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Мозг" to mutableListOf(
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Желудок" to mutableListOf(
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Печень и желчный пузырь" to mutableListOf(
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Поджелудочная железа и кишечник" to mutableListOf(
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Почки" to mutableListOf(
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+                "https://images.unsplash.com/photo-1556262298-e85892643712?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+            ),
+            "Система пищеварения: ротовая полость, пищевод и желудок" to mutableListOf(
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+            ),
+            "Система пищеварения: печень и желчный пузырь" to mutableListOf(
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+            ),
+            "Система пищеварения: поджелудочная железа и кишечник" to mutableListOf(
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
+                "https://images.unsplash.com/photo-1523766775147-152d0d6e2adb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=988&q=80",
             )
         )
 

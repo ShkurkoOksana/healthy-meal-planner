@@ -21,16 +21,14 @@ class DietTipDetailsFragment : Fragment() {
     private val args by navArgs<DietTipDetailsFragmentArgs>()
 
     private var dietTipId by Delegates.notNull<Long>()
-    private var dietTipsChapterName by Delegates.notNull<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             dietTipId = getDietTipArgument()
-            dietTipsChapterName = getDietTipsChapterNameArgument()
         }
 
-        viewModel.loadDietTipDetails(dietTipsChapterName, dietTipId)
+        viewModel.loadDietTipDetails(dietTipId)
     }
 
     override fun onCreateView(
@@ -42,9 +40,7 @@ class DietTipDetailsFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) {
             binding.dietTipDetailsContentContainer.visibility = if (it.showContent) {
-                val dietTipDetails = (it.dietTipDetailsResult as SuccessResult).data
-                val dietTipDetailsViewPagerAdapter = DietTipDetailsViewPagerAdapter(dietTipDetails)
-                binding.dietTipDetailsViewPager.adapter = dietTipDetailsViewPagerAdapter
+                initDietTipDetailsViewPager(it)
 
                 View.VISIBLE
             } else {
@@ -57,7 +53,11 @@ class DietTipDetailsFragment : Fragment() {
         return binding.root
     }
 
-    private fun getDietTipArgument(): Long = args.dietTipId
+    private fun initDietTipDetailsViewPager(state: DietTipDetailsViewModel.State) {
+        val dietTipDetails = (state.dietTipDetailsResult as SuccessResult).data
+        val dietTipDetailsViewPagerAdapter = DietTipDetailsViewPagerAdapter(dietTipDetails)
+        binding.dietTipDetailsViewPager.adapter = dietTipDetailsViewPagerAdapter
+    }
 
-    private fun getDietTipsChapterNameArgument(): String = args.dietTipsChapter
+    private fun getDietTipArgument(): Long = args.dietTipId
 }

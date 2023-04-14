@@ -25,10 +25,12 @@ class DietTipDetailsViewPagerAdapter(
 
     override fun onBindViewHolder(holder: DietTipDetailsViewPagerViewHolder, position: Int) {
         holder.binding.dietTipDetailsTitleTextView.text = dietTipDetails.titlesList[position]
+
         holder.binding.dietTipDetailsDescriptionTextView.text = dietTipDetails.descriptionsList[position]
-        if (dietTipDetails.background.isNotBlank()) {
+
+        if (dietTipDetails.background[position].isNotBlank()) {
             Glide.with(holder.binding.dietTipDetailsBackgroundImageView.context)
-                .load(dietTipDetails.background)
+                .load(dietTipDetails.background[position])
                 .into(holder.binding.dietTipDetailsBackgroundImageView)
         } else {
             Glide.with(holder.binding.dietTipDetailsBackgroundImageView.context)

@@ -10,6 +10,7 @@ import ksu.katara.healthymealplanner.Repositories
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.screens.main.tabs.TabsFragmentDirections
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsAdapter
+import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsChaptersViewModel
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsViewModel
 import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.ErrorResult
@@ -85,7 +86,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val dietTipArg = dietTip.id
 
         val direction =
-            TabsFragmentDirections.actionTabsFragmentToDietTipDetailsFragment(getString(R.string.foundation_of_healthy_lifestyle_title), dietTipArg)
+            TabsFragmentDirections.actionTabsFragmentToDietTipDetailsFragment(dietTipArg)
         findTopNavController().navigate(direction)
     }
 

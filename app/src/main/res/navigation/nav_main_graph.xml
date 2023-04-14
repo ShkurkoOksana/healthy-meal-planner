@@ -26,9 +26,6 @@
         android:label="Полезные советы"
         tools:layout="@layout/fragment_diet_tip_details">
         <argument
-            android:name="diet_tips_chapter"
-            app:argType="string" />
-        <argument
             android:name="diet_tip_id"
             app:argType="long" />
     </fragment>

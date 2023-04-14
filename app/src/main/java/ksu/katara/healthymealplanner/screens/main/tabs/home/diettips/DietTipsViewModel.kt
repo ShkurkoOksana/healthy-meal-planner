@@ -40,7 +40,7 @@ class DietTipsViewModel(
     }
 
     init {
-        dietTipsRepository.addListener(listener)
+        dietTipsRepository.addDietTipsListener(listener)
         loadDietTips()
     }
 
@@ -55,7 +55,7 @@ class DietTipsViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        dietTipsRepository.removeListener(listener)
+        dietTipsRepository.removeDietTipsListener(listener)
     }
 
     private fun isInProgress(dietTip: DietTip): Boolean {

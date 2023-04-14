@@ -12,7 +12,7 @@ import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 typealias DietTipActionListener = (dietTip: DietTip) -> Unit
 
 class DietTipsAdapter(
-    private val actionListener: DietTipActionListener
+    private val dietTipActionListener: DietTipActionListener
 ) : RecyclerView.Adapter<DietTipsAdapter.DietTipsViewHolder>(), View.OnClickListener {
 
     var dietTips: List<DietTipsListItem> = emptyList()
@@ -23,7 +23,7 @@ class DietTipsAdapter(
 
     override fun onClick(v: View) {
         val dietTip = v.tag as DietTip
-        actionListener.invoke(dietTip)
+        dietTipActionListener.invoke(dietTip)
     }
 
     override fun getItemCount(): Int = dietTips.size
