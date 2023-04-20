@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.example.healthymealplanner.databinding.FragmentDietTipDetailsBinding
 import ksu.katara.healthymealplanner.Repositories
+import ksu.katara.healthymealplanner.databinding.FragmentDietTipDetailsBinding
 import ksu.katara.healthymealplanner.tasks.SuccessResult
 import ksu.katara.healthymealplanner.utils.viewModelCreator
 import kotlin.properties.Delegates

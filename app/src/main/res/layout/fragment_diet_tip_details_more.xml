@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsMoreFragment">
+    tools:context=".screens.main.tabs.home.diettips.DietTipDetailsMoreFragment">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dietTipsChaptersRecyclerView"

@@ -3,8 +3,8 @@ package ksu.katara.healthymealplanner.screens.main.tabs.mealplan
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.FragmentMealPlanBinding
+import ksu.katara.healthymealplanner.R
+import ksu.katara.healthymealplanner.databinding.FragmentMealPlanBinding
 
 class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
 

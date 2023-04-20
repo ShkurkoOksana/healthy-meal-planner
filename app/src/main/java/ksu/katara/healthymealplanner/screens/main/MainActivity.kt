@@ -3,7 +3,6 @@ package ksu.katara.healthymealplanner.screens.main
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +12,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.ActivityMainBinding
+import ksu.katara.healthymealplanner.R
+import ksu.katara.healthymealplanner.databinding.ActivityMainBinding
 import ksu.katara.healthymealplanner.screens.main.tabs.TabsFragment
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsFragment
 import java.util.regex.Pattern

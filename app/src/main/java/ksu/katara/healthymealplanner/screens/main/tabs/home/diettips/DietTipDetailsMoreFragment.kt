@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.FragmentDietTipDetailsMoreBinding
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
+import ksu.katara.healthymealplanner.databinding.FragmentDietTipDetailsMoreBinding
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.ErrorResult

@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.ItemDietTipBinding
+import ksu.katara.healthymealplanner.R
+import ksu.katara.healthymealplanner.databinding.ItemDietTipBinding
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 
 typealias DietTipActionListener = (dietTip: DietTip) -> Unit

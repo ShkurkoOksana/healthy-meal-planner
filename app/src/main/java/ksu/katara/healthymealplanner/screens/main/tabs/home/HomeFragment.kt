@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.FragmentHomeBinding
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
+import ksu.katara.healthymealplanner.databinding.FragmentHomeBinding
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
+import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.screens.main.tabs.TabsFragmentDirections
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsAdapter
-import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsChaptersViewModel
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsViewModel
 import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.ErrorResult
@@ -35,11 +35,42 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initView() {
-        initDietTipsRecycleViewSection()
 
+        initDietTipsSection()
+
+        initMealPlanForTodaySection()
+    }
+
+    private fun initMealPlanForTodaySection() {
+        binding.breakfastForTodayDetailsButton.setOnClickListener {
+            onMealPlanForTodayItemPressed(MealTypes.BREAKFAST.name)
+        }
+
+        binding.lunchForTodayDetailsButton.setOnClickListener {
+            onMealPlanForTodayItemPressed(MealTypes.LUNCH.name)
+        }
+
+        binding.dinnerForTodayDetailsButton.setOnClickListener {
+            onMealPlanForTodayItemPressed(MealTypes.DINNER.name)
+        }
+
+        binding.snackForTodayDetailsButton.setOnClickListener {
+            onMealPlanForTodayItemPressed(MealTypes.SNACK.name)
+        }
+    }
+
+    private fun onMealPlanForTodayItemPressed(mealTypeName: String) {
+        val direction = TabsFragmentDirections.actionTabsFragmentToMealPlanForTodayRecipesFragment(mealTypeName)
+
+        findTopNavController().navigate(direction)
+    }
+
+    private fun initDietTipsSection() {
         binding.dietTipsMoreTextView.setOnClickListener {
             onMorePressed()
         }
+
+        initDietTipsRecycleView()
     }
 
     private fun onMorePressed() {
@@ -47,7 +78,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         findTopNavController().navigate(directions)
     }
 
-    private fun initDietTipsRecycleViewSection() {
+    private fun initDietTipsRecycleView() {
         dietTipsAdapter = DietTipsAdapter(dietTipsViewModel)
 
         dietTipsViewModel.dietTips.observe(viewLifecycleOwner) {

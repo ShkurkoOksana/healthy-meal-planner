@@ -6,7 +6,6 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import ksu.katara.healthymealplanner.screens.splash.SplashFragment
 import androidx.appcompat.app.AppCompatActivity
-import com.example.healthymealplanner.R
 
 /**
  * Entry point of the app.

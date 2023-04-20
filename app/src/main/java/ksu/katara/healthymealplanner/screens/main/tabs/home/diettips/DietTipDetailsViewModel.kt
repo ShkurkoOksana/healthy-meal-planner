@@ -2,11 +2,9 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.healthymealplanner.R
 import ksu.katara.healthymealplanner.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
-import ksu.katara.healthymealplanner.screens.base.Event
 import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult

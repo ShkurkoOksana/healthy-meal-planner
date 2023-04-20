@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.healthymealplanner.databinding.ItemDietTipsChapterBinding
+import ksu.katara.healthymealplanner.databinding.ItemDietTipsChapterBinding
 
 class DietTipsChaptersAdapter(
     private val context: Context,

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.FragmentSplashBinding
+import ksu.katara.healthymealplanner.R
+import ksu.katara.healthymealplanner.databinding.FragmentSplashBinding
 import ksu.katara.healthymealplanner.screens.main.MainActivity
 
 class SplashFragment : Fragment(R.layout.fragment_splash) {

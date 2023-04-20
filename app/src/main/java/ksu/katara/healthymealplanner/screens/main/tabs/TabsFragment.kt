@@ -5,9 +5,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-
-import com.example.healthymealplanner.R
-import com.example.healthymealplanner.databinding.FragmentTabsBinding
+import ksu.katara.healthymealplanner.R
+import ksu.katara.healthymealplanner.databinding.FragmentTabsBinding
 
 class TabsFragment : Fragment(R.layout.fragment_tabs) {
 

@@ -1,13 +1,13 @@
 package ksu.katara.healthymealplanner.model.dietTips
 
-import android.util.Log
-import ksu.katara.healthymealplanner.exceptions.DietTipNotFoundException
+import ksu.katara.healthymealplanner.exceptions.DietTipsNotFoundException
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipsChapter
 import ksu.katara.healthymealplanner.tasks.SimpleTask
 import ksu.katara.healthymealplanner.tasks.Task
 import java.util.concurrent.Callable
+import kotlin.properties.Delegates
 
 typealias DietTipsChaptersListener = (dietTipsChapters: List<DietTipsChapter>) -> Unit
 typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit
@@ -21,6 +21,8 @@ class InMemoryDietTipsRepository : DietTipsRepository {
     private lateinit var dietTips: MutableList<DietTip>
     private var dietTipsLoaded = false
     private val dietTipsListeners = mutableSetOf<DietTipsListener>()
+
+    private var dietTipsSize by Delegates.notNull<Int>()
 
     override fun loadDietTipsChapters(): Task<Unit> = SimpleTask {
         Thread.sleep(2000)
@@ -39,7 +41,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         for ((dietTipChapterId, dietTipChapterName) in DIET_TIPS_CHAPTER_NAME.withIndex()) {
             val dietTipsList = mutableListOf<DietTip>()
 
-            val dietTipsSize = DIET_TIPS_IMAGES.getValue(dietTipChapterName).size
+            dietTipsSize = DIET_TIPS_IMAGES.getValue(dietTipChapterName).size
             val dietTipsPhotos = DIET_TIPS_IMAGES.getValue(dietTipChapterName)
             val dietTipsNames = DIET_TIPS_NAMES.getValue(dietTipChapterName)
 
@@ -100,7 +102,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
     override fun getDietTipDetailsById(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
         Thread.sleep(2000)
 
-        val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipNotFoundException()
+        val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipsNotFoundException()
 
         return@Callable DietTipDetails(
             dietTip = dietTip,

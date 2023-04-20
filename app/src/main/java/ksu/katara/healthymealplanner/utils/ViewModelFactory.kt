@@ -24,4 +24,3 @@ inline fun <reified VM : ViewModel> Fragment.viewModelCreator(noinline creator: 
 inline fun <reified VM : ViewModel> ComponentActivity.viewModelCreator(noinline creator: ViewModelCreator<VM>): Lazy<VM> {
     return viewModels { ViewModelFactory(creator) }
 }
-
