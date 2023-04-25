@@ -3,7 +3,6 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.mealplanfortoday
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
@@ -14,6 +13,7 @@ import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
+import ksu.katara.healthymealplanner.utils.findTopNavController
 import ksu.katara.healthymealplanner.utils.viewModelCreator
 
 class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_today_recipes) {
@@ -46,7 +46,7 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
         binding.mealPlanForTodayRecipesAddRecipeButton.visibility = View.INVISIBLE
         binding.mealPlanForTodayRecipesProgressBarForAddButton.visibility = View.VISIBLE
 
-        mealPlanForTodayRecipesViewModel.onMealPlanForTodayRecipeAdd()
+        mealPlanForTodayRecipesViewModel.onMealPlanForTodayRecipesItemAdd()
     }
 
     private fun initMealPlanForTodayRecipes() {
@@ -74,11 +74,13 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
                 }
                 is EmptyResult -> {
                     binding.noMealPlanForTodayRecipes.visibility = View.VISIBLE
+                    binding.mealPlanForTodayRecipesAddRecipeButton.visibility = View.VISIBLE
                 }
             }
         }
 
         mealPlanForTodayRecipesViewModel.actionShowDetails.observe(viewLifecycleOwner) {
+            it.getValue()?.let { recipe -> onMealPlanForTodayRecipesItemPressed(recipe.id) }
         }
 
         val mealPlanForTodayRecipesLayoutManager =
@@ -89,7 +91,11 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
             mealPlanForTodayRecipesAdapter
     }
 
-    private fun onMealPlanForTodayItemPressed(recipeId: Long) {
+    private fun onMealPlanForTodayRecipesItemPressed(recipeId: Long) {
+        val direction =
+            MealPlanForTodayRecipesFragmentDirections.actionMealPlanForTodayRecipesFragmentToRecipeFragment(recipeId)
+
+        findTopNavController().navigate(direction)
     }
 
     private fun hideAll() = with(binding) {

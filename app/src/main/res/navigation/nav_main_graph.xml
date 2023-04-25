@@ -47,10 +47,22 @@
         <argument
             android:name="meal_type"
             app:argType="string" />
+        <action
+            android:id="@+id/action_mealPlanForTodayRecipesFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/mealPlanFragment"
         android:name="ksu.katara.healthymealplanner.screens.main.tabs.mealplan.MealPlanFragment"
         android:label="fragment_meal_plan"
         tools:layout="План питания" />
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.RecipeFragment"
+        android:label="Рецепт"
+        tools:layout="@layout/fragment_recipe" >
+        <argument
+            android:name="recipe_id"
+            app:argType="long" />
+    </fragment>
 </navigation>

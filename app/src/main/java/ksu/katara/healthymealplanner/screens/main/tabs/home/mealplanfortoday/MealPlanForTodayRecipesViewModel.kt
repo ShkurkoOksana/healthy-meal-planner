@@ -65,11 +65,11 @@ class MealPlanForTodayRecipeListViewModel(
         mealPlanForTodayRecipesRepository.removeMealPlanForTodayRecipesItemListener(mealPlanForTodayRecipesListener)
     }
 
-    override fun onMealPlanForTodayRecipeAdd() {
+    override fun onMealPlanForTodayRecipesItemAdd() {
         mealPlanForTodayRecipesRepository.mealPlanForTodayRecipesAddRecipe()
     }
 
-    override fun onMealPlanForTodayRecipeDelete(recipe: Recipe) {
+    override fun onMealPlanForTodayRecipesItemDelete(recipe: Recipe) {
         if (isInProgress(recipe)) return
         addProgressTo(recipe)
         mealPlanForTodayRecipesRepository.mealPlanForTodayRecipesDeleteRecipe(recipe)
@@ -79,7 +79,7 @@ class MealPlanForTodayRecipeListViewModel(
             .autoCancel()
     }
 
-    override fun onMealPlanForTodayRecipeDetails(recipe: Recipe) {
+    override fun onMealPlanForTodayRecipesItemDetails(recipe: Recipe) {
         _actionShowDetails.value = Event(recipe)
     }
 

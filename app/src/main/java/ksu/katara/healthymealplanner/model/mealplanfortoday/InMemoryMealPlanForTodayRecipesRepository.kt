@@ -1,6 +1,6 @@
 package ksu.katara.healthymealplanner.model.mealplanfortoday
 
-import ksu.katara.healthymealplanner.exceptions.MealPlanForTodayRecipesException
+import ksu.katara.healthymealplanner.exceptions.MealPlanForTodayRecipesNotFoundException
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.mealplanfortoday.entities.MealPlanForTodayRecipes
 import ksu.katara.healthymealplanner.model.recipes.RecipesRepository
@@ -32,7 +32,7 @@ class InMemoryMealPlanForTodayRecipesRepository(
 
             mealPlanForTodayRecipesMealType = mealType
 
-            mealPlanForTodayRecipes = mealPlanForToday.firstOrNull{ it.mealType == mealType } ?: throw MealPlanForTodayRecipesException()
+            mealPlanForTodayRecipes = mealPlanForToday.firstOrNull{ it.mealType == mealType } ?: throw MealPlanForTodayRecipesNotFoundException()
 
             mealPlanForTodayRecipesLoaded = true
             notifyMealPlanForTodayChanges()
@@ -52,6 +52,7 @@ class InMemoryMealPlanForTodayRecipesRepository(
     override fun mealPlanForTodayRecipesAddRecipe(): Task<Unit> =
         SimpleTask {
             Thread.sleep(2000)
+
             val randomRecipe = recipesRepository.getRecipeById(Random.nextLong(0,4))
 
             mealPlanForTodayRecipes.recipesList.add(randomRecipe)
@@ -61,9 +62,9 @@ class InMemoryMealPlanForTodayRecipesRepository(
     override fun mealPlanForTodayRecipesDeleteRecipe(recipe: Recipe): Task<Unit> =
         SimpleTask {
             Thread.sleep(2000)
-            val indexToDelete = mealPlanForToday.indexOfFirst { it.id == recipe.id }
+            val indexToDelete = mealPlanForTodayRecipes.recipesList.indexOfFirst { it.id == recipe.id }
             if (indexToDelete != -1) {
-                mealPlanForToday.removeAt(indexToDelete)
+                mealPlanForTodayRecipes.recipesList.removeAt(indexToDelete)
                 notifyMealPlanForTodayChanges()
             }
         }

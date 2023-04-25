@@ -40,23 +40,34 @@
     <string name="fats_title">Жиры</string>
     <string name="carbohydrates_title">Углеводы</string>
     <string name="failed_to_load_recipe_types">Не удалось загрузить раздел Тип рецепта</string>
-    <string name="protein_value">%1$s gram</string>
-    <string name="fats_value">%1$s gram</string>
-    <string name="carbohydrates_value">%1$s gram</string>
+    <string name="protein_value">%1$s г.</string>
+    <string name="fats_value">%1$s г.</string>
+    <string name="carbohydrates_value">%1$s г.</string>
     <string name="no_recipe_types">Нет данных в разделе Тип рецепта</string>
     <string name="ingredients_title">Ингредиенты</string>
     <string name="failed_to_load_ingredients">Не удалось загрузить раздел Ингредиенты</string>
+    <string name="cant_load_ingredients">Не загружается информация в разделе Ингредиенты</string>
     <string name="no_ingredients">Нет данных в разделе Ингредиенты</string>
-    <string name="go_to_shopping_list">Добавить в лист покупок</string>
+    <string name="cant_add_to_shopping_list">Не загружается информация об ингридиентах в Список покупок</string>
+    <string name="go_to_shopping_list">Добавить все в список покупок</string>
     <string name="preparation_steps_title">Шаги приготовления</string>
     <string name="failed_to_load_preparation_steps">Не удалось загрузить раздел Шаги приготовления</string>
     <string name="no_preparation_steps">Нет данных в разделе Шаги приготовления</string>
-
-
+    <string name="cant_load_recipe">Не загружается информация в разделе Детали рецепта</string>
 
     <string name="meal_plan">План питания</string>
 
-
-
+    <string-array name="number_of_portions">
+        <item>1 порция</item>
+        <item>2 порция</item>
+        <item>3 порция</item>
+        <item>4 порция</item>
+        <item>5 порция</item>
+        <item>6 порция</item>
+        <item>7 порция</item>
+        <item>8 порция</item>
+        <item>9 порция</item>
+        <item>10 порция</item>
+    </string-array>
 
 </resources>

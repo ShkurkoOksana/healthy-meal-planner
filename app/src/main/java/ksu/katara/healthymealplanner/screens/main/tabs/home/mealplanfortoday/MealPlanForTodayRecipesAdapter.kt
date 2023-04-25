@@ -11,11 +11,11 @@ import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
 interface MealPlanForTodayRecipeActionListener {
 
-    fun onMealPlanForTodayRecipeAdd()
+    fun onMealPlanForTodayRecipesItemAdd()
 
-    fun onMealPlanForTodayRecipeDelete(recipe: Recipe)
+    fun onMealPlanForTodayRecipesItemDelete(recipe: Recipe)
 
-    fun onMealPlanForTodayRecipeDetails(recipe: Recipe)
+    fun onMealPlanForTodayRecipesItemDetails(recipe: Recipe)
 
 }
 
@@ -34,13 +34,13 @@ class MealPlanForTodayRecipesAdapter(
 
         when (v.id) {
             R.id.mealPlanForTodayRecipesItemDeleteViewButton -> {
-                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipeDelete(recipe)
+                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipesItemDelete(recipe)
             }
             R.id.mealPlanForTodayRecipesAddRecipeButton -> {
-                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipeAdd()
+                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipesItemAdd()
             }
             else -> {
-                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipeDetails(recipe)
+                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipesItemDetails(recipe)
             }
         }
     }

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".screens.main.tabs.home.recipe.RecipeFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/recipeContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/recipePhotoImageView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_recipes" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipePhotoImageView" />
+
+        <TextView
+            android:id="@+id/recipeNameTextView"
+            style="@style/TitleTextView"
+            android:layout_marginStart="@dimen/medium_space"
+            app:layout_constraintBottom_toBottomOf="@+id/recipeTimePreparationTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipePhotoImageView"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/recipe_name" />
+
+        <ImageView
+            android:id="@+id/recipeTimePreparationImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/medium_space"
+            android:layout_marginEnd="@dimen/medium_space"
+            android:src="@drawable/ic_product_preparation_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/recipeNameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/recipePhotoImageView" />
+
+        <TextView
+            android:id="@+id/recipeTimePreparationTextView"
+            style="@style/TitleTextView"
+            tools:text="5 min"
+            app:layout_constraintEnd_toEndOf="@+id/recipeTimePreparationImageView"
+            app:layout_constraintStart_toStartOf="@+id/recipeTimePreparationImageView"
+            app:layout_constraintTop_toBottomOf="@+id/recipeTimePreparationImageView" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/recipeTimePreparationBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="recipeNameTextView,recipeTimePreparationTextView" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeTimePreparationBarrier" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeTimePreparationBarrier" />
+
+        <TextView
+            android:id="@+id/recipeCuisineTypeTextView"
+            style="@style/TitleTextView"
+            android:layout_marginStart="@dimen/medium_space"
+            android:layout_marginTop="@dimen/medium_space"
+            android:text="@string/cuisine_type"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recipeTimePreparationTextView" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/medium_space"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeCuisineTypeTextView" />
+
+        <TextView
+            android:id="@+id/energeticValueTitleTextView"
+            style="@style/TitleTextView"
+            android:layout_marginStart="@dimen/medium_space"
+            android:layout_marginTop="@dimen/large_space"
+            android:text="@string/energetic_value_per_100_gram"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recipeCuisineTypeTextView" />
+
+        <TextView
+            android:id="@+id/energeticValueTextView"
+            style="@style/TitleTextView"
+            tools:text="63 kcal"
+            app:layout_constraintBottom_toBottomOf="@id/energeticValueTitleTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/energeticValueTitleTextView"
+            app:layout_constraintTop_toTopOf="@id/energeticValueTitleTextView" />
+
+        <TextView
+            android:id="@+id/proteinTitleTextView"
+            style="@style/TitleTextView"
+            android:layout_marginTop="@dimen/small_space"
+            android:text="@string/protein_title"
+            app:layout_constraintEnd_toStartOf="@+id/fatsTitleTextView"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/energeticValueTitleTextView" />
+
+        <TextView
+            android:id="@+id/fatsTitleTextView"
+            style="@style/TitleTextView"
+            android:layout_marginTop="@dimen/small_space"
+            android:text="@string/fats_title"
+            app:layout_constraintBottom_toBottomOf="@+id/proteinTitleTextView"
+            app:layout_constraintEnd_toStartOf="@+id/carbohydratesTitleTextView"
+            app:layout_constraintStart_toEndOf="@+id/proteinTitleTextView"
+            app:layout_constraintTop_toTopOf="@+id/proteinTitleTextView" />
+
+        <TextView
+            android:id="@+id/carbohydratesTitleTextView"
+            style="@style/TitleTextView"
+            android:text="@string/carbohydrates_title"
+            app:layout_constraintBottom_toBottomOf="@id/fatsTitleTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fatsTitleTextView"
+            app:layout_constraintTop_toTopOf="@+id/fatsTitleTextView" />
+
+        <TextView
+            android:id="@+id/proteinsValueTextView"
+            style="@style/TitleTextView"
+            android:layout_marginTop="@dimen/small_space"
+            tools:text="4.85 gram"
+            app:layout_constraintEnd_toEndOf="@+id/proteinTitleTextView"
+            app:layout_constraintStart_toStartOf="@+id/proteinTitleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/proteinTitleTextView" />
+
+        <TextView
+            android:id="@+id/fatsValueTextView"
+            style="@style/TitleTextView"
+            android:layout_marginTop="@dimen/small_space"
+            tools:text="2 gram"
+            app:layout_constraintEnd_toEndOf="@+id/fatsTitleTextView"
+            app:layout_constraintStart_toStartOf="@+id/fatsTitleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/fatsTitleTextView" />
+
+        <TextView
+            android:id="@+id/carbohydratesValueTextView"
+            style="@style/TitleTextView"
+            android:layout_marginTop="@dimen/small_space"
+            tools:text="0.8 gram"
+            app:layout_constraintEnd_toEndOf="@+id/carbohydratesTitleTextView"
+            app:layout_constraintStart_toStartOf="@+id/carbohydratesTitleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/carbohydratesTitleTextView" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/medium_space"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/carbohydratesValueTextView" />
+
+        <FrameLayout
+            android:id="@+id/recipeTypesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proteinsValueTextView" >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recipeTypesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/proteinsValueTextView"
+                tools:itemCount="20"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_recipe_type" />
+
+            <ProgressBar
+                android:id="@+id/recipeTypesProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/recipeTypesTryAgainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/failed_to_load_recipe_types"/>
+
+                <Button
+                    android:id="@+id/recipeTypesTryAgainButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_again"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/noRecipeTypesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:text="@string/no_recipe_types"/>
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeTypesContainer" />
+
+        <TextView
+            android:id="@+id/ingredientsTitleTextView"
+            style="@style/TitleTextView"
+            android:text="@string/ingredients_title"
+            android:layout_marginStart="@dimen/medium_space"
+            android:layout_marginTop="@dimen/medium_space"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipeTypesContainer"/>
+
+        <Spinner
+            android:id="@+id/numberOfPortionsSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/medium_space"
+            app:layout_constraintBottom_toBottomOf="@+id/ingredientsTitleTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/ingredientsTitleTextView"
+            app:layout_constraintTop_toTopOf="@id/ingredientsTitleTextView" />
+
+        <FrameLayout
+            android:id="@+id/ingredientsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ingredientsTitleTextView" >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ingredientsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:itemCount="10"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_ingredients" />
+
+            <ProgressBar
+                android:id="@+id/ingredientsProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/ingredientsTryAgainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/failed_to_load_ingredients"/>
+
+                <Button
+                    android:id="@+id/ingredientsTryAgainButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_again"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/noIngredientsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:text="@string/no_ingredients"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/preparationStepsTitleTextView"
+            style="@style/TitleTextView"
+            android:text="@string/preparation_steps_title"
+            android:layout_marginStart="@dimen/medium_space"
+            android:layout_marginTop="@dimen/medium_space"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ingredientsContainer"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/preparationStepsTitleTextView">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/preparationStepsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:itemCount="10"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_preparation_steps" />
+
+            <ProgressBar
+                android:id="@+id/preparationStepsProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/preparationStepsTryAgainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/failed_to_load_preparation_steps"/>
+
+                <Button
+                    android:id="@+id/preparationStepsTryAgainButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_again"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/noPreparationStepsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:text="@string/no_preparation_steps"/>
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/recipeProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:indeterminateTint="@color/green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</FrameLayout>
