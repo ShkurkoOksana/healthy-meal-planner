@@ -1,4 +1,4 @@
 package ksu.katara.healthymealplanner.exceptions
 
-class DietTipsNotFoundException : Exception() {
+class RecipeNotFoundException : Exception() {
 }

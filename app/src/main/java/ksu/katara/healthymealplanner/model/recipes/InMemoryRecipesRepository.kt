@@ -1,6 +1,5 @@
 package ksu.katara.healthymealplanner.model.recipes
 
-import android.util.Log
 import ksu.katara.healthymealplanner.exceptions.IngredientsNotFoundException
 import ksu.katara.healthymealplanner.model.product.ProductsRepository
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
@@ -15,12 +14,15 @@ import kotlin.random.Random
 const val TAG = "InMemoryRecipesItemListRepository"
 
 typealias RecipeIngredientsListener = (recipeIngredients: List<RecipeIngredient>) -> Unit
+typealias RecipesListener = (recipesList: MutableList<Recipe>) -> Unit
 
 class InMemoryRecipesRepository(
     private val productRepository: ProductsRepository
 ) : RecipesRepository {
-    private val recipes: MutableList<Recipe>
-    private val recipesDetails: List<RecipeDetails>
+
+    private var recipes = mutableListOf<Recipe>()
+
+    private var recipesDetails: List<RecipeDetails>
 
     private val recipesSize = 5
 
@@ -59,8 +61,6 @@ class InMemoryRecipesRepository(
                     isInShoppingList = false,
                 )
 
-                Log.d(TAG, recipeIngredient.toString())
-
                 recipeIngredients.add(recipeIngredient)
                 ingredientsIndex++
             }
@@ -68,12 +68,12 @@ class InMemoryRecipesRepository(
             val preparationSteps = mutableListOf<RecipePreparationStep>()
             var preparationStepsIndex = 0
 
-            PREPARATION_STEPS.getValue(recipeName).forEach { (stepNumber, preparationStep) ->
+            PREPARATION_STEPS.getValue(recipeName).forEach { (_, preparationStepsList) ->
                 val preparationStep = RecipePreparationStep(
                     id = preparationStepsIndex.toLong(),
                     step = preparationStepsIndex + 1,
-                    photo = preparationStep[0],
-                    description = preparationStep[1]
+                    photo = preparationStepsList[0],
+                    description = preparationStepsList[1]
                 )
 
                 preparationSteps.add(preparationStep)
@@ -97,20 +97,13 @@ class InMemoryRecipesRepository(
         }.toMutableList()
     }
 
-    override fun getRecipeById(id: Long): Recipe {
-        return recipes[id.toInt()]
-    }
+    override fun getRecipes(): MutableList<Recipe> = recipes
 
     override fun getRecipeDetailsById(recipeId: Long): Task<RecipeDetails> = SimpleTask {
-        Thread.sleep(2000)
+        Thread.sleep(500)
 
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
-
-
-        //recipeDetailsLoaded = true
-
-        return@SimpleTask recipeDetails
-        }
+        return@SimpleTask recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+    }
 
     override fun loadRecipeTypes(recipeId: Long): Task<List<String>> =
         SimpleTask {

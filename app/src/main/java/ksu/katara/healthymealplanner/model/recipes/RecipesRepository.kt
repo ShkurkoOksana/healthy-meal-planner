@@ -6,7 +6,8 @@ import ksu.katara.healthymealplanner.model.recipes.entities.RecipePreparationSte
 import ksu.katara.healthymealplanner.tasks.Task
 
 interface RecipesRepository {
-    fun getRecipeById(id: Long): Recipe
+
+    fun getRecipes(): MutableList<Recipe>
 
     fun getRecipeDetailsById(recipeId: Long): Task<RecipeDetails>
 

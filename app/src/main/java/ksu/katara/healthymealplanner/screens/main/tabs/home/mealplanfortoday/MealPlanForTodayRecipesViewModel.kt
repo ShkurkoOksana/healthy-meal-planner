@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.mealplanfortoday
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ksu.katara.healthymealplanner.model.addrecipes.AddRecipesRepository
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.mealplanfortoday.MealPlanForTodayRecipesListener
 import ksu.katara.healthymealplanner.model.mealplanfortoday.MealPlanForTodayRecipesRepository
@@ -20,9 +21,10 @@ data class MealPlanForTodayRecipesItem(
     val isInProgress: Boolean,
 )
 
-class MealPlanForTodayRecipeListViewModel(
-    mealType: MealTypes,
-    private val mealPlanForTodayRecipesRepository: MealPlanForTodayRecipesRepository
+class MealPlanForTodayRecipesListViewModel(
+    private val mealType: MealTypes,
+    private val mealPlanForTodayRecipesRepository: MealPlanForTodayRecipesRepository,
+    private val addRecipesRepository: AddRecipesRepository,
 ) : BaseViewModel(), MealPlanForTodayRecipeActionListener {
 
     private val _mealPlanForTodayRecipes = MutableLiveData<StatusResult<List<MealPlanForTodayRecipesItem>>>()
@@ -31,7 +33,7 @@ class MealPlanForTodayRecipeListViewModel(
     private val _actionShowDetails = MutableLiveData<Event<Recipe>>()
     val actionShowDetails: LiveData<Event<Recipe>> = _actionShowDetails
 
-    private val mealPlanForTodayRecipesItemIdsInProgress = mutableSetOf<Long>()
+    private val mealPlanForTodayRecipesDeleteItemIdsInProgress = mutableSetOf<Long>()
     private var mealPlanForTodayRecipesResult: StatusResult<MealPlanForTodayRecipes> = EmptyResult()
         set(value) {
             field = value
@@ -65,16 +67,17 @@ class MealPlanForTodayRecipeListViewModel(
         mealPlanForTodayRecipesRepository.removeMealPlanForTodayRecipesItemListener(mealPlanForTodayRecipesListener)
     }
 
-    override fun onMealPlanForTodayRecipesItemAdd() {
-        mealPlanForTodayRecipesRepository.mealPlanForTodayRecipesAddRecipe()
-    }
-
     override fun onMealPlanForTodayRecipesItemDelete(recipe: Recipe) {
-        if (isInProgress(recipe)) return
-        addProgressTo(recipe)
-        mealPlanForTodayRecipesRepository.mealPlanForTodayRecipesDeleteRecipe(recipe)
+        if (isDeleteInProgress(recipe)) return
+        addDeleteProgressTo(recipe)
+        mealPlanForTodayRecipesRepository.mealPlanForTodayRecipesDeleteRecipe(recipe.id, mealType)
             .onSuccess {
-                removeProgressFrom(recipe)
+                removeDeleteProgressFrom(recipe)
+            }
+            .autoCancel()
+
+        addRecipesRepository.addRecipesAddRecipe(recipe.id)
+            .onSuccess {
             }
             .autoCancel()
     }
@@ -83,23 +86,23 @@ class MealPlanForTodayRecipeListViewModel(
         _actionShowDetails.value = Event(recipe)
     }
 
-    private fun addProgressTo(recipe: Recipe) {
-        mealPlanForTodayRecipesItemIdsInProgress.add(recipe.id)
+    private fun addDeleteProgressTo(recipe: Recipe) {
+        mealPlanForTodayRecipesDeleteItemIdsInProgress.add(recipe.id)
         notifyUpdates()
     }
 
-    private fun removeProgressFrom(recipe: Recipe) {
-        mealPlanForTodayRecipesItemIdsInProgress.remove(recipe.id)
+    private fun removeDeleteProgressFrom(recipe: Recipe) {
+        mealPlanForTodayRecipesDeleteItemIdsInProgress.remove(recipe.id)
         notifyUpdates()
     }
 
-    private fun isInProgress(recipe: Recipe): Boolean {
-        return mealPlanForTodayRecipesItemIdsInProgress.contains(recipe.id)
+    private fun isDeleteInProgress(recipe: Recipe): Boolean {
+        return mealPlanForTodayRecipesDeleteItemIdsInProgress.contains(recipe.id)
     }
 
     private fun notifyUpdates() {
         _mealPlanForTodayRecipes.postValue(mealPlanForTodayRecipesResult.resultMap { mealPlanForTodayRecipes ->
-            mealPlanForTodayRecipes.recipesList.map { recipe -> MealPlanForTodayRecipesItem(recipe, isInProgress(recipe)) }
+            mealPlanForTodayRecipes.recipesList.map { recipe -> MealPlanForTodayRecipesItem(recipe, isDeleteInProgress(recipe)) }
         })
     }
 }

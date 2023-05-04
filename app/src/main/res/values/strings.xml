@@ -29,13 +29,14 @@
 
     <!--Resources for MealPlanForTodayFragment-->
     <string name="failed_to_load_meal_plan_for_today">Не удалось загрузить раздел План питания на сегодня</string>
-    <string name="no_meal_plan_for_today">Нет данных в разделе План питания на сегодня</string>
+    <string name="no_meal_plan_for_today">Выберите рецепты для Плана питания на сегодня</string>
 
     <!--Resources for RecipeFragment-->
     <string name="recipe_name">Название рецепта</string>
     <string name="recipes">Рецепты</string>
     <string name="cuisine_type">Кухня</string>
-    <string name="energetic_value_per_100_gram">Энергетическая ценность</string>
+    <string name="preparation_time">Время приготовления</string>
+    <string name="energetic_value_per_100_gram">Энергетическая ценность: </string>
     <string name="protein_title">Белки</string>
     <string name="fats_title">Жиры</string>
     <string name="carbohydrates_title">Углеводы</string>
@@ -43,6 +44,7 @@
     <string name="protein_value">%1$s г.</string>
     <string name="fats_value">%1$s г.</string>
     <string name="carbohydrates_value">%1$s г.</string>
+    <string name="recipe_type_title">Тип рецепта</string>
     <string name="no_recipe_types">Нет данных в разделе Тип рецепта</string>
     <string name="ingredients_title">Ингредиенты</string>
     <string name="failed_to_load_ingredients">Не удалось загрузить раздел Ингредиенты</string>
@@ -54,6 +56,13 @@
     <string name="failed_to_load_preparation_steps">Не удалось загрузить раздел Шаги приготовления</string>
     <string name="no_preparation_steps">Нет данных в разделе Шаги приготовления</string>
     <string name="cant_load_recipe">Не загружается информация в разделе Детали рецепта</string>
+
+    <!--Resources for AddRecipeFragment-->
+    <string name="recipe_search">Поиск рецепта</string>
+    <string name="failed_to_load_recipes">Не удалось загрузить список Рецептов</string>
+    <string name="no_recipes">Нет данных в списке Рецептов</string>
+    <string name="cant_load_recipes">Не загружается информация в список Рецептов</string>
+    <string name="no_ricipes_found">Рецепты с таким именем не найдены</string>
 
     <string name="meal_plan">План питания</string>
 

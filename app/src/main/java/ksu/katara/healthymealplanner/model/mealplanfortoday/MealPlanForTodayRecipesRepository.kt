@@ -12,8 +12,8 @@ interface MealPlanForTodayRecipesRepository {
 
     fun removeMealPlanForTodayRecipesItemListener(listener: MealPlanForTodayRecipesListener)
 
-    fun mealPlanForTodayRecipesAddRecipe(): Task<Unit>
+    fun mealPlanForTodayRecipesAddRecipe(recipe: Recipe, mealType: MealTypes): Task<Unit>
 
-    fun mealPlanForTodayRecipesDeleteRecipe(recipe: Recipe): Task<Unit>
+    fun mealPlanForTodayRecipesDeleteRecipe(recipeId: Long, mealType: MealTypes): Task<Unit>
 
 }

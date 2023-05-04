@@ -25,9 +25,10 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
     private val args by navArgs<MealPlanForTodayRecipesFragmentArgs>()
 
     private val mealPlanForTodayRecipesViewModel by viewModelCreator {
-        MealPlanForTodayRecipeListViewModel(
+        MealPlanForTodayRecipesListViewModel(
             getMealType(),
-            Repositories.mealPlanForTodayRecipesRepository
+            Repositories.mealPlanForTodayRecipesRepository,
+            Repositories.addRecipesRepository,
         )
     }
 
@@ -36,17 +37,20 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
         binding = FragmentMealPlanForTodayRecipesBinding.bind(view)
 
         binding.mealPlanForTodayRecipesAddRecipeButton.setOnClickListener {
-            onMealPlanForTodayAddButtonPressed()
+            onMealPlanForTodayAddButtonPressed(getMealType())
         }
 
         initMealPlanForTodayRecipes()
     }
 
-    private fun onMealPlanForTodayAddButtonPressed() {
+    private fun onMealPlanForTodayAddButtonPressed(mealType: MealTypes) {
+        val direction =
+            MealPlanForTodayRecipesFragmentDirections.actionRecipesFragmentToAddRecipeFragment(mealType)
+
+        findTopNavController().navigate(direction)
+
         binding.mealPlanForTodayRecipesAddRecipeButton.visibility = View.INVISIBLE
         binding.mealPlanForTodayRecipesProgressBarForAddButton.visibility = View.VISIBLE
-
-        mealPlanForTodayRecipesViewModel.onMealPlanForTodayRecipesItemAdd()
     }
 
     private fun initMealPlanForTodayRecipes() {
@@ -54,8 +58,6 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
             MealPlanForTodayRecipesAdapter(mealPlanForTodayRecipesViewModel)
 
         mealPlanForTodayRecipesViewModel.mealPlanForTodayRecipes.observe(viewLifecycleOwner) { statusResult ->
-            val size = mealPlanForTodayRecipesAdapter.itemCount
-
             hideAll()
             when (statusResult) {
                 is SuccessResult -> {
@@ -73,7 +75,7 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
                     binding.mealPlanForTodayRecipesProgressBar.visibility = View.VISIBLE
                 }
                 is EmptyResult -> {
-                    binding.noMealPlanForTodayRecipes.visibility = View.VISIBLE
+                    binding.noMealPlanForTodayRecipesTextView.visibility = View.VISIBLE
                     binding.mealPlanForTodayRecipesAddRecipeButton.visibility = View.VISIBLE
                 }
             }
@@ -93,7 +95,7 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
 
     private fun onMealPlanForTodayRecipesItemPressed(recipeId: Long) {
         val direction =
-            MealPlanForTodayRecipesFragmentDirections.actionMealPlanForTodayRecipesFragmentToRecipeFragment(recipeId)
+            MealPlanForTodayRecipesFragmentDirections.actionRecipesFragmentToRecipeFragment(recipeId)
 
         findTopNavController().navigate(direction)
     }
@@ -102,13 +104,13 @@ class MealPlanForTodayRecipesFragment : Fragment(R.layout.fragment_meal_plan_for
         mealPlanForTodayRecipesRecyclerView.visibility = View.GONE
         mealPlanForTodayRecipesProgressBar.visibility = View.GONE
         mealPlanForTodayRecipesTryAgainContainer.visibility = View.GONE
-        noMealPlanForTodayRecipes.visibility = View.GONE
+        noMealPlanForTodayRecipesTextView.visibility = View.GONE
 
         mealPlanForTodayRecipesAddRecipeButton.visibility = View.INVISIBLE
         mealPlanForTodayRecipesProgressBarForAddButton.visibility = View.INVISIBLE
     }
 
-    private fun getMealType() = MealTypes.valueOf(args.mealType)
+    private fun getMealType() = args.mealType
 }
 
 

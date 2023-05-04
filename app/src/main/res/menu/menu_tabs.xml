@@ -11,7 +11,7 @@
         android:title="@string/meal_plan" />
     <item
         android:id="@+id/recipes"
-        android:icon="@drawable/ic_recipes"
+        android:icon="@drawable/ic_recipe"
         android:title="@string/recipes" />
 
 </menu>

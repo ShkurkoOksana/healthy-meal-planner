@@ -35,7 +35,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initView() {
-
         initDietTipsSection()
 
         initMealPlanForTodaySection()
@@ -43,24 +42,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun initMealPlanForTodaySection() {
         binding.breakfastForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.BREAKFAST.name)
+            onMealPlanForTodayItemPressed(MealTypes.BREAKFAST)
         }
 
         binding.lunchForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.LUNCH.name)
+            onMealPlanForTodayItemPressed(MealTypes.LUNCH)
         }
 
         binding.dinnerForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.DINNER.name)
+            onMealPlanForTodayItemPressed(MealTypes.DINNER)
         }
 
         binding.snackForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.SNACK.name)
+            onMealPlanForTodayItemPressed(MealTypes.SNACK)
         }
     }
 
-    private fun onMealPlanForTodayItemPressed(mealTypeName: String) {
-        val direction = TabsFragmentDirections.actionTabsFragmentToMealPlanForTodayRecipesFragment(mealTypeName)
+    private fun onMealPlanForTodayItemPressed(mealTypeName: MealTypes) {
+        val direction = TabsFragmentDirections.actionTabsFragmentToRecipesFragment(mealTypeName)
 
         findTopNavController().navigate(direction)
     }

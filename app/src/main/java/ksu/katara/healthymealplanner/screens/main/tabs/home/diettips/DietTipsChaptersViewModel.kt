@@ -6,7 +6,11 @@ import ksu.katara.healthymealplanner.model.dietTips.DietTipsChaptersListener
 import ksu.katara.healthymealplanner.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipsChapter
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
-import ksu.katara.healthymealplanner.tasks.*
+import ksu.katara.healthymealplanner.tasks.EmptyResult
+import ksu.katara.healthymealplanner.tasks.ErrorResult
+import ksu.katara.healthymealplanner.tasks.PendingResult
+import ksu.katara.healthymealplanner.tasks.StatusResult
+import ksu.katara.healthymealplanner.tasks.SuccessResult
 
 data class DietTipsChaptersListItem(
     val dietTipsChapter: DietTipsChapter,

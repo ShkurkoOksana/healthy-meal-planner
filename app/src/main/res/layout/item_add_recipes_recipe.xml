@@ -8,7 +8,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
-        android:id="@+id/recipeItemPhotoImageView"
+        android:id="@+id/addRecipesRecipePhotoImageView"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/recipeItemNameTextView"
+        android:id="@+id/addRecipesRecipeNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -27,43 +27,31 @@
         android:lines="1"
         android:ellipsize="end"
         tools:text="John Smith"
-        app:layout_constraintTop_toTopOf="@id/recipeItemPhotoImageView"
-        app:layout_constraintStart_toEndOf="@id/recipeItemPhotoImageView"
-        app:layout_constraintEnd_toStartOf="@id/recipeItemDeleteViewButton"/>
-
-    <ImageView
-        android:id="@+id/recipeItemDeleteViewButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_delete"
-        android:padding="6dp"
-        android:layout_marginEnd="12dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/addRecipesRecipePhotoImageView"
+        app:layout_constraintStart_toEndOf="@id/addRecipesRecipePhotoImageView"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
-        android:id="@+id/recipeItemDeleteProgressBar"
+        android:id="@+id/addRecipesRecipeAddProgressBar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="4dp"
         android:indeterminateTint="@color/green"
-        app:layout_constraintTop_toTopOf="@id/recipeItemDeleteViewButton"
-        app:layout_constraintEnd_toEndOf="@id/recipeItemDeleteViewButton"
-        app:layout_constraintBottom_toBottomOf="@id/recipeItemDeleteViewButton"
-        app:layout_constraintStart_toStartOf="@id/recipeItemDeleteViewButton"/>
+        app:layout_constraintTop_toTopOf="@id/addRecipesRecipePhotoImageView"
+        app:layout_constraintEnd_toEndOf="@id/addRecipesRecipePhotoImageView"
+        app:layout_constraintBottom_toBottomOf="@id/addRecipesRecipePhotoImageView"
+        app:layout_constraintStart_toStartOf="@id/addRecipesRecipePhotoImageView"/>
 
     <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/recipeItemBarrier"
+        android:id="@+id/addRecipesRecipeBarrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="recipeItemPhotoImageView,recipeItemNameTextView"
+        app:constraint_referenced_ids="addRecipesRecipePhotoImageView,addRecipesRecipeNameTextView"
         app:barrierDirection="bottom"/>
 
     <Space
         android:layout_width="wrap_content"
         android:layout_height="6dp"
-        app:layout_constraintTop_toBottomOf="@id/recipeItemBarrier"/>
+        app:layout_constraintTop_toBottomOf="@id/addRecipesRecipeBarrier"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

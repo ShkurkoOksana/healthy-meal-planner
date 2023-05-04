@@ -10,7 +10,7 @@
         style="@style/GlobalTextInputStyle.Big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recipe type item"
+        android:text="@string/recipe_type_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -11,8 +11,6 @@ import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
 interface MealPlanForTodayRecipeActionListener {
 
-    fun onMealPlanForTodayRecipesItemAdd()
-
     fun onMealPlanForTodayRecipesItemDelete(recipe: Recipe)
 
     fun onMealPlanForTodayRecipesItemDetails(recipe: Recipe)
@@ -35,9 +33,6 @@ class MealPlanForTodayRecipesAdapter(
         when (v.id) {
             R.id.mealPlanForTodayRecipesItemDeleteViewButton -> {
                 mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipesItemDelete(recipe)
-            }
-            R.id.mealPlanForTodayRecipesAddRecipeButton -> {
-                mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipesItemAdd()
             }
             else -> {
                 mealPlanForTodayRecipeActionListener.onMealPlanForTodayRecipesItemDetails(recipe)
@@ -80,8 +75,8 @@ class MealPlanForTodayRecipesAdapter(
                 Glide.with(mealPlanForTodayRecipesItemPhotoImageView.context)
                     .load(recipe.photo)
                     .circleCrop()
-                    .placeholder(R.drawable.ic_recipes)
-                    .error(R.drawable.ic_recipes)
+                    .placeholder(R.drawable.ic_recipe)
+                    .error(R.drawable.ic_recipe)
                     .into(mealPlanForTodayRecipesItemPhotoImageView)
             } else {
                 Glide.with(mealPlanForTodayRecipesItemPhotoImageView.context).clear(mealPlanForTodayRecipesItemPhotoImageView)

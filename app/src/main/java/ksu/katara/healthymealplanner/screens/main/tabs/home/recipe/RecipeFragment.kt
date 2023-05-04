@@ -84,7 +84,7 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
     }
 
     private fun initRecipe() {
-        recipeViewModel.recipeState.observe(viewLifecycleOwner, Observer {
+        recipeViewModel.recipeState.observe(viewLifecycleOwner) {
             binding.recipeContentContainer.visibility = if (it.showContent) {
                 val recipeFullDetails = (it.recipeFullDetailsResult as SuccessResult).data
                 binding.recipeNameTextView.text = recipeFullDetails.recipe.name
@@ -95,7 +95,7 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
                         .into(binding.recipePhotoImageView)
                 } else {
                     Glide.with(this)
-                        .load(R.drawable.ic_recipes)
+                        .load(R.drawable.ic_recipe)
                         .into(binding.recipePhotoImageView)
                 }
 
@@ -105,13 +105,13 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
                     Glide.with(binding.recipePhotoImageView.context)
                         .load(recipeFullDetails.recipe.photo)
                         .circleCrop()
-                        .placeholder(R.drawable.ic_recipes)
-                        .error(R.drawable.ic_recipes)
+                        .placeholder(R.drawable.ic_recipe)
+                        .error(R.drawable.ic_recipe)
                         .into(binding.recipePhotoImageView)
                 } else {
                     Glide.with(binding.recipePhotoImageView.context)
                         .clear(binding.recipePhotoImageView)
-                    binding.recipePhotoImageView.setImageResource(R.drawable.ic_recipes)
+                    binding.recipePhotoImageView.setImageResource(R.drawable.ic_recipe)
                 }
 
                 binding.recipeCuisineTypeTextView.text = recipeFullDetails.cuisineType
@@ -131,7 +131,7 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
             }
 
             binding.recipeProgressBar.visibility = if (it.showProgress) View.VISIBLE else View.GONE
-        })
+        }
     }
 
     private fun initPreparationSteps() {
@@ -226,24 +226,27 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
     private fun initRecipeTypes() {
         recipeTypesAdapter = TypesAdapter()
 
-        recipeTypesListViewModel.recipeTypes.observe(viewLifecycleOwner, Observer {
+        recipeTypesListViewModel.recipeTypes.observe(viewLifecycleOwner) {
             hideAllRecipeTypes()
             when (it) {
                 is SuccessResult -> {
                     binding.recipeTypesRecyclerView.visibility = View.VISIBLE
                     recipeTypesAdapter.recipeTypes = it.data
                 }
+
                 is ErrorResult -> {
                     binding.recipeTypesTryAgainContainer.visibility = View.VISIBLE
                 }
+
                 is PendingResult -> {
                     binding.recipeTypesProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noRecipeTypesTextView.visibility = View.VISIBLE
                 }
             }
-        })
+        }
 
         val recipeTypesLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

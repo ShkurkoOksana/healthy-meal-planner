@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_recipes" />
+            tools:src="@drawable/ic_recipe" />
 
         <View
             android:layout_width="match_parent"
@@ -79,14 +79,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipeTimePreparationBarrier" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeTimePreparationBarrier" />
-
         <TextView
             android:id="@+id/recipeCuisineTypeTextView"
             style="@style/TitleTextView"
@@ -119,7 +111,7 @@
         <TextView
             android:id="@+id/energeticValueTextView"
             style="@style/TitleTextView"
-            tools:text="63 kcal"
+            tools:text="63 Ккал"
             app:layout_constraintBottom_toBottomOf="@id/energeticValueTitleTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -159,7 +151,7 @@
             android:id="@+id/proteinsValueTextView"
             style="@style/TitleTextView"
             android:layout_marginTop="@dimen/small_space"
-            tools:text="4.85 gram"
+            tools:text="4.85 г."
             app:layout_constraintEnd_toEndOf="@+id/proteinTitleTextView"
             app:layout_constraintStart_toStartOf="@+id/proteinTitleTextView"
             app:layout_constraintTop_toBottomOf="@+id/proteinTitleTextView" />
@@ -168,7 +160,7 @@
             android:id="@+id/fatsValueTextView"
             style="@style/TitleTextView"
             android:layout_marginTop="@dimen/small_space"
-            tools:text="2 gram"
+            tools:text="2 г."
             app:layout_constraintEnd_toEndOf="@+id/fatsTitleTextView"
             app:layout_constraintStart_toStartOf="@+id/fatsTitleTextView"
             app:layout_constraintTop_toBottomOf="@+id/fatsTitleTextView" />
@@ -177,7 +169,7 @@
             android:id="@+id/carbohydratesValueTextView"
             style="@style/TitleTextView"
             android:layout_marginTop="@dimen/small_space"
-            tools:text="0.8 gram"
+            tools:text="0.8 г."
             app:layout_constraintEnd_toEndOf="@+id/carbohydratesTitleTextView"
             app:layout_constraintStart_toStartOf="@+id/carbohydratesTitleTextView"
             app:layout_constraintTop_toBottomOf="@+id/carbohydratesTitleTextView" />
@@ -203,7 +195,7 @@
                 android:id="@+id/recipeTypesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/medium_space"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

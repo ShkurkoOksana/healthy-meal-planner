@@ -3,38 +3,36 @@ package ksu.katara.healthymealplanner.model.mealplanfortoday
 import ksu.katara.healthymealplanner.exceptions.MealPlanForTodayRecipesNotFoundException
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.mealplanfortoday.entities.MealPlanForTodayRecipes
-import ksu.katara.healthymealplanner.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.tasks.SimpleTask
 import ksu.katara.healthymealplanner.tasks.Task
-import kotlin.random.Random
 
 typealias MealPlanForTodayRecipesListener = (mealPlanForTodayRecipes: MealPlanForTodayRecipes) -> Unit
 
-class InMemoryMealPlanForTodayRecipesRepository(
-    private val recipesRepository: RecipesRepository
-) : MealPlanForTodayRecipesRepository {
+class InMemoryMealPlanForTodayRecipesRepository : MealPlanForTodayRecipesRepository {
 
-    private var mealPlanForToday: MutableList<MealPlanForTodayRecipes> = mutableListOf(
-        MealPlanForTodayRecipes(0, MealTypes.BREAKFAST, mutableListOf(recipesRepository.getRecipeById(0))),
-        MealPlanForTodayRecipes(0, MealTypes.LUNCH, mutableListOf(recipesRepository.getRecipeById(1))),
-        MealPlanForTodayRecipes(0, MealTypes.SNACK, mutableListOf(recipesRepository.getRecipeById(2))),
-        MealPlanForTodayRecipes(0, MealTypes.DINNER, mutableListOf(recipesRepository.getRecipeById(3))),
+    private var mealPlanForToday = mutableListOf(
+        MealPlanForTodayRecipes(MealTypes.BREAKFAST, mutableListOf()),
+        MealPlanForTodayRecipes(MealTypes.LUNCH, mutableListOf()),
+        MealPlanForTodayRecipes(MealTypes.DINNER, mutableListOf()),
+        MealPlanForTodayRecipes(MealTypes.SNACK, mutableListOf()),
     )
+
     private lateinit var mealPlanForTodayRecipes: MealPlanForTodayRecipes
-    private var mealPlanForTodayRecipesMealType: MealTypes? = null
+
     private var mealPlanForTodayRecipesLoaded = false
     private val mealPlanForTodayRecipesListeners = mutableSetOf<MealPlanForTodayRecipesListener>()
 
     override fun loadMealPlanForTodayRecipes(mealType: MealTypes): Task<Unit> =
         SimpleTask {
-            Thread.sleep(2000)
+            Thread.sleep(500)
 
-            mealPlanForTodayRecipesMealType = mealType
-
-            mealPlanForTodayRecipes = mealPlanForToday.firstOrNull{ it.mealType == mealType } ?: throw MealPlanForTodayRecipesNotFoundException()
+            mealPlanForTodayRecipes = mealPlanForToday.firstOrNull {
+                it.mealType == mealType
+            } ?: throw MealPlanForTodayRecipesNotFoundException()
 
             mealPlanForTodayRecipesLoaded = true
+
             notifyMealPlanForTodayChanges()
         }
 
@@ -49,22 +47,22 @@ class InMemoryMealPlanForTodayRecipesRepository(
         mealPlanForTodayRecipesListeners.remove(listener)
     }
 
-    override fun mealPlanForTodayRecipesAddRecipe(): Task<Unit> =
+    override fun mealPlanForTodayRecipesAddRecipe(recipe: Recipe, mealType: MealTypes): Task<Unit> =
         SimpleTask {
-            Thread.sleep(2000)
+            Thread.sleep(500)
 
-            val randomRecipe = recipesRepository.getRecipeById(Random.nextLong(0,4))
+            mealPlanForToday.firstOrNull{ it.mealType == mealType }?.recipesList?.add(recipe)
 
-            mealPlanForTodayRecipes.recipesList.add(randomRecipe)
             notifyMealPlanForTodayChanges()
         }
 
-    override fun mealPlanForTodayRecipesDeleteRecipe(recipe: Recipe): Task<Unit> =
+    override fun mealPlanForTodayRecipesDeleteRecipe(recipeId: Long, mealType: MealTypes): Task<Unit> =
         SimpleTask {
-            Thread.sleep(2000)
-            val indexToDelete = mealPlanForTodayRecipes.recipesList.indexOfFirst { it.id == recipe.id }
+            Thread.sleep(500)
+
+            val indexToDelete = mealPlanForToday.firstOrNull{ it.mealType == mealType }?.recipesList!!.indexOfFirst { it.id == recipeId }
             if (indexToDelete != -1) {
-                mealPlanForTodayRecipes.recipesList.removeAt(indexToDelete)
+                mealPlanForToday.firstOrNull{ it.mealType == mealType }?.recipesList!!.removeAt(indexToDelete)
                 notifyMealPlanForTodayChanges()
             }
         }
