@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
@@ -35,9 +36,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initView() {
+        initProfileSection()
+
         initDietTipsSection()
 
         initMealPlanForTodaySection()
+
+        initDiaryDetailsButtonSection()
+    }
+
+    private fun initProfileSection() {
+        binding.profileDetailsButton.setOnClickListener { onProfileDetailsButtonPressed() }
+    }
+
+    private fun initDiaryDetailsButtonSection() {
+        binding.diaryDetailsButton.setOnClickListener { onDiaryDetailsButtonPressed() }
+    }
+
+    private fun onDiaryDetailsButtonPressed() {
+        Toast.makeText(requireContext(), R.string.toast_functionality_is_not_available, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onProfileDetailsButtonPressed() {
+        Toast.makeText(requireContext(), R.string.toast_functionality_is_not_available, Toast.LENGTH_SHORT).show()
     }
 
     private fun initMealPlanForTodaySection() {

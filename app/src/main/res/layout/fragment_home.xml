@@ -15,6 +15,8 @@
         <Button
             android:id="@+id/profileDetailsButton"
             style="@style/GlobalTextInputStyle.Big"
+            android:backgroundTint="@color/grey"
+            android:shadowColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_space"
@@ -196,6 +198,7 @@
                 style="@style/GlobalTextInputStyle.Big"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:backgroundTint="@color/grey"
                 android:layout_margin="@dimen/medium_space"
                 android:text="@string/action_go_diary_details"
                 app:layout_constraintBottom_toTopOf="parent"
