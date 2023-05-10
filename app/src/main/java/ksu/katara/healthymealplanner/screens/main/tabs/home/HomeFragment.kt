@@ -36,20 +36,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initView() {
-        initProfileSection()
+        initProfile()
 
-        initDietTipsSection()
+        initDietTips()
 
-        initMealPlanForTodaySection()
+        initMealPlanForToday()
 
-        initDiaryDetailsButtonSection()
+        initDiaryDetails()
     }
 
-    private fun initProfileSection() {
+    private fun initProfile() {
         binding.profileDetailsButton.setOnClickListener { onProfileDetailsButtonPressed() }
     }
 
-    private fun initDiaryDetailsButtonSection() {
+    private fun initDiaryDetails() {
         binding.diaryDetailsButton.setOnClickListener { onDiaryDetailsButtonPressed() }
     }
 
@@ -61,7 +61,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         Toast.makeText(requireContext(), R.string.toast_functionality_is_not_available, Toast.LENGTH_SHORT).show()
     }
 
-    private fun initMealPlanForTodaySection() {
+    private fun initMealPlanForToday() {
         binding.breakfastForTodayDetailsButton.setOnClickListener {
             onMealPlanForTodayItemPressed(MealTypes.BREAKFAST)
         }
@@ -85,7 +85,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         findTopNavController().navigate(direction)
     }
 
-    private fun initDietTipsSection() {
+    private fun initDietTips() {
         binding.dietTipsMoreTextView.setOnClickListener {
             onMorePressed()
         }

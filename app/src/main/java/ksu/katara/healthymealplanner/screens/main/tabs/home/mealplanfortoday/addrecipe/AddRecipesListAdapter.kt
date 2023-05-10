@@ -65,8 +65,8 @@ class AddRecipesListAdapter(
                 Glide.with(addRecipesRecipePhotoImageView.context)
                     .load(recipe.photo)
                     .circleCrop()
-                    .placeholder(R.drawable.ic_recipe)
-                    .error(R.drawable.ic_recipe)
+                    .placeholder(R.drawable.ic_recipe_default_photo)
+                    .error(R.drawable.ic_recipe_default_photo)
                     .into(addRecipesRecipePhotoImageView)
             } else {
                 Glide.with(addRecipesRecipePhotoImageView.context).clear(addRecipesRecipePhotoImageView)

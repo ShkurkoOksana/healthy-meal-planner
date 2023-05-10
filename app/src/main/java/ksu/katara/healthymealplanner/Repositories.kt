@@ -10,6 +10,8 @@ import ksu.katara.healthymealplanner.model.mealplanfortoday.InMemoryMealPlanForT
 import ksu.katara.healthymealplanner.model.mealplanfortoday.MealPlanForTodayRecipesRepository
 import ksu.katara.healthymealplanner.model.product.InMemoryProductsRepository
 import ksu.katara.healthymealplanner.model.product.ProductsRepository
+import ksu.katara.healthymealplanner.model.recipecategories.CategoriesRepository
+import ksu.katara.healthymealplanner.model.recipecategories.InMemoryCategoriesRepository
 import ksu.katara.healthymealplanner.model.recipes.InMemoryRecipesRepository
 import ksu.katara.healthymealplanner.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.model.shoppinglist.InMemoryShoppingListRepository
@@ -21,13 +23,21 @@ object Repositories {
 
     val productsRepository: ProductsRepository = InMemoryProductsRepository()
 
-    val recipesRepository: RecipesRepository = InMemoryRecipesRepository(productsRepository)
+    val recipeCategoriesRepository: CategoriesRepository = InMemoryCategoriesRepository()
+
+    val recipesRepository: RecipesRepository = InMemoryRecipesRepository(
+        productsRepository,
+    )
 
     val mealPlanForTodayRecipesRepository: MealPlanForTodayRecipesRepository = InMemoryMealPlanForTodayRecipesRepository()
 
-    val addRecipePhotoRepository: AddRecipesPhotoRepository = InMemoryAddRecipesPhotoRepository(recipesRepository)
+    val addRecipePhotoRepository: AddRecipesPhotoRepository = InMemoryAddRecipesPhotoRepository(
+        recipesRepository,
+    )
 
-    val addRecipesRepository: AddRecipesRepository = InMemoryAddRecipesRepository(recipesRepository)
+    val addRecipesRepository: AddRecipesRepository = InMemoryAddRecipesRepository(
+        recipesRepository,
+    )
 
     val shoppingListRepository: ShoppingListRepository = InMemoryShoppingListRepository()
 }

@@ -9,6 +9,7 @@ data class Recipe(
     val id: Long,
     val photo: String,
     val name: String,
+    val categoryId: Long,
 ) : Parcelable
 
 data class RecipeDetails(

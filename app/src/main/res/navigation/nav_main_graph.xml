@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_tabsFragment_to_recipesFragment"
             app:destination="@id/recipesFragment" />
+        <action
+            android:id="@+id/action_tabsFragment_to_recipesInCategoryFragment"
+            app:destination="@id/recipesInCategoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/dietTipDetailsFragment"
@@ -75,5 +78,17 @@
         <argument
             android:name="meal_type"
             app:argType="ksu.katara.healthymealplanner.model.meal.enum.MealTypes" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipesInCategoryFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.recipes.RecipesInCategoryFragment"
+        android:label="Рецепты в категории"
+        tools:layout="@layout/fragment_recipes_in_category" >
+        <action
+            android:id="@+id/action_recipesInCategoryFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+        <argument
+            android:name="recipe_category_id"
+            app:argType="long" />
     </fragment>
 </navigation>

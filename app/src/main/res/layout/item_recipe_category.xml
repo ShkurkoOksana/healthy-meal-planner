@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/recipePhotoImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="@dimen/large_space"
+        tools:src="@drawable/ic_recipe_default_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/recipeCategoryNameTextView"/>
+
+    <TextView
+        android:id="@+id/recipeCategoryNameTextView"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Salads"
+        app:layout_constraintStart_toStartOf="@+id/recipePhotoImageView"
+        app:layout_constraintEnd_toEndOf="@+id/recipePhotoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/recipePhotoImageView"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

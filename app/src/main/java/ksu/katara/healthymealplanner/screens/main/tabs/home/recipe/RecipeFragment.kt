@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -95,7 +94,7 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
                         .into(binding.recipePhotoImageView)
                 } else {
                     Glide.with(this)
-                        .load(R.drawable.ic_recipe)
+                        .load(R.drawable.ic_recipe_default_photo)
                         .into(binding.recipePhotoImageView)
                 }
 
@@ -105,13 +104,13 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
                     Glide.with(binding.recipePhotoImageView.context)
                         .load(recipeFullDetails.recipe.photo)
                         .circleCrop()
-                        .placeholder(R.drawable.ic_recipe)
-                        .error(R.drawable.ic_recipe)
+                        .placeholder(R.drawable.ic_recipe_default_photo)
+                        .error(R.drawable.ic_recipe_default_photo)
                         .into(binding.recipePhotoImageView)
                 } else {
                     Glide.with(binding.recipePhotoImageView.context)
                         .clear(binding.recipePhotoImageView)
-                    binding.recipePhotoImageView.setImageResource(R.drawable.ic_recipe)
+                    binding.recipePhotoImageView.setImageResource(R.drawable.ic_recipe_default_photo)
                 }
 
                 binding.recipeCuisineTypeTextView.text = recipeFullDetails.cuisineType

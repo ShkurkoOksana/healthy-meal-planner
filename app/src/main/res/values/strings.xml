@@ -67,6 +67,16 @@
 
     <string name="meal_plan">План питания</string>
 
+    <!--Resources for RecipeCategoriesFragment-->
+    <string name="failed_to_load_recipe_categories">Не удалось загрузить список Категории рецептов</string>
+    <string name="cant_load_recipe_categories">Не загружается информация в список Категорий рецептов</string>
+    <string name="no_recipe_categories">Категории рецептов не найдены</string>
+
+    <!--Resources for RecipeInCategoryFragment-->
+    <string name="failed_to_load_recipe_in_category">Не удалось загрузить список Рецептов в категории</string>
+    <string name="cant_load_recipe_in_category">Не загружается информация в список Рецептов в категории</string>
+    <string name="no_recipe_in_category">Рецепты в категории не найдены</string>
+
     <string-array name="number_of_portions">
         <item>1 порция</item>
         <item>2 порция</item>

@@ -1,6 +1,7 @@
 package ksu.katara.healthymealplanner.model.recipes
 
 import ksu.katara.healthymealplanner.exceptions.IngredientsNotFoundException
+import ksu.katara.healthymealplanner.exceptions.RecipeNotFoundException
 import ksu.katara.healthymealplanner.model.product.ProductsRepository
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.model.recipes.entities.RecipeDetails
@@ -15,19 +16,24 @@ const val TAG = "InMemoryRecipesItemListRepository"
 
 typealias RecipeIngredientsListener = (recipeIngredients: List<RecipeIngredient>) -> Unit
 typealias RecipesListener = (recipesList: MutableList<Recipe>) -> Unit
+typealias RecipesInCategoryListener = (recipes: List<Recipe>) -> Unit
 
 class InMemoryRecipesRepository(
-    private val productRepository: ProductsRepository
+    private val productRepository: ProductsRepository,
 ) : RecipesRepository {
 
     private var recipes = mutableListOf<Recipe>()
 
     private var recipesDetails: List<RecipeDetails>
 
-    private val recipesSize = 5
+    private val recipesSize = PHOTOES.size
 
     private var recipeTypes = listOf<String>()
     private var recipeTypesLoaded = false
+
+    private var recipesInCategory = mutableListOf<Recipe>()
+    private var recipeInCategoryLoaded = false
+    private val recipesInCategoryListeners = mutableSetOf<RecipesInCategoryListener>()
 
     private var recipeIngredients = mutableListOf<RecipeIngredient>()
     private var recipeIngredientsLoaded = false
@@ -38,10 +44,12 @@ class InMemoryRecipesRepository(
 
     init {
         recipes = (0 until recipesSize).map {
+            val recipeName = NAMES[it]
             Recipe(
                 id = it.toLong(),
-                name = RECIPES_NAMES[it],
-                photo = RECIPES_IMAGES[it],
+                name = recipeName,
+                photo = PHOTOES[it],
+                categoryId = CATEGORY.getValue(recipeName).toLong()
             )
         }.toMutableList()
 
@@ -105,6 +113,42 @@ class InMemoryRecipesRepository(
         return@SimpleTask recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
     }
 
+    override fun loadRecipesInCategory(recipeCategoryId: Long): Task<Unit> =
+        SimpleTask {
+            Thread.sleep(1000)
+
+            recipesInCategory = recipes.filter { it.categoryId == recipeCategoryId }.toMutableList()
+
+            recipeInCategoryLoaded = true
+            notifyRecipeInCategoryChanges()
+        }
+
+    override fun getRecipeInCategoryById(id: Long): Task<RecipeDetails> =
+        SimpleTask(Callable {
+            Thread.sleep(2000)
+
+            val recipeInCategory = recipesInCategory.firstOrNull { it.id == id }
+
+            return@Callable recipesDetails.firstOrNull<RecipeDetails> { it.recipe == recipeInCategory }
+                ?: throw RecipeNotFoundException()
+        })
+
+    override fun addRecipeInCategoryListener(listener: RecipesInCategoryListener) {
+        recipesInCategoryListeners.add(listener)
+        if (recipeInCategoryLoaded) {
+            listener.invoke(recipesInCategory)
+        }
+    }
+
+    override fun removeRecipeInCategoryListener(listener: RecipesInCategoryListener) {
+        recipesInCategoryListeners.remove(listener)
+    }
+
+    private fun notifyRecipeInCategoryChanges() {
+        if (!recipeInCategoryLoaded) return
+        recipesInCategoryListeners.forEach { it.invoke(recipesInCategory) }
+    }
+
     override fun loadRecipeTypes(recipeId: Long): Task<List<String>> =
         SimpleTask {
             Thread.sleep(2000)
@@ -160,7 +204,7 @@ class InMemoryRecipesRepository(
         })
 
     companion object {
-        private val RECIPES_IMAGES = listOf(
+        private val PHOTOES = listOf(
             "https://images.unsplash.com/photo-1612487439139-c2d7bac13577?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
             "https://images.unsplash.com/photo-1625944230945-1b7dd3b949ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1760&q=80",
             "https://images.unsplash.com/photo-1527976746453-f363eac4d889?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3432&q=80",
@@ -168,12 +212,20 @@ class InMemoryRecipesRepository(
             "https://images.unsplash.com/photo-1485921325833-c519f76c4927?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1364&q=80",
         )
 
-        private val RECIPES_NAMES = listOf(
+        private val NAMES = listOf(
             "Глазунья",
             "Греческий салат",
             "Борщ",
             "Салат цезарь с креветками",
             "Минтай тушенный",
+        )
+
+        private val CATEGORY = mapOf(
+            "Глазунья" to 1,
+            "Греческий салат" to 2,
+            "Борщ" to 0,
+            "Салат цезарь с креветками" to 2,
+            "Минтай тушенный" to 1,
         )
 
         private val PREPARATION_TIME = mapOf(

@@ -33,12 +33,12 @@ class PreparationStepsAdapter : RecyclerView.Adapter<PreparationStepsAdapter.Pre
                 Glide.with(preparationStepPhotoImageView.context)
                     .load(preparationStep.photo)
                     .circleCrop()
-                    .placeholder(R.drawable.ic_recipe)
-                    .error(R.drawable.ic_recipe)
+                    .placeholder(R.drawable.ic_recipe_default_photo)
+                    .error(R.drawable.ic_recipe_default_photo)
                     .into(preparationStepPhotoImageView)
             } else {
                 Glide.with(preparationStepPhotoImageView.context).clear(preparationStepPhotoImageView)
-                preparationStepPhotoImageView.setImageResource(R.drawable.ic_recipe)
+                preparationStepPhotoImageView.setImageResource(R.drawable.ic_recipe_default_photo)
             }
 
             preparationStepTitleTextView.text = preparationStep.step.toString()

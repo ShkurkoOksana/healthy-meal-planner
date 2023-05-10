@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_recipe" />
+            tools:src="@drawable/ic_recipe_default_photo" />
 
         <View
             android:layout_width="match_parent"

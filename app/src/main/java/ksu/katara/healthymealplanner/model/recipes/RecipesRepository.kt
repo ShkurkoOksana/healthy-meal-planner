@@ -11,6 +11,14 @@ interface RecipesRepository {
 
     fun getRecipeDetailsById(recipeId: Long): Task<RecipeDetails>
 
+    fun loadRecipesInCategory(recipeCategoryId: Long): Task<Unit>
+
+    fun getRecipeInCategoryById(id: Long): Task<RecipeDetails>
+
+    fun addRecipeInCategoryListener(listener: RecipesInCategoryListener)
+
+    fun removeRecipeInCategoryListener(listener: RecipesInCategoryListener)
+
     fun loadRecipeTypes(recipeId: Long): Task<List<String>>
 
     fun loadIngredients(recipeId: Long): Task<Unit>
