@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.screens.main.tabs.home.mealplanfortoday.addrecipe
+package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate.addrecipe
 
 import android.os.Bundle
 import android.view.View
@@ -20,7 +20,6 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
     private lateinit var binding: FragmentAddRecipesBinding
 
     private lateinit var addRecipesListAdapter: AddRecipesListAdapter
-    private lateinit var addRecipesPhotoListAdapter: AddRecipesPhotoListAdapter
 
     private var filterString: String? = null
 
@@ -28,18 +27,10 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
 
     private val addRecipesListViewModel by viewModelCreator {
         AddRecipesListViewModel(
+            getSelectedDate(),
             getMealType(),
             Repositories.addRecipesRepository,
-            Repositories.addRecipePhotoRepository,
-            Repositories.mealPlanForTodayRecipesRepository,
-        )
-    }
-
-    private val addRecipesPhotoListViewModel by viewModelCreator {
-        AddRecipesPhotoListViewModel(
-            Repositories.addRecipesRepository,
-            Repositories.addRecipePhotoRepository,
-            Repositories.mealPlanForTodayRecipesRepository,
+            Repositories.mealPlanForDateRecipesRepository,
         )
     }
 
@@ -49,9 +40,7 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
 
         initSearchAddRecipes()
 
-        initAddRecipesPhotoList()
-
-        initRecipesList()
+        initAddRecipesList()
     }
 
     private fun initSearchAddRecipes() {
@@ -78,55 +67,16 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
         }
     }
 
-    private fun initAddRecipesPhotoList() {
-        addRecipesPhotoListAdapter =
-            AddRecipesPhotoListAdapter(getMealType(), addRecipesPhotoListViewModel)
-
-        addRecipesPhotoListViewModel.addRecipesPhotoList.observe(viewLifecycleOwner) { statusResult ->
-            hideAllRecipesPhotoList()
-            when (statusResult) {
-                is SuccessResult -> {
-                    binding.addRecipesPhotoRecyclerView.visibility = View.VISIBLE
-                    addRecipesPhotoListAdapter.addRecipesPhotoList = statusResult.data
-                }
-
-                is ErrorResult -> {
-                    binding.addRecipesPhotoListTryAgainContainer.visibility = View.VISIBLE
-                }
-
-                is PendingResult -> {
-                    binding.addRecipesPhotoRecyclerView.visibility = View.INVISIBLE
-                }
-
-                is EmptyResult -> {
-                    binding.addRecipesPhotoRecyclerView.visibility = View.GONE
-                }
-            }
-        }
-
-        val addRecipesPhotoListLayoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.addRecipesPhotoRecyclerView.layoutManager =
-            addRecipesPhotoListLayoutManager
-        binding.addRecipesPhotoRecyclerView.adapter =
-            addRecipesPhotoListAdapter
-    }
-
-    private fun hideAllRecipesPhotoList() = with(binding) {
-        addRecipesPhotoListTryAgainContainer.visibility = View.INVISIBLE
-        noAddRecipesPhotoListTextView.visibility = View.INVISIBLE
-    }
-
-    private fun initRecipesList() {
+    private fun initAddRecipesList() {
         addRecipesListAdapter =
-            AddRecipesListAdapter(getMealType(), addRecipesListViewModel)
+            AddRecipesListAdapter(addRecipesListViewModel)
 
-        addRecipesListViewModel.addRecipesList.observe(viewLifecycleOwner) { statusResult ->
-            hideAllRecipesList()
+        addRecipesListViewModel.addRecipes.observe(viewLifecycleOwner) { statusResult ->
+            hideAllAddRecipesList()
             when (statusResult) {
                 is SuccessResult -> {
-                    binding.recipesListRecyclerView.visibility = View.VISIBLE
-                    binding.recipesListProgressBar.visibility = View.INVISIBLE
+                    binding.addRecipesListRecyclerView.visibility = View.VISIBLE
+                    binding.addRecipesListProgressBar.visibility = View.INVISIBLE
 
                     addRecipesListAdapter.addRecipesList = statusResult.data
                     addRecipesListAdapter.filter.filter(filterString)
@@ -139,7 +89,7 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
                 }
 
                 is PendingResult -> {
-                    binding.recipesListProgressBar.visibility = View.VISIBLE
+                    binding.addRecipesListProgressBar.visibility = View.VISIBLE
                 }
 
                 is EmptyResult -> {
@@ -150,18 +100,20 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
 
         val recipesListLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recipesListRecyclerView.layoutManager =
+        binding.addRecipesListRecyclerView.layoutManager =
             recipesListLayoutManager
-        binding.recipesListRecyclerView.adapter =
+        binding.addRecipesListRecyclerView.adapter =
             addRecipesListAdapter
     }
 
-    private fun hideAllRecipesList() = with(binding) {
-        recipesListRecyclerView.visibility = View.GONE
-        recipesListProgressBar.visibility = View.GONE
+    private fun hideAllAddRecipesList() = with(binding) {
+        addRecipesListRecyclerView.visibility = View.GONE
+        addRecipesListProgressBar.visibility = View.GONE
         recipesListTryAgainContainer.visibility = View.GONE
         noRecipesTextView.visibility = View.GONE
     }
 
     private fun getMealType() = args.mealType
+
+    private fun getSelectedDate() = args.selectedDate
 }

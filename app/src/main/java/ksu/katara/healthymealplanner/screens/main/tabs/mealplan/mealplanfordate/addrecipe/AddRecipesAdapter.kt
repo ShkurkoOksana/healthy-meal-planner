@@ -1,5 +1,6 @@
-package ksu.katara.healthymealplanner.screens.main.tabs.home.mealplanfortoday.addrecipe
+package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate.addrecipe
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,27 +13,30 @@ import ksu.katara.healthymealplanner.databinding.ItemAddRecipesRecipeBinding
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
-typealias OnAddRecipesListItemDelete = (mealTypes: MealTypes, recipe: Recipe) -> Unit
+interface OnAddRecipesActionListener {
+
+    fun onAddRecipesItemDelete(recipe: Recipe)
+
+}
 
 class AddRecipesListAdapter(
-    private val mealType: MealTypes,
-    private val onAddRecipesListItemDelete: OnAddRecipesListItemDelete,
+    private val onAddRecipesActionListener: OnAddRecipesActionListener,
 ) : RecyclerView.Adapter<AddRecipesListAdapter.RecipesListViewHolder>(),
     View.OnClickListener,
     Filterable {
 
-    var addRecipesList = mutableListOf<AddRecipesListItem>()
+    var addRecipesList = mutableListOf<AddRecipesItem>()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
         }
 
-    var addRecipesListFilter = mutableListOf<AddRecipesListItem>()
+    var addRecipesListFilter = mutableListOf<AddRecipesItem>()
 
     override fun onClick(v: View) {
         val recipe = v.tag as Recipe
-        onAddRecipesListItemDelete.invoke(mealType, recipe)
-    }
+        onAddRecipesActionListener.onAddRecipesItemDelete(recipe)
+        }
 
     override fun getItemCount(): Int = addRecipesList.size
 
@@ -53,24 +57,24 @@ class AddRecipesListAdapter(
             holder.itemView.tag = recipe
 
             if (recipesItem.isDeleteInProgress) {
-                addRecipesRecipeAddProgressBar.visibility = View.VISIBLE
+                addRecipeAddProgressBar.visibility = View.VISIBLE
                 holder.binding.root.setOnClickListener(null)
             } else {
-                addRecipesRecipeAddProgressBar.visibility = View.GONE
+                addRecipeAddProgressBar.visibility = View.INVISIBLE
                 holder.binding.root.setOnClickListener(this@AddRecipesListAdapter)
             }
 
-            addRecipesRecipeNameTextView.text = recipe.name
+            addRecipeNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
-                Glide.with(addRecipesRecipePhotoImageView.context)
+                Glide.with(addRecipePhotoImageView.context)
                     .load(recipe.photo)
                     .circleCrop()
                     .placeholder(R.drawable.ic_recipe_default_photo)
                     .error(R.drawable.ic_recipe_default_photo)
-                    .into(addRecipesRecipePhotoImageView)
+                    .into(addRecipePhotoImageView)
             } else {
-                Glide.with(addRecipesRecipePhotoImageView.context).clear(addRecipesRecipePhotoImageView)
-                addRecipesRecipePhotoImageView.setImageResource(R.drawable.ic_diet_tip_default_photo)
+                Glide.with(addRecipePhotoImageView.context).clear(addRecipePhotoImageView)
+                addRecipePhotoImageView.setImageResource(R.drawable.ic_diet_tip_default_photo)
             }
         }
     }
@@ -88,7 +92,7 @@ class AddRecipesListAdapter(
                     filterResults.count = addRecipesListFilter.size
                 } else {
                     val searchString = constraint.toString().lowercase()
-                    val addRecipesFilterResult = mutableListOf<AddRecipesListItem>()
+                    val addRecipesFilterResult = mutableListOf<AddRecipesItem>()
                     for (addRecipe in addRecipesListFilter) {
                         if (searchString in addRecipe.recipe.name.lowercase()) {
                             addRecipesFilterResult.add(addRecipe)
@@ -102,7 +106,7 @@ class AddRecipesListAdapter(
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults) {
-                addRecipesList = results.values as MutableList<AddRecipesListItem>
+                addRecipesList = results.values as MutableList<AddRecipesItem>
                 notifyDataSetChanged()
             }
         }

@@ -1,41 +1,60 @@
 package ksu.katara.healthymealplanner.model.addrecipes
 
-import ksu.katara.healthymealplanner.exceptions.RecipeNotFoundException
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
+import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.tasks.SimpleTask
 import ksu.katara.healthymealplanner.tasks.Task
 
-typealias AddRecipesListener = (addRecipe: MutableList<Recipe>) -> Unit
+typealias AddRecipesListener = (addRecipes: List<Recipe>) -> Unit
 
 class InMemoryAddRecipesRepository(
-    recipesRepository: RecipesRepository,
+    private val recipesRepository: RecipesRepository,
+    private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
 ) : AddRecipesRepository {
-
-    private val allAddRecipesList = recipesRepository.getRecipes().map { it }.toMutableList()
-
-    private val addRecipesToType: MutableMap<MealTypes, MutableList<Recipe>> = mutableMapOf(
-        MealTypes.BREAKFAST to allAddRecipesList.map { it }.toMutableList(),
-        MealTypes.LUNCH to allAddRecipesList.map { it }.toMutableList(),
-        MealTypes.DINNER to allAddRecipesList.map { it }.toMutableList(),
-        MealTypes.SNACK to allAddRecipesList.map { it }.toMutableList(),
-    )
 
     private lateinit var addRecipes: MutableList<Recipe>
     private var addRecipesLoaded = false
     private val addRecipesListeners = mutableListOf<AddRecipesListener>()
 
-    override fun loadAddRecipes(mealTypes: MealTypes): Task<Unit> =
+    override fun loadAddRecipes(selectedDate: String, mealType: MealTypes): Task<Unit> =
         SimpleTask {
             Thread.sleep(500)
 
-            addRecipes = addRecipesToType.getValue(mealTypes)
-
+            val mealPlanForDateRecipesList: MutableList<Recipe> = getMealPlanForDateRecipesList(selectedDate, mealType)
+            addRecipes = getAddRecipes(mealPlanForDateRecipesList)
             addRecipesLoaded = true
 
             notifyAddRecipesChanges()
         }
+
+    private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
+        val allRecipesList = recipesRepository.getRecipes().map { it }.toMutableList()
+        list.forEach { mealPlanForDateRecipesListItem ->
+            allRecipesList.removeIf { it == mealPlanForDateRecipesListItem }
+        }
+
+        return allRecipesList
+    }
+
+    private fun getMealPlanForDateRecipesList(selectedDate: String, mealType: MealTypes): MutableList<Recipe> {
+        val mealPlanForDate = mealPlanForDateRecipesRepository.getMealPlanForDate()
+        var mealPlanForDateRecipesList: MutableList<Recipe> = mutableListOf()
+        if (mealPlanForDate.containsKey(selectedDate)) {
+            mealPlanForDate.getValue(selectedDate).forEach { mealPlanForDateRecipes ->
+                if (mealPlanForDateRecipes?.mealType == mealType) {
+                    mealPlanForDateRecipesList = mealPlanForDateRecipes.recipesList
+                }
+            }
+        } else {
+            mealPlanForDateRecipesList = mutableListOf()
+        }
+
+        return mealPlanForDateRecipesList
+    }
+
+
 
     override fun addAddRecipesListener(listener: AddRecipesListener) {
         addRecipesListeners.add(listener)
@@ -48,24 +67,14 @@ class InMemoryAddRecipesRepository(
         addRecipesListeners.remove(listener)
     }
 
-    override fun addRecipesAddRecipe(id: Long): Task<Unit> =
-        SimpleTask {
-            Thread.sleep(500)
-
-            val recipe = allAddRecipesList.firstOrNull { it.id == id } ?: throw RecipeNotFoundException()
-
-            addRecipes.add(recipe)
-
-            notifyAddRecipesChanges()
-        }
-
     override fun addRecipesDeleteRecipe(recipe: Recipe): Task<Unit> =
         SimpleTask {
             Thread.sleep(500)
 
-            val deleteRecipe = allAddRecipesList.firstOrNull { it == recipe } ?: throw RecipeNotFoundException()
-
-            addRecipes.remove(deleteRecipe)
+            val indexToRemove = addRecipes.indexOfFirst { it == recipe }
+            if (indexToRemove != -1) {
+                addRecipes.removeAt(indexToRemove)
+            }
 
             notifyAddRecipesChanges()
         }

@@ -1,13 +1,13 @@
 package ksu.katara.healthymealplanner
 
-import ksu.katara.healthymealplanner.model.addrecipephoto.InMemoryAddRecipesPhotoRepository
-import ksu.katara.healthymealplanner.model.addrecipephoto.entities.AddRecipesPhotoRepository
 import ksu.katara.healthymealplanner.model.addrecipes.AddRecipesRepository
 import ksu.katara.healthymealplanner.model.addrecipes.InMemoryAddRecipesRepository
+import ksu.katara.healthymealplanner.model.calendar.CalendarRepository
+import ksu.katara.healthymealplanner.model.calendar.InMemoryCalendarRepository
 import ksu.katara.healthymealplanner.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.model.dietTips.InMemoryDietTipsRepository
-import ksu.katara.healthymealplanner.model.mealplanfortoday.InMemoryMealPlanForTodayRecipesRepository
-import ksu.katara.healthymealplanner.model.mealplanfortoday.MealPlanForTodayRecipesRepository
+import ksu.katara.healthymealplanner.model.mealplan.InMemoryMealPlanForDateRecipesRepository
+import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.model.product.InMemoryProductsRepository
 import ksu.katara.healthymealplanner.model.product.ProductsRepository
 import ksu.katara.healthymealplanner.model.recipecategories.CategoriesRepository
@@ -29,15 +29,14 @@ object Repositories {
         productsRepository,
     )
 
-    val mealPlanForTodayRecipesRepository: MealPlanForTodayRecipesRepository = InMemoryMealPlanForTodayRecipesRepository()
-
-    val addRecipePhotoRepository: AddRecipesPhotoRepository = InMemoryAddRecipesPhotoRepository(
-        recipesRepository,
-    )
+    val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository = InMemoryMealPlanForDateRecipesRepository()
 
     val addRecipesRepository: AddRecipesRepository = InMemoryAddRecipesRepository(
         recipesRepository,
+        mealPlanForDateRecipesRepository,
     )
 
     val shoppingListRepository: ShoppingListRepository = InMemoryShoppingListRepository()
+
+    val calendarRepository: CalendarRepository = InMemoryCalendarRepository()
 }

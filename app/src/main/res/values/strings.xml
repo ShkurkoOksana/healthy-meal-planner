@@ -9,11 +9,11 @@
     <string name="action_go_to_profile_details"><![CDATA[Профиль >]]></string>
     <string name="toast_functionality_is_not_available">Функционал пока не доступен</string>
     <string name="diet_tips_title">Полезные советы</string>
-    <string name="meal_plan_for_today_title">План питания на сегодня</string>
-    <string name="action_go_to_breakfast_for_today_details">Завтрак</string>
-    <string name="action_go_to_lunch_for_today_details">Обед</string>
-    <string name="action_go_to_dinner_for_today_details">Ужин</string>
-    <string name="action_go_to_snack_for_today_details">Перекус</string>
+    <string name="meal_plan_for_date_title">План питания на сегодня</string>
+    <string name="action_go_to_breakfast_for_date_details">Завтрак</string>
+    <string name="action_go_to_lunch_for_date_details">Обед</string>
+    <string name="action_go_to_dinner_for_date_details">Ужин</string>
+    <string name="action_go_to_snack_for_date_details">Перекус</string>
     <string name="statistics_title">Статистика</string>
     <string name="action_go_diary_details">Дневник</string>
     <string name="try_again">Попробуй еще раз</string>
@@ -28,9 +28,9 @@
     <string name="nutrition_risk_factor_in_development_of_disease_title">Питание как фактор риска в развитии заболеваний</string>
     <string name="restoration_of_digestive_tract_title">Восстановление работы ЖКТ</string>
 
-    <!--Resources for MealPlanForTodayFragment-->
-    <string name="failed_to_load_meal_plan_for_today">Не удалось загрузить раздел План питания на сегодня</string>
-    <string name="no_meal_plan_for_today">Выберите рецепты для Плана питания на сегодня</string>
+    <!--Resources for MealPlanForDateFragment-->
+    <string name="failed_to_load_meal_plan_for_date">Не удалось загрузить раздел План питания на сегодня</string>
+    <string name="no_meal_plan_for_date">Выберите рецепты для Плана питания на сегодня</string>
 
     <!--Resources for RecipeFragment-->
     <string name="recipe_name">Название рецепта</string>
@@ -76,6 +76,7 @@
     <string name="failed_to_load_recipe_in_category">Не удалось загрузить список Рецептов в категории</string>
     <string name="cant_load_recipe_in_category">Не загружается информация в список Рецептов в категории</string>
     <string name="no_recipe_in_category">Рецепты в категории не найдены</string>
+    <string name="monthYear">Выбери день</string>
 
     <string-array name="number_of_portions">
         <item>1 порция</item>

@@ -19,6 +19,11 @@ import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
 import ksu.katara.healthymealplanner.utils.findTopNavController
 import ksu.katara.healthymealplanner.utils.viewModelCreator
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+val sdf = SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH)
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -26,7 +31,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var dietTipsAdapter: DietTipsAdapter
 
-    private val dietTipsViewModel by viewModelCreator { DietTipsViewModel(Repositories.dietTipsRepository) }
+    private val dietTipsViewModel by viewModelCreator {
+        DietTipsViewModel(Repositories.dietTipsRepository)
+    }
+
+    private val mealPlanViewModel by viewModelCreator {
+        MealPlanViewModel(Repositories.mealPlanForDateRecipesRepository)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,7 +51,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         initDietTips()
 
-        initMealPlanForToday()
+        initMealPlanForDate(currentDate = Date())
 
         initDiaryDetails()
     }
@@ -61,26 +72,52 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         Toast.makeText(requireContext(), R.string.toast_functionality_is_not_available, Toast.LENGTH_SHORT).show()
     }
 
-    private fun initMealPlanForToday() {
-        binding.breakfastForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.BREAKFAST)
+    private fun initMealPlanForDate(currentDate: Date) = with(binding) {
+        hideAllMealPlanForToday()
+
+        mealPlanViewModel.isMealPlanLoaded.observe(viewLifecycleOwner) {
+            if (it) {
+                breakfastForDateDetailsButton.visibility = View.VISIBLE
+                lunchForDateDetailsButton.visibility = View.VISIBLE
+                dinnerForDateDetailsButton.visibility = View.VISIBLE
+                snackForDateDetailsButton.visibility = View.VISIBLE
+
+                mealPlanForTodayProgressBar.visibility = View.INVISIBLE
+            } else {
+                dietTipTryAgainContainer.visibility = View.VISIBLE
+            }
         }
 
-        binding.lunchForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.LUNCH)
+        breakfastForDateDetailsButton.setOnClickListener {
+            onMealPlanForDateItemPressed(MealTypes.BREAKFAST, currentDate)
         }
 
-        binding.dinnerForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.DINNER)
+        lunchForDateDetailsButton.setOnClickListener {
+            onMealPlanForDateItemPressed(MealTypes.LUNCH, currentDate)
         }
 
-        binding.snackForTodayDetailsButton.setOnClickListener {
-            onMealPlanForTodayItemPressed(MealTypes.SNACK)
+        dinnerForDateDetailsButton.setOnClickListener {
+            onMealPlanForDateItemPressed(MealTypes.DINNER, currentDate)
+        }
+
+        snackForDateDetailsButton.setOnClickListener {
+            onMealPlanForDateItemPressed(MealTypes.SNACK, currentDate)
         }
     }
 
-    private fun onMealPlanForTodayItemPressed(mealTypeName: MealTypes) {
-        val direction = TabsFragmentDirections.actionTabsFragmentToRecipesFragment(mealTypeName)
+    private fun hideAllMealPlanForToday() {
+        with(binding) {
+            breakfastForDateDetailsButton.visibility = View.INVISIBLE
+            lunchForDateDetailsButton.visibility = View.INVISIBLE
+            dinnerForDateDetailsButton.visibility = View.INVISIBLE
+            snackForDateDetailsButton.visibility = View.INVISIBLE
+            mealPlanForTodayTryAgainContainer.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun onMealPlanForDateItemPressed(mealTypeName: MealTypes, currentDate: Date) {
+        val date = sdf.format(currentDate)
+        val direction = TabsFragmentDirections.actionTabsFragmentToRecipesFragment(mealTypeName, date)
 
         findTopNavController().navigate(direction)
     }

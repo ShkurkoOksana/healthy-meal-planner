@@ -82,7 +82,7 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -118,65 +118,106 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_space"
             android:layout_marginTop="@dimen/medium_space"
-            android:text="@string/meal_plan_for_today_title" />
+            android:text="@string/meal_plan_for_date_title" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mealPlanForTodayConstraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="200dp" >
+            android:layout_height="200dp">
 
             <Button
-                android:id="@+id/breakfastForTodayDetailsButton"
+                android:id="@+id/breakfast_for_date_details_button"
                 style="@style/GlobalTextInputStyle.Big"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="@dimen/medium_space"
                 android:layout_marginTop="@dimen/medium_space"
-                android:text="@string/action_go_to_breakfast_for_today_details"
-                app:layout_constraintBottom_toTopOf="@id/dinnerForTodayDetailsButton"
-                app:layout_constraintEnd_toStartOf="@+id/lunchForTodayDetailsButton"
+                android:text="@string/action_go_to_breakfast_for_date_details"
+                app:layout_constraintBottom_toTopOf="@id/dinner_for_date_details_button"
+                app:layout_constraintEnd_toStartOf="@+id/lunch_for_date_details_button"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread" />
 
             <Button
-                android:id="@+id/lunchForTodayDetailsButton"
+                android:id="@+id/lunch_for_date_details_button"
                 style="@style/GlobalTextInputStyle.Big"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="@dimen/medium_space"
                 android:layout_marginEnd="@dimen/medium_space"
-                android:text="@string/action_go_to_lunch_for_today_details"
-                app:layout_constraintBottom_toBottomOf="@+id/breakfastForTodayDetailsButton"
+                android:text="@string/action_go_to_lunch_for_date_details"
+                app:layout_constraintBottom_toBottomOf="@+id/breakfast_for_date_details_button"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/breakfastForTodayDetailsButton"
-                app:layout_constraintTop_toTopOf="@+id/breakfastForTodayDetailsButton" />
+                app:layout_constraintStart_toEndOf="@+id/breakfast_for_date_details_button"
+                app:layout_constraintTop_toTopOf="@+id/breakfast_for_date_details_button" />
 
             <Button
-                android:id="@+id/dinnerForTodayDetailsButton"
+                android:id="@+id/dinner_for_date_details_button"
                 style="@style/GlobalTextInputStyle.Big"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="@dimen/medium_space"
-                android:text="@string/action_go_to_dinner_for_today_details"
+                android:text="@string/action_go_to_dinner_for_date_details"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/snackForTodayDetailsButton"
+                app:layout_constraintEnd_toStartOf="@+id/snack_for_date_details_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/breakfastForTodayDetailsButton" />
+                app:layout_constraintTop_toBottomOf="@id/breakfast_for_date_details_button" />
 
             <Button
-                android:id="@+id/snackForTodayDetailsButton"
+                android:id="@+id/snack_for_date_details_button"
                 style="@style/GlobalTextInputStyle.Big"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="@dimen/medium_space"
                 android:layout_marginEnd="@dimen/medium_space"
-                android:text="@string/action_go_to_snack_for_today_details"
-                app:layout_constraintBottom_toBottomOf="@+id/dinnerForTodayDetailsButton"
+                android:text="@string/action_go_to_snack_for_date_details"
+                app:layout_constraintBottom_toBottomOf="@+id/dinner_for_date_details_button"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/dinnerForTodayDetailsButton"
-                app:layout_constraintTop_toTopOf="@+id/dinnerForTodayDetailsButton"
+                app:layout_constraintStart_toEndOf="@+id/dinner_for_date_details_button"
+                app:layout_constraintTop_toTopOf="@+id/dinner_for_date_details_button"
                 app:layout_constraintVertical_bias="0.0" />
+
+
+
+            <LinearLayout
+                android:id="@+id/mealPlanForTodayTryAgainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="@id/mealPlanForTodayConstraintLayout"
+                app:layout_constraintEnd_toEndOf="@id/mealPlanForTodayConstraintLayout"
+                app:layout_constraintTop_toTopOf="@id/mealPlanForTodayConstraintLayout"
+                app:layout_constraintBottom_toBottomOf="@id/mealPlanForTodayConstraintLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/failed_to_load_diet_tips"/>
+
+            <Button
+                android:id="@+id/mealPlanForTodayTryAgainButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/try_again"/>
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/mealPlanForTodayProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/green"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="@id/mealPlanForTodayConstraintLayout"
+                app:layout_constraintEnd_toEndOf="@id/mealPlanForTodayConstraintLayout"
+                app:layout_constraintTop_toTopOf="@id/mealPlanForTodayConstraintLayout"
+                app:layout_constraintBottom_toBottomOf="@id/mealPlanForTodayConstraintLayout"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

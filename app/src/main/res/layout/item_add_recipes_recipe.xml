@@ -8,7 +8,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
-        android:id="@+id/addRecipesRecipePhotoImageView"
+        android:id="@+id/addRecipePhotoImageView"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/addRecipesRecipeNameTextView"
+        android:id="@+id/addRecipeNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -27,31 +27,31 @@
         android:lines="1"
         android:ellipsize="end"
         tools:text="John Smith"
-        app:layout_constraintTop_toTopOf="@id/addRecipesRecipePhotoImageView"
-        app:layout_constraintStart_toEndOf="@id/addRecipesRecipePhotoImageView"
+        app:layout_constraintTop_toTopOf="@id/addRecipePhotoImageView"
+        app:layout_constraintStart_toEndOf="@id/addRecipePhotoImageView"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
-        android:id="@+id/addRecipesRecipeAddProgressBar"
+        android:id="@+id/addRecipeAddProgressBar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="4dp"
         android:indeterminateTint="@color/green"
-        app:layout_constraintTop_toTopOf="@id/addRecipesRecipePhotoImageView"
-        app:layout_constraintEnd_toEndOf="@id/addRecipesRecipePhotoImageView"
-        app:layout_constraintBottom_toBottomOf="@id/addRecipesRecipePhotoImageView"
-        app:layout_constraintStart_toStartOf="@id/addRecipesRecipePhotoImageView"/>
+        app:layout_constraintTop_toTopOf="@id/addRecipePhotoImageView"
+        app:layout_constraintEnd_toEndOf="@id/addRecipePhotoImageView"
+        app:layout_constraintBottom_toBottomOf="@id/addRecipePhotoImageView"
+        app:layout_constraintStart_toStartOf="@id/addRecipePhotoImageView"/>
 
     <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/addRecipesRecipeBarrier"
+        android:id="@+id/addRecipeBarrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="addRecipesRecipePhotoImageView,addRecipesRecipeNameTextView"
+        app:constraint_referenced_ids="addRecipePhotoImageView,addRecipeNameTextView"
         app:barrierDirection="bottom"/>
 
     <Space
         android:layout_width="wrap_content"
         android:layout_height="6dp"
-        app:layout_constraintTop_toBottomOf="@id/addRecipesRecipeBarrier"/>
+        app:layout_constraintTop_toBottomOf="@id/addRecipeBarrier"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

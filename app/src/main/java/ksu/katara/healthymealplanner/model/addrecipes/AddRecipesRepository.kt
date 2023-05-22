@@ -6,14 +6,14 @@ import ksu.katara.healthymealplanner.tasks.Task
 
 interface AddRecipesRepository {
 
-    fun loadAddRecipes(mealTypes: MealTypes): Task<Unit>
+    fun loadAddRecipes(selectedDate: String, mealTypes: MealTypes): Task<Unit>
 
     fun addAddRecipesListener(listener: AddRecipesListener)
 
     fun removeAddRecipesListener(listener: AddRecipesListener)
 
-    fun addRecipesAddRecipe(id: Long): Task<Unit>
-
     fun addRecipesDeleteRecipe(recipe: Recipe): Task<Unit>
+
+    //fun addRecipesAddRecipe(recipe: Recipe): Task<Unit>
 
 }

@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".screens.main.tabs.home.mealplanfortoday.MealPlanForTodayRecipesFragment">
+    tools:context=".screens.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mealPlanForTodayRecipesRecyclerView"
+        android:id="@+id/mealPlanForDateRecipesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_meal_plan_for_today"
+        tools:listitem="@layout/item_meal_plan_for_date_recipe"
         tools:itemCount="20"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ProgressBar
-        android:id="@+id/mealPlanForTodayRecipesProgressBar"
+        android:id="@+id/mealPlanForDateRecipesProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <LinearLayout
-        android:id="@+id/mealPlanForTodayRecipesTryAgainContainer"
+        android:id="@+id/mealPlanForDateRecipesTryAgainContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -50,10 +50,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/failed_to_load_meal_plan_for_today"/>
+            android:text="@string/failed_to_load_meal_plan_for_date"/>
 
         <Button
-            android:id="@+id/mealPlanForTodayRecipesTryAgainButton"
+            android:id="@+id/mealPlanForDateRecipesTryAgainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/try_again"/>
@@ -61,22 +61,22 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/noMealPlanForTodayRecipesTextView"
+        android:id="@+id/noMealPlanForDateRecipesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="visible"
-        android:text="@string/no_meal_plan_for_today"
+        android:text="@string/no_meal_plan_for_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView
-        android:id="@+id/mealPlanForTodayRecipesAddRecipeButton"
+        android:id="@+id/mealPlanForDateRecipesAddRecipeButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/ic_add_recipe_in_meal_plan_for_today"
+        android:src="@drawable/ic_add_recipe_in_meal_plan_for_date"
         android:padding="@dimen/small_space"
         android:layout_marginEnd="@dimen/medium_space"
         android:background="?android:attr/selectableItemBackgroundBorderless"
@@ -88,7 +88,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ProgressBar
-        android:id="@+id/mealPlanForTodayRecipesProgressBarForAddButton"
+        android:id="@+id/mealPlanForDateRecipesProgressBarForAddButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
