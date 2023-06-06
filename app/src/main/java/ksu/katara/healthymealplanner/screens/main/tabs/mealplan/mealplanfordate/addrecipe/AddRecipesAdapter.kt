@@ -1,6 +1,5 @@
 package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate.addrecipe
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ItemAddRecipesRecipeBinding
-import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
 interface OnAddRecipesActionListener {

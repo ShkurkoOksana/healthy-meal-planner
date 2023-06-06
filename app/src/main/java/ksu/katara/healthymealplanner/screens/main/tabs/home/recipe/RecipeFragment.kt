@@ -79,6 +79,8 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
 
         initIngredients()
 
+        initSelectAllIngredients()
+
         initPreparationSteps()
     }
 
@@ -171,6 +173,35 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
         noPreparationStepsTextView.visibility = View.GONE
     }
 
+    private fun initSelectAllIngredients() {
+        binding.isAllIngredientsSelectedCheckBox.setOnCheckedChangeListener { _, isSelected ->
+            ingredientsViewModel.setAllIngredientsSelected(isSelected)
+            binding.isAllIngredientsSelectedCheckBox.isChecked = isSelected
+        }
+
+        ingredientsViewModel.isAllIngredientsSelected.observe(viewLifecycleOwner) { statusResult ->
+            when (statusResult) {
+                is SuccessResult -> {
+                    binding.isAllIngredientsSelectedCheckBox.isChecked = statusResult.data
+                    binding.isAllIngredientsSelectedCheckBox.visibility = View.VISIBLE
+                    binding.isAllIngredientsSelectedProgressBar.visibility = View.INVISIBLE
+                }
+
+                is ErrorResult -> {
+
+                }
+
+                is PendingResult -> {
+                    binding.isAllIngredientsSelectedCheckBox.visibility = View.INVISIBLE
+                    binding.isAllIngredientsSelectedProgressBar.visibility = View.VISIBLE
+                }
+
+                is EmptyResult -> {
+                }
+            }
+        }
+    }
+
     private fun initIngredients() {
         ingredientsAdapter =
             IngredientsAdapter(ingredientsViewModel)
@@ -191,6 +222,7 @@ class RecipeFragment : Fragment(R.layout.fragment_recipe) {
                 is PendingResult -> {
                     binding.ingredientsProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noIngredientsTextView.visibility = View.VISIBLE
                 }

@@ -1,18 +1,24 @@
 package ksu.katara.healthymealplanner.model.shoppinglist
 
 import ksu.katara.healthymealplanner.model.recipes.entities.RecipeIngredient
+import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecipe
+import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecipeIngredient
 import ksu.katara.healthymealplanner.tasks.Task
 
 interface ShoppingListRepository {
 
-    fun initShoppingList()
+    fun loadShoppingList(): Task<Unit>
 
-    fun addToShoppingList(ingredient: RecipeIngredient): Task<Unit>
+    fun addShoppingListListener(listener: ShoppingListListener)
 
-    fun deleteFromShoppingList(ingredient: RecipeIngredient): Task<Unit>
+    fun removeShoppingListListener(listener: ShoppingListListener)
 
-    fun addShoppingListListener(listener: ShoppingListItemListListener)
+    fun shoppingListIngredientsAddIngredient(recipeId: Long, ingredient: RecipeIngredient): Task<Unit>
 
-    fun removeShoppingListListener(listener: ShoppingListItemListListener)
+    fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit>
+
+    fun shoppingListIngredientsSelectIngredient(shoppingListRecipe: ShoppingListRecipe, shoppingListRecipeIngredient: ShoppingListRecipeIngredient, isChecked: Boolean): Task<Unit>
+
+    fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Task<Unit>
 
 }

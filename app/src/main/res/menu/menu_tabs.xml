@@ -2,16 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@id/home"
+        android:id="@id/menu_home"
         android:icon="@drawable/ic_home"
         android:title="@string/home" />
     <item
-        android:id="@+id/meal_plan"
+        android:id="@+id/menu_meal_plan"
         android:icon="@drawable/ic_meal_plan"
         android:title="@string/meal_plan" />
     <item
-        android:id="@+id/recipes"
+        android:id="@+id/menu_recipes"
         android:icon="@drawable/ic_recipe_default_photo"
         android:title="@string/recipes" />
+    <item
+        android:id="@+id/menu_shopping_list"
+        android:icon="@drawable/ic_shopping_list"
+        android:title="@string/shopping_list" />
 
 </menu>

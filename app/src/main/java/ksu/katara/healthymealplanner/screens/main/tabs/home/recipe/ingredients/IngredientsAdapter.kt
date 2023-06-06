@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.databinding.ItemIngredientsBinding
 import ksu.katara.healthymealplanner.model.recipes.entities.RecipeIngredient
 
-typealias IngredientsAddDeleteToFromShoppingListActionListener = (ingredient: RecipeIngredient) -> Unit
+typealias IngredientSelectedActionListener = (ingredient: RecipeIngredient, isSelected: Boolean) -> Unit
 
 class IngredientsAdapter(
-    private val actionListener: IngredientsAddDeleteToFromShoppingListActionListener
+    private val ingredientsViewModel: IngredientsViewModel
 ) : RecyclerView.Adapter<IngredientsAdapter.IngredientsListViewHolder>(), View.OnClickListener {
 
     var ingredients: List<IngredientsItem> = emptyList()
@@ -21,8 +21,9 @@ class IngredientsAdapter(
 
     override fun onClick(v: View) {
         val ingredient = v.tag as RecipeIngredient
-        actionListener.invoke(ingredient)
-        ingredient.isInShoppingList = !ingredient.isInShoppingList
+
+        val isSelected = !ingredient.isInShoppingList
+        ingredientsViewModel.invoke(ingredient, isSelected)
     }
 
     override fun getItemCount(): Int = ingredients.size
@@ -30,6 +31,8 @@ class IngredientsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientsListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemIngredientsBinding.inflate(inflater, parent, false)
+
+        binding.root.setOnClickListener(this)
 
         return IngredientsListViewHolder(binding)
     }
@@ -42,21 +45,21 @@ class IngredientsAdapter(
             holder.itemView.tag = ingredient
 
             if (ingredientsItemListItem.isInProgress) {
-                ingredientCheckBox.visibility = View.INVISIBLE
+                isIngredientSelectedCheckBox.visibility = View.INVISIBLE
                 ingredientCrossView.visibility = View.INVISIBLE
-                ingredientIsInShoppingListProgressBar.visibility = View.VISIBLE
+                isIngredientSelectedProgressBar.visibility = View.VISIBLE
                 holder.binding.root.setOnClickListener(null)
             } else {
                 if(ingredient.isInShoppingList) {
                     ingredientCrossView.visibility = View.VISIBLE
-                    ingredientCheckBox.isChecked = true
+                    isIngredientSelectedCheckBox.isChecked = true
                 } else {
                     ingredientCrossView.visibility = View.INVISIBLE
-                    ingredientCheckBox.isChecked = false
+                    isIngredientSelectedCheckBox.isChecked = false
                 }
 
-                ingredientCheckBox.visibility = View.VISIBLE
-                ingredientIsInShoppingListProgressBar.visibility = View.GONE
+                isIngredientSelectedCheckBox.visibility = View.VISIBLE
+                isIngredientSelectedProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@IngredientsAdapter)
             }
 

@@ -34,7 +34,7 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
         binding.pleaseWaitTextView.alpha = 0f
         binding.pleaseWaitTextView.animate()
             .alpha(1f)
-            .setStartDelay(500)
+            .setStartDelay(200)
             .setDuration(1000)
             .start()
     }

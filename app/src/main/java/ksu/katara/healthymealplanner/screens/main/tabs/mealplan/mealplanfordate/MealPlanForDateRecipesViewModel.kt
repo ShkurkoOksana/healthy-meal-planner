@@ -2,7 +2,6 @@ package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ksu.katara.healthymealplanner.model.addrecipes.AddRecipesRepository
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesListener
 import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesRepository

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_shopping_list"
+    app:startDestination="@id/shoppingListFragment">
+
+    <fragment
+        android:id="@+id/shoppingListFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.shoppinglist.ShoppingListFragment"
+        android:label="Список покупок"
+        tools:layout="@layout/fragment_shopping_list" >
+        <action
+            android:id="@+id/action_shoppingListFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.RecipeFragment"
+        android:label="fragment_recipe"
+        tools:layout="@layout/fragment_recipe" >
+        <argument
+            android:name="recipe_id"
+            app:argType="long" />
+    </fragment>
+</navigation>

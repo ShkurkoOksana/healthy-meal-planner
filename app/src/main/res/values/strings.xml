@@ -51,6 +51,8 @@
     <string name="failed_to_load_ingredients">Не удалось загрузить раздел Ингредиенты</string>
     <string name="cant_load_ingredients">Не загружается информация в разделе Ингредиенты</string>
     <string name="no_ingredients">Нет данных в разделе Ингредиенты</string>
+    <string name="is_all_ingredients_selected">Выбрать все</string>
+    <string name="add_to_shopping_list">Добавить в список покупок</string>
     <string name="cant_add_to_shopping_list">Не загружается информация об ингридиентах в Список покупок</string>
     <string name="go_to_shopping_list">Добавить все в список покупок</string>
     <string name="preparation_steps_title">Шаги приготовления</string>
@@ -70,13 +72,21 @@
     <!--Resources for RecipeCategoriesFragment-->
     <string name="failed_to_load_recipe_categories">Не удалось загрузить список Категории рецептов</string>
     <string name="cant_load_recipe_categories">Не загружается информация в список Категорий рецептов</string>
-    <string name="no_recipe_categories">Категории рецептов не найдены</string>
+    <string name="no_recipe_categories">Нет данных в разделе Категории рецептов</string>
 
     <!--Resources for RecipeInCategoryFragment-->
     <string name="failed_to_load_recipe_in_category">Не удалось загрузить список Рецептов в категории</string>
     <string name="cant_load_recipe_in_category">Не загружается информация в список Рецептов в категории</string>
-    <string name="no_recipe_in_category">Рецепты в категории не найдены</string>
-    <string name="monthYear">Выбери день</string>
+    <string name="no_recipe_in_category">Нет данных в разделе Рецепты в категории</string>
+
+    <!--Resources for ShoppingListFragment-->
+    <string name="shopping_list">Список покупок</string>
+    <string name="failed_to_load_shopping_list">Не удалось загрузить Список покупок</string>
+    <string name="cant_load_shopping_list">Не загружается информация в Список покупок</string>
+    <string name="no_shopping_list">Нет данных в разделе Список покупок</string>
+    <string name="failed_to_load_shopping_list_ingredients">Не удалось загрузить Список ингредиентов в списке покупок</string>
+    <string name="cant_load_shopping_list_ingredients">Не загружается информация в Список ингредиентов в списке покупок</string>
+    <string name="no_shopping_list_ingredients">Нет данных в разделе Список ингредиентов в списке покупок</string>
 
     <string-array name="number_of_portions">
         <item>1 порция</item>

@@ -17,7 +17,7 @@ class SplashViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            delay(2000L)
+            delay(200L)
             _launchMainScreen.value = true
         }
     }

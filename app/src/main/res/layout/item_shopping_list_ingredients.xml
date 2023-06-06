@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <CheckBox
+        android:id="@+id/isShoppingListIngredientsItemSelectedCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@drawable/check_box_tint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/isShoppingListIngredientsItemSelectedProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:indeterminateTint="@color/green"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
+        app:layout_constraintEnd_toEndOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
+        app:layout_constraintBottom_toBottomOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/shoppingListIngredientsItemNameTextView"
+        style="@style/TitleTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/isShoppingListIngredientsItemSelectedCheckBox"
+        app:layout_constraintEnd_toStartOf="@id/shoppingListIngredientsItemAmountTextView"
+        app:layout_constraintStart_toEndOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
+        app:layout_constraintTop_toTopOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
+        tools:text="Имя ингредиента" />
+
+    <TextView
+        android:id="@+id/shoppingListIngredientsItemAmountTextView"
+        style="@style/TitleTextView"
+        android:layout_marginEnd="@dimen/small_space"
+        app:layout_constraintBottom_toBottomOf="@id/shoppingListIngredientsItemNameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintEnd_toStartOf="@id/shoppingListIngredientsItemMeasureTextView"
+        app:layout_constraintTop_toTopOf="@id/shoppingListIngredientsItemNameTextView"
+        tools:text="100" />
+
+    <TextView
+        android:id="@+id/shoppingListIngredientsItemMeasureTextView"
+        style="@style/TitleTextView"
+        android:layout_marginStart="@dimen/small_space"
+        android:layout_marginEnd="@dimen/medium_space"
+        app:layout_constraintBottom_toBottomOf="@id/shoppingListIngredientsItemAmountTextView"
+        app:layout_constraintEnd_toStartOf="@+id/shoppingListIngredientsItemDeleteViewButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/shoppingListIngredientsItemAmountBarrier"
+        app:layout_constraintTop_toTopOf="@id/shoppingListIngredientsItemAmountTextView"
+        tools:text="грамм" />
+
+    <ImageView
+        android:id="@+id/shoppingListIngredientsItemDeleteViewButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_delete"
+        android:padding="6dp"
+        android:layout_marginEnd="12dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/shoppingListIngredientsItemDeleteProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        android:indeterminateTint="@color/green"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="@id/shoppingListIngredientsItemDeleteViewButton"
+        app:layout_constraintEnd_toEndOf="@id/shoppingListIngredientsItemDeleteViewButton"
+        app:layout_constraintBottom_toBottomOf="@id/shoppingListIngredientsItemDeleteViewButton"
+        app:layout_constraintStart_toStartOf="@id/shoppingListIngredientsItemDeleteViewButton" />
+
+    <View
+        android:id="@+id/shoppingListIngredientsItemCrossView"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        android:layout_marginStart="@dimen/medium_space"
+        android:layout_marginEnd="@dimen/small_space"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/shoppingListIngredientsItemNameTextView"
+        app:layout_constraintEnd_toEndOf="@+id/shoppingListIngredientsItemMeasureTextView"
+        app:layout_constraintStart_toStartOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
+        app:layout_constraintTop_toTopOf="@id/shoppingListIngredientsItemAmountTextView" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/shoppingListIngredientsItemAmountBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="isShoppingListIngredientsItemSelectedCheckBox"
+        app:barrierDirection="right"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/shoppingLisBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="isShoppingListIngredientsItemSelectedCheckBox,shoppingListIngredientsItemNameTextView"
+        app:barrierDirection="bottom"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="6dp"
+        app:layout_constraintTop_toBottomOf="@id/shoppingLisBarrier"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_tabsFragment_to_recipesInCategoryFragment"
             app:destination="@id/recipesInCategoryFragment" />
+        <action
+            android:id="@+id/action_tabsFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/dietTipDetailsFragment"

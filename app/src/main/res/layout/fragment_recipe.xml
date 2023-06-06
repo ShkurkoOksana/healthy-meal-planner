@@ -293,6 +293,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:indeterminateTint="@color/green"
                 android:visibility="gone"/>
 
             <LinearLayout
@@ -327,6 +328,62 @@
 
         </FrameLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/selectAllIngredientsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ingredientsContainer">
+
+            <CheckBox
+                android:id="@+id/isAllIngredientsSelectedCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_space"
+                android:layout_marginTop="@dimen/small_space"
+                android:buttonTint="@drawable/check_box_tint"
+                android:visibility="visible"
+                android:clickable="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/isAllIngredientsSelectedNameTextView"
+                style="@style/TitleTextView"
+                android:layout_marginTop="@dimen/small_space"
+                android:text="@string/is_all_ingredients_selected"
+                app:layout_constraintBottom_toBottomOf="@+id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintTop_toTopOf="@+id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintVertical_bias="0.2" />
+
+            <View
+                android:id="@+id/isAllIngredientsSelectedCrossView"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/grey"
+                android:layout_marginEnd="@dimen/small_space"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/isAllIngredientsSelectedNameTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/isAllIngredientsSelectedProgressBar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="4dp"
+                android:indeterminateTint="@color/green"
+                android:visibility="invisible"
+                app:layout_constraintTop_toTopOf="@id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintEnd_toEndOf="@id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintBottom_toBottomOf="@id/isAllIngredientsSelectedCheckBox"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:id="@+id/preparationStepsTitleTextView"
             style="@style/TitleTextView"
@@ -334,7 +391,7 @@
             android:layout_marginStart="@dimen/medium_space"
             android:layout_marginTop="@dimen/medium_space"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredientsContainer"/>
+            app:layout_constraintTop_toBottomOf="@+id/selectAllIngredientsContainer"/>
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -32,14 +32,14 @@ class InMemoryCategoriesRepository : CategoriesRepository {
     }
 
     override fun loadRecipeCategories(): Task<Unit> = SimpleTask {
-        Thread.sleep(2000)
+        Thread.sleep(200L)
 
         loaded = true
         notifyChanges()
     }
 
     override fun getById(id: Long): Task<Category> = SimpleTask(Callable {
-        Thread.sleep(2000)
+        Thread.sleep(200L)
 
         return@Callable recipeCategories.firstOrNull<Category> { it.id == id }
             ?: throw RecipeCategoryNotFoundException()

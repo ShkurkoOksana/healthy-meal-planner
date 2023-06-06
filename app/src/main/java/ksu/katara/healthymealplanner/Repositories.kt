@@ -36,7 +36,7 @@ object Repositories {
         mealPlanForDateRecipesRepository,
     )
 
-    val shoppingListRepository: ShoppingListRepository = InMemoryShoppingListRepository()
+    val shoppingListRepository: ShoppingListRepository = InMemoryShoppingListRepository(recipesRepository)
 
     val calendarRepository: CalendarRepository = InMemoryCalendarRepository()
 }

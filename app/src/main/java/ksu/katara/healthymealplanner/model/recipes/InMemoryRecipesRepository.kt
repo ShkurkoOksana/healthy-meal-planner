@@ -15,7 +15,6 @@ import kotlin.random.Random
 const val TAG = "InMemoryRecipesItemListRepository"
 
 typealias RecipeIngredientsListener = (recipeIngredients: List<RecipeIngredient>) -> Unit
-typealias RecipesListener = (recipesList: MutableList<Recipe>) -> Unit
 typealias RecipesInCategoryListener = (recipes: List<Recipe>) -> Unit
 
 class InMemoryRecipesRepository(
@@ -24,7 +23,7 @@ class InMemoryRecipesRepository(
 
     private var recipes = mutableListOf<Recipe>()
 
-    private var recipesDetails: List<RecipeDetails>
+    private var recipesDetails: MutableList<RecipeDetails>
 
     private val recipesSize = PHOTOES.size
 
@@ -41,6 +40,8 @@ class InMemoryRecipesRepository(
 
     private var preparationSteps = mutableListOf<RecipePreparationStep>()
     private var preparationStepsLoaded = false
+
+    private var isAllIngredientsSelected = false
 
     init {
         recipes = (0 until recipesSize).map {
@@ -100,22 +101,24 @@ class InMemoryRecipesRepository(
                 recipeIngredients = recipeIngredients,
                 preparationSteps = preparationSteps,
                 isFavorite = Random.nextBoolean(),
-                isInShoppingList = Random.nextBoolean(),
+                isAllIngredientsInShoppingList = false,
             )
         }.toMutableList()
     }
 
     override fun getRecipes(): MutableList<Recipe> = recipes
 
+    override fun getRecipesDetails(): MutableList<RecipeDetails> = recipesDetails
+
     override fun getRecipeDetailsById(recipeId: Long): Task<RecipeDetails> = SimpleTask {
-        Thread.sleep(500)
+        Thread.sleep(200L)
 
         return@SimpleTask recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
     }
 
     override fun loadRecipesInCategory(recipeCategoryId: Long): Task<Unit> =
         SimpleTask {
-            Thread.sleep(1000)
+            Thread.sleep(200L)
 
             recipesInCategory = recipes.filter { it.categoryId == recipeCategoryId }.toMutableList()
 
@@ -125,7 +128,7 @@ class InMemoryRecipesRepository(
 
     override fun getRecipeInCategoryById(id: Long): Task<RecipeDetails> =
         SimpleTask(Callable {
-            Thread.sleep(2000)
+            Thread.sleep(200L)
 
             val recipeInCategory = recipesInCategory.firstOrNull { it.id == id }
 
@@ -151,7 +154,7 @@ class InMemoryRecipesRepository(
 
     override fun loadRecipeTypes(recipeId: Long): Task<List<String>> =
         SimpleTask {
-            Thread.sleep(2000)
+            Thread.sleep(200L)
 
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
 
@@ -162,9 +165,9 @@ class InMemoryRecipesRepository(
             return@SimpleTask recipeTypes
         }
 
-    override fun loadIngredients(recipeId: Long): Task<Unit> =
-        SimpleTask {
-            Thread.sleep(2000)
+    override fun loadIngredients(recipeId: Long): Task<List<RecipeIngredient>> =
+        SimpleTask(Callable {
+            Thread.sleep(200L)
 
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
 
@@ -172,7 +175,24 @@ class InMemoryRecipesRepository(
 
             recipeIngredientsLoaded = true
             notifyIngredientsChanges()
+
+            isAllIngredientsSelected = isAllIngredientsSelectedResult(recipeId)
+
+            return@Callable recipeIngredients
+        })
+
+    private fun isAllIngredientsSelectedResult(id: Long): Boolean {
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == id } ?: throw IngredientsNotFoundException()
+
+        var countRecipeIngredientsSelected = 0
+        recipeDetails.recipeIngredients.forEach { recipeIngredient ->
+            if (recipeIngredient.isInShoppingList) {
+                countRecipeIngredientsSelected++
+            }
         }
+
+        return countRecipeIngredientsSelected == recipeIngredients.size && recipeIngredients.size != 0
+    }
 
     override fun addIngredientListener(listener: RecipeIngredientsListener) {
         recipeIngredientsListeners.add(listener)
@@ -190,9 +210,44 @@ class InMemoryRecipesRepository(
         recipeIngredientsListeners.forEach { it.invoke(recipeIngredients) }
     }
 
+    override fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Boolean> = SimpleTask {
+        Thread.sleep(200L)
+
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
+
+        val recipeIngredient = recipeDetails.recipeIngredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
+        recipeIngredient.isInShoppingList = isSelected
+
+        isAllIngredientsSelected = isAllIngredientsSelectedResult(recipeId)
+
+        recipeDetails.isAllIngredientsInShoppingList = isAllIngredientsSelected
+
+        return@SimpleTask isAllIngredientsSelected
+    }
+
+    override fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean): Task<Unit> = SimpleTask {
+        Thread.sleep(200L)
+
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
+        recipeDetails.recipeIngredients.forEach { it.isInShoppingList = isSelected }
+
+        recipeDetails.isAllIngredientsInShoppingList = isSelected
+        isAllIngredientsSelected = isSelected
+    }
+
+    override fun isAllIngredientsSelected(recipeId: Long) = SimpleTask(
+        Callable {
+            Thread.sleep(200L)
+
+            val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
+
+            return@Callable recipeDetails.isAllIngredientsInShoppingList
+        }
+    )
+
     override fun loadPreparationSteps(recipeId: Long): Task<MutableList<RecipePreparationStep>> =
         SimpleTask(Callable {
-            Thread.sleep(2000)
+            Thread.sleep(200L)
 
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
 
