@@ -7,11 +7,10 @@ interface CategoriesRepository {
 
     fun loadRecipeCategories(): Task<Unit>
 
-    fun getCategoryById(id: Long): Category
-
-    fun getById(id: Long): Task<Category>
+    fun getCategoryById(id: Long): Task<Category>
 
     fun addListener(listener: RecipeCategoriesListener)
 
     fun removeListener(listener: RecipeCategoriesListener)
+
 }

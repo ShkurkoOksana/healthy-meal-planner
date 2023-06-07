@@ -64,6 +64,7 @@ class DietTipsChaptersViewModel(
 
     private fun notifyUpdates() {
         _dietTipsChapters.postValue(dietTipsChapterResult.resultMap { dietTipsChapters ->
-            dietTipsChapters.map { dietTipsChapter -> DietTipsChaptersListItem(dietTipsChapter, isInProgress(dietTipsChapter)) } })
+            dietTipsChapters.map { dietTipsChapter -> DietTipsChaptersListItem(dietTipsChapter, isInProgress(dietTipsChapter)) }
+        })
     }
 }

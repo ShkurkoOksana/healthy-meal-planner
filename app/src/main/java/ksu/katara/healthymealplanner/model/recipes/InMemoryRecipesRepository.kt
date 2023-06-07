@@ -10,9 +10,6 @@ import ksu.katara.healthymealplanner.model.recipes.entities.RecipePreparationSte
 import ksu.katara.healthymealplanner.tasks.SimpleTask
 import ksu.katara.healthymealplanner.tasks.Task
 import java.util.concurrent.Callable
-import kotlin.random.Random
-
-const val TAG = "InMemoryRecipesItemListRepository"
 
 typealias RecipeIngredientsListener = (recipeIngredients: List<RecipeIngredient>) -> Unit
 typealias RecipesInCategoryListener = (recipes: List<Recipe>) -> Unit
@@ -22,10 +19,7 @@ class InMemoryRecipesRepository(
 ) : RecipesRepository {
 
     private var recipes = mutableListOf<Recipe>()
-
     private var recipesDetails: MutableList<RecipeDetails>
-
-    private val recipesSize = PHOTOES.size
 
     private var recipeTypes = listOf<String>()
     private var recipeTypesLoaded = false
@@ -40,6 +34,8 @@ class InMemoryRecipesRepository(
 
     private var preparationSteps = mutableListOf<RecipePreparationStep>()
     private var preparationStepsLoaded = false
+
+    private val recipesSize = PHOTOES.size
 
     private var isAllIngredientsSelected = false
 
@@ -57,38 +53,6 @@ class InMemoryRecipesRepository(
         recipesDetails = (0 until recipesSize).map {
             val recipeName = recipes[it].name
 
-            val recipeIngredients = mutableListOf<RecipeIngredient>()
-            var ingredientsIndex = 0
-
-            INGREDIENTS.getValue(recipeName).forEach { (id, measure) ->
-                val product = productRepository.getProductById(id.toLong())
-                val recipeIngredient = RecipeIngredient(
-                    id = ingredientsIndex.toLong(),
-                    product = product,
-                    amount = measure[0] as Double,
-                    measure = measure[1] as String,
-                    isInShoppingList = false,
-                )
-
-                recipeIngredients.add(recipeIngredient)
-                ingredientsIndex++
-            }
-
-            val preparationSteps = mutableListOf<RecipePreparationStep>()
-            var preparationStepsIndex = 0
-
-            PREPARATION_STEPS.getValue(recipeName).forEach { (_, preparationStepsList) ->
-                val preparationStep = RecipePreparationStep(
-                    id = preparationStepsIndex.toLong(),
-                    step = preparationStepsIndex + 1,
-                    photo = preparationStepsList[0],
-                    description = preparationStepsList[1]
-                )
-
-                preparationSteps.add(preparationStep)
-                preparationStepsIndex++
-            }
-
             RecipeDetails(
                 recipe = recipes[it],
                 preparationTime = PREPARATION_TIME.getValue(recipeName),
@@ -98,12 +62,52 @@ class InMemoryRecipesRepository(
                 proteins = PROTEINS.getValue(recipeName),
                 fats = FATS.getValue(recipeName),
                 carbohydrates = CARBOHYDRATES.getValue(recipeName),
-                recipeIngredients = recipeIngredients,
-                preparationSteps = preparationSteps,
-                isFavorite = Random.nextBoolean(),
+                ingredients = getIngredients(recipeName),
+                preparationSteps = getPreparationSteps(recipeName),
+                isFavorite = false,
                 isAllIngredientsInShoppingList = false,
             )
         }.toMutableList()
+    }
+
+    private fun getIngredients(recipeName: String): MutableList<RecipeIngredient> {
+        val recipeIngredients = mutableListOf<RecipeIngredient>()
+        var ingredientsIndex = 0
+
+        INGREDIENTS.getValue(recipeName).forEach { (id, measure) ->
+            val product = productRepository.getProductById(id.toLong())
+            val recipeIngredient = RecipeIngredient(
+                id = ingredientsIndex.toLong(),
+                product = product,
+                amount = measure[0] as Double,
+                measure = measure[1] as String,
+                isInShoppingList = false,
+            )
+
+            recipeIngredients.add(recipeIngredient)
+            ingredientsIndex++
+        }
+
+        return recipeIngredients
+    }
+
+    private fun getPreparationSteps(recipeName: String): MutableList<RecipePreparationStep> {
+        val preparationSteps = mutableListOf<RecipePreparationStep>()
+        var preparationStepsIndex = 0
+
+        PREPARATION_STEPS.getValue(recipeName).forEach { (_, preparationStepsList) ->
+            val preparationStep = RecipePreparationStep(
+                id = preparationStepsIndex.toLong(),
+                step = preparationStepsIndex + 1,
+                photo = preparationStepsList[0],
+                description = preparationStepsList[1]
+            )
+
+            preparationSteps.add(preparationStep)
+            preparationStepsIndex++
+        }
+
+        return preparationSteps
     }
 
     override fun getRecipes(): MutableList<Recipe> = recipes
@@ -171,7 +175,7 @@ class InMemoryRecipesRepository(
 
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
 
-            recipeIngredients = recipeDetails.recipeIngredients
+            recipeIngredients = recipeDetails.ingredients
 
             recipeIngredientsLoaded = true
             notifyIngredientsChanges()
@@ -185,7 +189,7 @@ class InMemoryRecipesRepository(
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == id } ?: throw IngredientsNotFoundException()
 
         var countRecipeIngredientsSelected = 0
-        recipeDetails.recipeIngredients.forEach { recipeIngredient ->
+        recipeDetails.ingredients.forEach { recipeIngredient ->
             if (recipeIngredient.isInShoppingList) {
                 countRecipeIngredientsSelected++
             }
@@ -215,7 +219,7 @@ class InMemoryRecipesRepository(
 
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
 
-        val recipeIngredient = recipeDetails.recipeIngredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
+        val recipeIngredient = recipeDetails.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
         recipeIngredient.isInShoppingList = isSelected
 
         isAllIngredientsSelected = isAllIngredientsSelectedResult(recipeId)
@@ -229,7 +233,7 @@ class InMemoryRecipesRepository(
         Thread.sleep(200L)
 
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
-        recipeDetails.recipeIngredients.forEach { it.isInShoppingList = isSelected }
+        recipeDetails.ingredients.forEach { it.isInShoppingList = isSelected }
 
         recipeDetails.isAllIngredientsInShoppingList = isSelected
         isAllIngredientsSelected = isSelected

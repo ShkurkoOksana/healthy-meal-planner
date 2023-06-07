@@ -11,14 +11,10 @@ import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ItemAddRecipesRecipeBinding
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
-interface OnAddRecipesActionListener {
-
-    fun onAddRecipesItemDelete(recipe: Recipe)
-
-}
+typealias AddRecipesActionListener = (recipe: Recipe) -> Unit
 
 class AddRecipesListAdapter(
-    private val onAddRecipesActionListener: OnAddRecipesActionListener,
+    private val addRecipesActionListener: AddRecipesActionListener,
 ) : RecyclerView.Adapter<AddRecipesListAdapter.RecipesListViewHolder>(),
     View.OnClickListener,
     Filterable {
@@ -33,8 +29,8 @@ class AddRecipesListAdapter(
 
     override fun onClick(v: View) {
         val recipe = v.tag as Recipe
-        onAddRecipesActionListener.onAddRecipesItemDelete(recipe)
-        }
+        addRecipesActionListener.invoke(recipe)
+    }
 
     override fun getItemCount(): Int = addRecipesList.size
 

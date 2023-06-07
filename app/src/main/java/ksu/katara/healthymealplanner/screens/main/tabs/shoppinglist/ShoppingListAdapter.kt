@@ -39,7 +39,6 @@ class ShoppingListAdapter(
     override fun onClick(v: View) {
         val shoppingListRecipe = v.tag as ShoppingListRecipe
         shoppingListViewModel.onShoppingListRecipeDetails(shoppingListRecipe)
-
     }
 
     override fun getItemCount() = shoppingList.size

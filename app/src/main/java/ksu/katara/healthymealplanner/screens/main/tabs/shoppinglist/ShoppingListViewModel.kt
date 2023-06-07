@@ -134,7 +134,6 @@ class ShoppingListViewModel(
         } else {
             shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId] = mutableListOf(shoppingListRecipeIngredientId)
         }
-
         notifyUpdates()
     }
 
@@ -146,7 +145,6 @@ class ShoppingListViewModel(
                 list!!.removeAt(indexToDelete)
             }
         }
-
         notifyUpdates()
     }
 
@@ -165,7 +163,6 @@ class ShoppingListViewModel(
         } else {
             shoppingListIngredientsDeleteItemIdsInProgress[shoppingListRecipeId] = mutableListOf(shoppingListRecipeIngredientId)
         }
-
         notifyUpdates()
     }
 
@@ -177,7 +174,6 @@ class ShoppingListViewModel(
                 list!!.removeAt(indexToDelete)
             }
         }
-
         notifyUpdates()
     }
 

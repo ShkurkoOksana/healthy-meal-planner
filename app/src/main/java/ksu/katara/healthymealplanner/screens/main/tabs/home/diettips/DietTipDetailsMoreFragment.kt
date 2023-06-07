@@ -52,6 +52,7 @@ class DietTipDetailsMoreFragment : Fragment(R.layout.fragment_diet_tip_details_m
                 is PendingResult -> {
                     binding.dietTipsChaptersProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noDietTipsChaptersTextView.visibility = View.VISIBLE
                 }

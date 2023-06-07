@@ -14,6 +14,4 @@ interface AddRecipesRepository {
 
     fun addRecipesDeleteRecipe(recipe: Recipe): Task<Unit>
 
-    //fun addRecipesAddRecipe(recipe: Recipe): Task<Unit>
-
 }

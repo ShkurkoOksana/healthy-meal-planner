@@ -73,7 +73,7 @@ class MealPlanDateRecipesListViewModel(
             .onSuccess {
                 removeDeleteProgressFrom(recipe)
 
-                if(it == null) {
+                if (it == null) {
                     mealPlanRecipesResult = EmptyResult()
                 }
             }

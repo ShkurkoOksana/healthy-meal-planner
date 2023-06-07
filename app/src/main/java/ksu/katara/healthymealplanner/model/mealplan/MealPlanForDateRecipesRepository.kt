@@ -7,9 +7,9 @@ import ksu.katara.healthymealplanner.tasks.Task
 
 interface MealPlanForDateRecipesRepository {
 
-    fun initMealPlan(): Task<Unit>
+    fun loadMealPlan(): Task<Unit>
 
-    fun getMealPlanForDate(): MutableMap<String, MutableList<MealPlanRecipes?>>
+    fun getMealPlan(): MutableMap<String, MutableList<MealPlanRecipes?>>
 
     fun loadMealPlanForDateRecipes(selectedDate: String, mealType: MealTypes): Task<Unit>
 

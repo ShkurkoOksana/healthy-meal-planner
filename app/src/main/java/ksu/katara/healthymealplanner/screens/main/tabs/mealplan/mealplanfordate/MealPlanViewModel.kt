@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.screens.main.tabs.home
+package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +16,7 @@ class MealPlanViewModel(
     }
 
     private fun initMealPlanForDate() {
-        mealPlanForDateRecipesRepository.initMealPlan()
+        mealPlanForDateRecipesRepository.loadMealPlan()
             .onSuccess {
                 _isMealPlanLoaded.value = true
             }

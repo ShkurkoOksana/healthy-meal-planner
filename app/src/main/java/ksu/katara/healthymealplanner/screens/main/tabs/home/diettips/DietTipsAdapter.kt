@@ -36,32 +36,32 @@ class DietTipsAdapter(
     }
 
     override fun onBindViewHolder(holder: DietTipsViewHolder, position: Int) {
-            val dietTipListItem = dietTips[position]
-            val dietTip = dietTipListItem.dietTip
+        val dietTipListItem = dietTips[position]
+        val dietTip = dietTipListItem.dietTip
 
-            with(holder.binding) {
-                holder.itemView.tag = dietTip
+        with(holder.binding) {
+            holder.itemView.tag = dietTip
 
-                if (dietTipListItem.isInProgress) {
-                    holder.binding.root.setOnClickListener(null)
-                } else {
-                    holder.binding.root.setOnClickListener(this@DietTipsAdapter)
-                }
-
-                dietTipNameTextView.text = dietTip.name
-
-                if (dietTip.photo.isNotBlank()) {
-                    Glide.with(dietTipPhotoImageView.context)
-                        .load(dietTip.photo)
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_diet_tip_details_default_background)
-                        .error(R.drawable.ic_diet_tip_details_default_background)
-                        .into(dietTipPhotoImageView)
-                } else {
-                    Glide.with(dietTipPhotoImageView.context).clear(dietTipPhotoImageView)
-                    dietTipPhotoImageView.setImageResource(R.drawable.ic_diet_tip_details_default_background)
-                }
+            if (dietTipListItem.isInProgress) {
+                holder.binding.root.setOnClickListener(null)
+            } else {
+                holder.binding.root.setOnClickListener(this@DietTipsAdapter)
             }
+
+            dietTipNameTextView.text = dietTip.name
+
+            if (dietTip.photo.isNotBlank()) {
+                Glide.with(dietTipPhotoImageView.context)
+                    .load(dietTip.photo)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_diet_tip_details_default_background)
+                    .error(R.drawable.ic_diet_tip_details_default_background)
+                    .into(dietTipPhotoImageView)
+            } else {
+                Glide.with(dietTipPhotoImageView.context).clear(dietTipPhotoImageView)
+                dietTipPhotoImageView.setImageResource(R.drawable.ic_diet_tip_details_default_background)
+            }
+        }
     }
 
     class DietTipsViewHolder(

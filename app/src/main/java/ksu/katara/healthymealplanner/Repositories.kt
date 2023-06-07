@@ -21,7 +21,7 @@ object Repositories {
 
     val dietTipsRepository: DietTipsRepository = InMemoryDietTipsRepository()
 
-    val productsRepository: ProductsRepository = InMemoryProductsRepository()
+    private val productsRepository: ProductsRepository = InMemoryProductsRepository()
 
     val recipeCategoriesRepository: CategoriesRepository = InMemoryCategoriesRepository()
 

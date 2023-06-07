@@ -13,6 +13,7 @@ import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.screens.main.tabs.TabsFragmentDirections
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsAdapter
 import ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsViewModel
+import ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate.MealPlanViewModel
 import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
@@ -154,6 +155,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 is PendingResult -> {
                     binding.dietTipsProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noDietTipsTextView.visibility = View.VISIBLE
                 }

@@ -25,7 +25,6 @@ class InMemoryAddRecipesRepository(
             val mealPlanForDateRecipesList: MutableList<Recipe> = getMealPlanForDateRecipesList(selectedDate, mealType)
             addRecipes = getAddRecipes(mealPlanForDateRecipesList)
             addRecipesLoaded = true
-
             notifyAddRecipesChanges()
         }
 
@@ -39,8 +38,13 @@ class InMemoryAddRecipesRepository(
     }
 
     private fun getMealPlanForDateRecipesList(selectedDate: String, mealType: MealTypes): MutableList<Recipe> {
-        val mealPlanForDate = mealPlanForDateRecipesRepository.getMealPlanForDate()
+        return getMealPlanForDateRecipes(selectedDate, mealType)
+    }
+
+    private fun getMealPlanForDateRecipes(selectedDate: String, mealType: MealTypes): MutableList<Recipe> {
         var mealPlanForDateRecipesList: MutableList<Recipe> = mutableListOf()
+
+        val mealPlanForDate = mealPlanForDateRecipesRepository.getMealPlan()
         if (mealPlanForDate.containsKey(selectedDate)) {
             mealPlanForDate.getValue(selectedDate).forEach { mealPlanForDateRecipes ->
                 if (mealPlanForDateRecipes?.mealType == mealType) {
@@ -53,8 +57,6 @@ class InMemoryAddRecipesRepository(
 
         return mealPlanForDateRecipesList
     }
-
-
 
     override fun addAddRecipesListener(listener: AddRecipesListener) {
         addRecipesListeners.add(listener)
@@ -71,11 +73,10 @@ class InMemoryAddRecipesRepository(
         SimpleTask {
             Thread.sleep(200L)
 
-            val indexToRemove = addRecipes.indexOfFirst { it == recipe }
-            if (indexToRemove != -1) {
-                addRecipes.removeAt(indexToRemove)
+            val indexToDelete = addRecipes.indexOfFirst { it == recipe }
+            if (indexToDelete != -1) {
+                addRecipes.removeAt(indexToDelete)
             }
-
             notifyAddRecipesChanges()
         }
 

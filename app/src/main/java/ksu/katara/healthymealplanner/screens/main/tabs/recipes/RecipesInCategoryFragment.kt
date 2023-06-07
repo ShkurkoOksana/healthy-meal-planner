@@ -59,6 +59,7 @@ class RecipesInCategoryFragment : Fragment(R.layout.fragment_recipes_in_category
                 is PendingResult -> {
                     binding.recipesInCategoryProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noRecipesInCategoryTextView.visibility = View.VISIBLE
                 }

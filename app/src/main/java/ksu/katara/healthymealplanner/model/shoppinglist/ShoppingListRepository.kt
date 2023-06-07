@@ -17,7 +17,11 @@ interface ShoppingListRepository {
 
     fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit>
 
-    fun shoppingListIngredientsSelectIngredient(shoppingListRecipe: ShoppingListRecipe, shoppingListRecipeIngredient: ShoppingListRecipeIngredient, isChecked: Boolean): Task<Unit>
+    fun shoppingListIngredientsSelectIngredient(
+        shoppingListRecipe: ShoppingListRecipe,
+        shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
+        isChecked: Boolean
+    ): Task<Unit>
 
     fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Task<Unit>
 

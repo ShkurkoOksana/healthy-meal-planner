@@ -25,7 +25,7 @@ class TypesAdapter : RecyclerView.Adapter<TypesAdapter.RecipeTypesHolder>() {
     override fun onBindViewHolder(holder: RecipeTypesHolder, position: Int) {
         val recipeType = recipeTypes[position]
         holder.binding.recipeTypeButton.text = recipeType
-        }
+    }
 
     class RecipeTypesHolder(
         val binding: ItemRecipeTypeBinding

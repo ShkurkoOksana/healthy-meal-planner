@@ -3,11 +3,9 @@ package ksu.katara.healthymealplanner.model.product
 import ksu.katara.healthymealplanner.exceptions.ProductNotFoundException
 import ksu.katara.healthymealplanner.model.product.entities.Product
 
-const val TAG = "InMemoryRecipesItemListRepository"
-
 class InMemoryProductsRepository : ProductsRepository {
-    private val products = mutableListOf<Product>()
 
+    private val products = mutableListOf<Product>()
     private val productsSize = NAME.size
 
     init {

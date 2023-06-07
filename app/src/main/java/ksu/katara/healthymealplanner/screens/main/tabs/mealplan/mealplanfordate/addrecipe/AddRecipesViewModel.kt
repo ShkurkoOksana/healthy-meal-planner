@@ -24,7 +24,7 @@ class AddRecipesListViewModel(
     private val mealType: MealTypes,
     private val addRecipesRepository: AddRecipesRepository,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
-) : BaseViewModel(), OnAddRecipesActionListener {
+) : BaseViewModel(), AddRecipesActionListener {
 
     private val _addRecipes = MutableLiveData<StatusResult<MutableList<AddRecipesItem>>>()
     val addRecipes: LiveData<StatusResult<MutableList<AddRecipesItem>>> = _addRecipes
@@ -64,7 +64,7 @@ class AddRecipesListViewModel(
         addRecipesRepository.removeAddRecipesListener(addRecipesListener)
     }
 
-    override fun onAddRecipesItemDelete(recipe: Recipe) {
+    override fun invoke(recipe: Recipe) {
         if (isDeleteInProgress(recipe)) return
         addDeleteProgressTo(recipe)
         mealPlanForDateRecipesRepository.mealPlanForDateRecipesAddRecipe(selectedDate, mealType, recipe)
@@ -83,7 +83,6 @@ class AddRecipesListViewModel(
             }
             .autoCancel()
     }
-
 
     private fun addDeleteProgressTo(recipe: Recipe) {
         addRecipesDeleteItemIdsInProgress.add(recipe.id)

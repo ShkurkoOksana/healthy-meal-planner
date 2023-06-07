@@ -10,7 +10,7 @@ import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
 
-class RecipeTypesListViewModel (
+class RecipeTypesListViewModel(
     private val recipeId: Long,
     private val recipesRepository: RecipesRepository,
 ) : BaseViewModel() {

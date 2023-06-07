@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
  * SplashViewModel checks whether user is signed-in or not.
  */
 class SplashViewModel : ViewModel() {
-
     private val _launchMainScreen = MutableLiveData<Boolean>()
     val launchMainScreen: LiveData<Boolean> = _launchMainScreen
 

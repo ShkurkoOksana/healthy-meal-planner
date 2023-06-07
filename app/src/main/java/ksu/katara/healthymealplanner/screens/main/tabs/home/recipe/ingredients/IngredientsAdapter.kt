@@ -50,7 +50,7 @@ class IngredientsAdapter(
                 isIngredientSelectedProgressBar.visibility = View.VISIBLE
                 holder.binding.root.setOnClickListener(null)
             } else {
-                if(ingredient.isInShoppingList) {
+                if (ingredient.isInShoppingList) {
                     ingredientCrossView.visibility = View.VISIBLE
                     isIngredientSelectedCheckBox.isChecked = true
                 } else {
@@ -65,7 +65,7 @@ class IngredientsAdapter(
 
             ingredientNameTextView.text = ingredient.product.name
 
-            if(ingredient.amount == 0.0) {
+            if (ingredient.amount == 0.0) {
                 ingredientAmountTextView.text = ""
             } else {
                 ingredientAmountTextView.text = ingredient.amount.toString()

@@ -29,14 +29,16 @@ class ShoppingListIngredientsAdapter(
             R.id.shoppingListIngredientsItemDeleteViewButton -> {
                 shoppingListViewModel.onShoppingListIngredientsRecipeDelete(shoppingListRecipe, shoppingListRecipeIngredient)
             }
+
             R.id.isShoppingListIngredientsItemSelectedCheckBox -> {
                 val checkBox = v as CheckBox
                 shoppingListViewModel.onShoppingListIngredientsRecipeSelect(shoppingListRecipe, shoppingListRecipeIngredient, checkBox.isChecked)
             }
+
             else -> {
                 val container = v as ConstraintLayout
                 var checkBox: CheckBox? = null
-                container.forEach { if(it is CheckBox)  checkBox = it }
+                container.forEach { if (it is CheckBox) checkBox = it }
                 shoppingListViewModel.onShoppingListIngredientsRecipeSelect(shoppingListRecipe, shoppingListRecipeIngredient, !checkBox!!.isChecked)
             }
         }
@@ -61,7 +63,7 @@ class ShoppingListIngredientsAdapter(
 
         with(holder.binding) {
             holder.itemView.tag = shoppingListRecipeIngredient
-            isShoppingListIngredientsItemSelectedCheckBox.tag =  shoppingListRecipeIngredient
+            isShoppingListIngredientsItemSelectedCheckBox.tag = shoppingListRecipeIngredient
             shoppingListIngredientsItemDeleteViewButton.tag = shoppingListRecipeIngredient
 
             if (shoppingListIngredientsItem.isSelectInProgress) {
@@ -74,7 +76,7 @@ class ShoppingListIngredientsAdapter(
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
 
                 isShoppingListIngredientsItemSelectedCheckBox.isChecked = shoppingListRecipeIngredient.isSelectAndCross
-                if(shoppingListRecipeIngredient.isSelectAndCross) {
+                if (shoppingListRecipeIngredient.isSelectAndCross) {
                     shoppingListIngredientsItemCrossView.visibility = View.VISIBLE
                 } else {
                     shoppingListIngredientsItemCrossView.visibility = View.INVISIBLE

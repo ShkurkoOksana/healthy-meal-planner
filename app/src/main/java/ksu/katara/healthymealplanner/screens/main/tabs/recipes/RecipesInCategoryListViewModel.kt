@@ -74,7 +74,9 @@ class RecipesInCategoryViewModel(
     private fun notifyUpdates() {
         _recipesInCategory.postValue(recipesInCategoryResult.resultMap { recipes ->
             recipes.map { recipe ->
-                RecipesInCategoryListItem(recipe, isInProgress(recipe)) } })
+                RecipesInCategoryListItem(recipe, isInProgress(recipe))
+            }
+        })
     }
 
     override fun invoke(recipe: Recipe) {

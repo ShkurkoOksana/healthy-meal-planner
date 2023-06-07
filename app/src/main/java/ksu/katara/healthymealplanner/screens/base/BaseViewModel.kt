@@ -14,7 +14,6 @@ class Event<T>(
         handled = true
         return value
     }
-
 }
 
 open class BaseViewModel : ViewModel() {

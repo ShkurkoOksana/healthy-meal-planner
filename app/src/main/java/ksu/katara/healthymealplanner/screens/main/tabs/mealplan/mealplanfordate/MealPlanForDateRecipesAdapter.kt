@@ -34,6 +34,7 @@ class MealPlanForDateRecipesAdapter(
             R.id.mealPlanForDateRecipesItemDeleteViewButton -> {
                 mealPlanDateRecipeActionListener.onMealPlanForDateRecipesItemDelete(recipe)
             }
+
             else -> {
                 mealPlanDateRecipeActionListener.onMealPlanForDateRecipesItemDetails(recipe)
             }

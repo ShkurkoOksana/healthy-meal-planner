@@ -68,7 +68,8 @@ class DietTipsViewModel(
 
     private fun notifyUpdates() {
         _dietTips.postValue(dietTipsResult.resultMap { dietTips ->
-            dietTips.map { dietTip -> DietTipsListItem(dietTip, isInProgress(dietTip)) } })
+            dietTips.map { dietTip -> DietTipsListItem(dietTip, isInProgress(dietTip)) }
+        })
     }
 
     override fun invoke(dietTip: DietTip) {

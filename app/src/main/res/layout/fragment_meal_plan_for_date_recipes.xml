@@ -79,7 +79,7 @@
         android:src="@drawable/ic_add_recipe_in_meal_plan_for_date"
         android:padding="@dimen/small_space"
         android:layout_marginEnd="@dimen/medium_space"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

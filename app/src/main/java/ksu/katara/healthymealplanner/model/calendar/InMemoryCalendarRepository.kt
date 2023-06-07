@@ -9,13 +9,19 @@ typealias CalendarListener = (calendar: List<Date>) -> Unit
 class InMemoryCalendarRepository : CalendarRepository {
 
     private var calendar = mutableListOf<Date>()
-
     private val listeners = mutableSetOf<CalendarListener>()
 
     override fun getCalendar(): MutableList<Date> {
         val minDayOfCalendar = Calendar.getInstance(Locale.ENGLISH)
-        val maxDayOfCalendar = getCalendarMinMaxDate(2)
+        val maxDayOfCalendar = getCalendarMinMaxDate(MAX_COUNT_MONTH)
 
+        calendar = getDaysList(minDayOfCalendar, maxDayOfCalendar)
+        notifyChanges()
+
+        return calendar
+    }
+
+    private fun getDaysList(minDayOfCalendar: Calendar, maxDayOfCalendar: Calendar): MutableList<Date> {
         val daysList = mutableListOf<Date>()
         var data = minDayOfCalendar.time
         while (data < maxDayOfCalendar.time) {
@@ -23,9 +29,6 @@ class InMemoryCalendarRepository : CalendarRepository {
             minDayOfCalendar.add(Calendar.DAY_OF_MONTH, 1)
             data = minDayOfCalendar.time
         }
-
-        calendar = daysList
-        notifyChanges()
 
         return daysList
     }
@@ -50,6 +53,6 @@ class InMemoryCalendarRepository : CalendarRepository {
     }
 
     companion object {
-        const val MAX_COUNT_MONTH = "2"
+        const val MAX_COUNT_MONTH = 2
     }
 }

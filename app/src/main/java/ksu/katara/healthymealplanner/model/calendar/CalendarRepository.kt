@@ -9,4 +9,5 @@ interface CalendarRepository {
     fun addListener(listener: CalendarListener)
 
     fun removeListener(listener: CalendarListener)
+
 }

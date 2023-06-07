@@ -9,7 +9,6 @@ import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.FragmentTabsBinding
 
 class TabsFragment : Fragment(R.layout.fragment_tabs) {
-
     private lateinit var binding: FragmentTabsBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -20,5 +19,4 @@ class TabsFragment : Fragment(R.layout.fragment_tabs) {
         val navController = navHost.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
     }
-
 }

@@ -106,7 +106,7 @@ class IngredientsViewModel(
             }
             .autoCancel()
 
-        if(isSelected) {
+        if (isSelected) {
             shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
                 .onSuccess {
 

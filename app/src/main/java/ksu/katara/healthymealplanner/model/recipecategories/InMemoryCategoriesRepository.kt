@@ -12,7 +12,6 @@ class InMemoryCategoriesRepository : CategoriesRepository {
 
     private var recipeCategories = mutableListOf<Category>()
     private var loaded = false
-
     private val listeners = mutableSetOf<RecipeCategoriesListener>()
 
     init {
@@ -27,18 +26,32 @@ class InMemoryCategoriesRepository : CategoriesRepository {
         }
     }
 
-    override fun getCategoryById(id: Long): Category {
-        return recipeCategories.firstOrNull { it.id == (id % recipeCategories.size) }!!
-    }
-
     override fun loadRecipeCategories(): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
+
+        recipeCategories = getRecipeCategories()
 
         loaded = true
         notifyChanges()
     }
 
-    override fun getById(id: Long): Task<Category> = SimpleTask(Callable {
+    private fun getRecipeCategories(): MutableList<Category> {
+        val recipeCategories = mutableListOf<Category>()
+
+        RECIPE_CATEGORIES.forEach { (id, categoriesList) ->
+            recipeCategories.add(
+                Category(
+                    id = id.toLong(),
+                    photo = categoriesList[0],
+                    name = categoriesList[1],
+                )
+            )
+        }
+
+        return recipeCategories
+    }
+
+    override fun getCategoryById(id: Long): Task<Category> = SimpleTask(Callable {
         Thread.sleep(200L)
 
         return@Callable recipeCategories.firstOrNull<Category> { it.id == id }

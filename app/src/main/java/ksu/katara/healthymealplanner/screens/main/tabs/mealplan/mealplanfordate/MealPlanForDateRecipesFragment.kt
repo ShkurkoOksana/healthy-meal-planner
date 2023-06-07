@@ -74,6 +74,7 @@ class MealPlanForDateRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_
                 is PendingResult -> {
                     binding.mealPlanForDateRecipesProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noMealPlanForDateRecipesTextView.visibility = View.VISIBLE
                     binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.VISIBLE

@@ -38,7 +38,6 @@ class CalendarAdapter(
     private val selectedDay = currentDay
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): CalendarViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemDayOfMonthBinding.inflate(inflater, parent, false)

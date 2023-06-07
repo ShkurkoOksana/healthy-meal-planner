@@ -10,7 +10,6 @@ import ksu.katara.healthymealplanner.databinding.FragmentSplashBinding
 import ksu.katara.healthymealplanner.screens.main.MainActivity
 
 class SplashFragment : Fragment(R.layout.fragment_splash) {
-
     private lateinit var binding: FragmentSplashBinding
 
     private val viewModel: SplashViewModel by viewModels()
