@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.types
+package ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.types
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -49,23 +49,19 @@ class ShoppingListIngredientsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListIngredientsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemShoppingListIngredientsBinding.inflate(inflater, parent, false)
-
         binding.root.setOnClickListener(this)
         binding.isShoppingListIngredientsItemSelectedCheckBox.setOnClickListener(this)
         binding.shoppingListIngredientsItemDeleteViewButton.setOnClickListener(this)
-
         return ShoppingListIngredientsViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ShoppingListIngredientsViewHolder, position: Int) {
         val shoppingListIngredientsItem = shoppingListIngredients[position]
         val shoppingListRecipeIngredient = shoppingListIngredientsItem.shoppingListRecipeIngredient
-
         with(holder.binding) {
             holder.itemView.tag = shoppingListRecipeIngredient
             isShoppingListIngredientsItemSelectedCheckBox.tag = shoppingListRecipeIngredient
             shoppingListIngredientsItemDeleteViewButton.tag = shoppingListRecipeIngredient
-
             if (shoppingListIngredientsItem.isSelectInProgress) {
                 isShoppingListIngredientsItemSelectedCheckBox.visibility = View.INVISIBLE
                 isShoppingListIngredientsItemSelectedProgressBar.visibility = View.VISIBLE
@@ -74,7 +70,6 @@ class ShoppingListIngredientsAdapter(
                 isShoppingListIngredientsItemSelectedCheckBox.visibility = View.VISIBLE
                 isShoppingListIngredientsItemSelectedProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
-
                 isShoppingListIngredientsItemSelectedCheckBox.isChecked = shoppingListRecipeIngredient.isSelectAndCross
                 if (shoppingListRecipeIngredient.isSelectAndCross) {
                     shoppingListIngredientsItemCrossView.visibility = View.VISIBLE
@@ -82,7 +77,6 @@ class ShoppingListIngredientsAdapter(
                     shoppingListIngredientsItemCrossView.visibility = View.INVISIBLE
                 }
             }
-
             if (shoppingListIngredientsItem.isDeleteInProgress) {
                 shoppingListIngredientsItemDeleteViewButton.visibility = View.INVISIBLE
                 shoppingListIngredientsItemDeleteProgressBar.visibility = View.VISIBLE
@@ -92,15 +86,12 @@ class ShoppingListIngredientsAdapter(
                 shoppingListIngredientsItemDeleteProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
             }
-
             shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.recipeIngredient.product.name
-
             if (shoppingListRecipeIngredient.recipeIngredient.amount == 0.0) {
                 shoppingListIngredientsItemAmountTextView.text = ""
             } else {
                 shoppingListIngredientsItemAmountTextView.text = shoppingListRecipeIngredient.recipeIngredient.amount.toString()
             }
-
             shoppingListIngredientsItemMeasureTextView.text = shoppingListRecipeIngredient.recipeIngredient.measure
         }
     }

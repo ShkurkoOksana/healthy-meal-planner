@@ -26,62 +26,48 @@ class InMemoryDietTipsRepository : DietTipsRepository {
 
     override fun loadDietTipsChapters(): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         dietTipsChapters = getDietTipsChapters()
-
         dietTipsChaptersLoaded = true
         notifyDietTipsChaptersChanges()
     }
 
     private fun getDietTipsChapters(): MutableList<DietTipsChapter> {
         dietTipsChapters = mutableListOf()
-
         var dietTipId = 0
-
         for ((dietTipChapterId, dietTipChapterName) in DIET_TIPS_CHAPTER_NAME.withIndex()) {
             val dietTipsList = mutableListOf<DietTip>()
-
             dietTipsSize = DIET_TIPS_IMAGES.getValue(dietTipChapterName).size
             val dietTipsPhotos = DIET_TIPS_IMAGES.getValue(dietTipChapterName)
             val dietTipsNames = DIET_TIPS_NAMES.getValue(dietTipChapterName)
-
             (0 until dietTipsSize).map { dietTipIndex ->
                 val dietTip = DietTip(
                     id = dietTipId.toLong(),
                     photo = dietTipsPhotos[dietTipIndex],
                     name = dietTipsNames[dietTipIndex],
                 )
-
                 dietTipsList.add(dietTip)
                 dietTipId++
             }
-
             val dietTipsChapter = DietTipsChapter(
                 id = dietTipChapterId.toLong(),
                 name = dietTipChapterName,
                 dietTipsList = dietTipsList
             )
-
             dietTipsChapters.add(dietTipsChapter)
         }
-
         return dietTipsChapters
     }
 
     override fun loadDietTips(): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         dietTips = getDietTips()
-
         dietTipsLoaded = true
         notifyDietTipsChanges()
     }
 
     private fun getDietTips(): MutableList<DietTip> {
         dietTips = mutableListOf()
-
         var dietTipId = 0
-
         for (key in DIET_TIPS_IMAGES.keys) {
             for (dietTipIndex in DIET_TIPS_IMAGES.getValue(key).indices) {
                 val dietTip = DietTip(
@@ -89,21 +75,32 @@ class InMemoryDietTipsRepository : DietTipsRepository {
                     name = DIET_TIPS_NAMES.getValue(key)[dietTipIndex],
                     photo = DIET_TIPS_IMAGES.getValue(key)[dietTipIndex],
                 )
-
                 dietTips.add(dietTip)
                 dietTipId++
             }
         }
-
-
         return dietTips
     }
 
-    override fun getDietTipDetailsById(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
+    override fun addDietTipsListener(listener: DietTipsListener) {
+        dietTipsListeners.add(listener)
+        if (dietTipsLoaded) {
+            listener.invoke(dietTips)
+        }
+    }
+
+    override fun removeDietTipsListener(listener: DietTipsListener) {
+        dietTipsListeners.remove(listener)
+    }
+
+    private fun notifyDietTipsChanges() {
+        if (!dietTipsLoaded) return
+        dietTipsListeners.forEach { it.invoke(dietTips) }
+    }
+
+    override fun loadDietTipDetails(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
         Thread.sleep(200L)
-
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipsNotFoundException()
-
         return@Callable DietTipDetails(
             dietTip = dietTip,
             background = DIET_TIPS_DETAILS_BACKGROUND.getValue(dietTip.name),
@@ -119,29 +116,13 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         }
     }
 
-    override fun addDietTipsListener(listener: DietTipsListener) {
-        dietTipsListeners.add(listener)
-        if (dietTipsLoaded) {
-            listener.invoke(dietTips)
-        }
-    }
-
     override fun removeDietTipsChaptersListener(listener: DietTipsChaptersListener) {
         dietTipsChaptersListeners.remove(listener)
-    }
-
-    override fun removeDietTipsListener(listener: DietTipsListener) {
-        dietTipsListeners.remove(listener)
     }
 
     private fun notifyDietTipsChaptersChanges() {
         if (!dietTipsChaptersLoaded) return
         dietTipsChaptersListeners.forEach { it.invoke(dietTipsChapters) }
-    }
-
-    private fun notifyDietTipsChanges() {
-        if (!dietTipsLoaded) return
-        dietTipsListeners.forEach { it.invoke(dietTips) }
     }
 
     companion object {

@@ -14,10 +14,8 @@ class InMemoryCalendarRepository : CalendarRepository {
     override fun getCalendar(): MutableList<Date> {
         val minDayOfCalendar = Calendar.getInstance(Locale.ENGLISH)
         val maxDayOfCalendar = getCalendarMinMaxDate(MAX_COUNT_MONTH)
-
         calendar = getDaysList(minDayOfCalendar, maxDayOfCalendar)
         notifyChanges()
-
         return calendar
     }
 
@@ -29,7 +27,6 @@ class InMemoryCalendarRepository : CalendarRepository {
             minDayOfCalendar.add(Calendar.DAY_OF_MONTH, 1)
             data = minDayOfCalendar.time
         }
-
         return daysList
     }
 

@@ -16,9 +16,9 @@
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.RecipeFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.RecipeDetailsFragment"
         android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" >
+        tools:layout="@layout/fragment_recipe_details" >
         <argument
             android:name="recipe_id"
             app:argType="long" />

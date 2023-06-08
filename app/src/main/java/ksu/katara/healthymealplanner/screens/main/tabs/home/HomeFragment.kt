@@ -43,17 +43,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
-
         initView()
     }
 
     private fun initView() {
         initProfile()
-
         initDietTips()
-
         initMealPlanForDate(currentDate = Date())
-
         initDiaryDetails()
     }
 
@@ -75,7 +71,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun initMealPlanForDate(currentDate: Date) = with(binding) {
         hideAllMealPlanForToday()
-
         mealPlanViewModel.isMealPlanLoaded.observe(viewLifecycleOwner) {
             if (it) {
                 breakfastForDateDetailsButton.visibility = View.VISIBLE
@@ -88,19 +83,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 dietTipTryAgainContainer.visibility = View.VISIBLE
             }
         }
-
+        mealPlanViewModel.actionShowToast.observe(viewLifecycleOwner) {
+            it.getValue()?.let { messageRes -> Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show() }
+        }
         breakfastForDateDetailsButton.setOnClickListener {
             onMealPlanForDateItemPressed(MealTypes.BREAKFAST, currentDate)
         }
-
         lunchForDateDetailsButton.setOnClickListener {
             onMealPlanForDateItemPressed(MealTypes.LUNCH, currentDate)
         }
-
         dinnerForDateDetailsButton.setOnClickListener {
             onMealPlanForDateItemPressed(MealTypes.DINNER, currentDate)
         }
-
         snackForDateDetailsButton.setOnClickListener {
             onMealPlanForDateItemPressed(MealTypes.SNACK, currentDate)
         }
@@ -108,18 +102,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun hideAllMealPlanForToday() {
         with(binding) {
-            breakfastForDateDetailsButton.visibility = View.INVISIBLE
-            lunchForDateDetailsButton.visibility = View.INVISIBLE
-            dinnerForDateDetailsButton.visibility = View.INVISIBLE
-            snackForDateDetailsButton.visibility = View.INVISIBLE
-            mealPlanForTodayTryAgainContainer.visibility = View.INVISIBLE
+            breakfastForDateDetailsButton.visibility = View.GONE
+            lunchForDateDetailsButton.visibility = View.GONE
+            dinnerForDateDetailsButton.visibility = View.GONE
+            snackForDateDetailsButton.visibility = View.GONE
+            mealPlanForTodayTryAgainContainer.visibility = View.GONE
         }
     }
 
     private fun onMealPlanForDateItemPressed(mealTypeName: MealTypes, currentDate: Date) {
         val date = sdf.format(currentDate)
         val direction = TabsFragmentDirections.actionTabsFragmentToRecipesFragment(mealTypeName, date)
-
         findTopNavController().navigate(direction)
     }
 
@@ -127,24 +120,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.dietTipsMoreTextView.setOnClickListener {
             onMorePressed()
         }
-
         initDietTipsRecycleView()
     }
 
     private fun onMorePressed() {
-        val directions = TabsFragmentDirections.actionTabsFragmentToDietTipDetailsMoreFragment()
+        val directions = TabsFragmentDirections.actionTabsFragmentToDietTipsChaptersFragment()
         findTopNavController().navigate(directions)
     }
 
     private fun initDietTipsRecycleView() {
         dietTipsAdapter = DietTipsAdapter(dietTipsViewModel)
-
         dietTipsViewModel.dietTips.observe(viewLifecycleOwner) {
             hideAll()
             when (it) {
                 is SuccessResult -> {
                     dietTipsAdapter.dietTips = it.data.slice(0..AMOUNT_OF_DIET_TIPS)
-
                     binding.dietTipsRecyclerView.visibility = View.VISIBLE
                 }
 
@@ -161,11 +151,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
-
+        dietTipsViewModel.actionShowToast.observe(viewLifecycleOwner) {
+            it.getValue()?.let { messageRes -> Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show() }
+        }
         dietTipsViewModel.actionShowDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { dietTip -> onDietTipPressed(dietTip) }
         }
-
         val dietTipsLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.dietTipsRecyclerView.layoutManager = dietTipsLayoutManager
@@ -174,7 +165,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun onDietTipPressed(dietTip: DietTip) {
         val dietTipArg = dietTip.id
-
         val direction =
             TabsFragmentDirections.actionTabsFragmentToDietTipDetailsFragment(dietTipArg)
         findTopNavController().navigate(direction)

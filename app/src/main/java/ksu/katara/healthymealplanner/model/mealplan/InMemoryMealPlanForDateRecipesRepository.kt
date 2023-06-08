@@ -19,7 +19,6 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
     override fun loadMealPlan(): Task<Unit> =
         SimpleTask {
             Thread.sleep(200L)
-
             mealPlanForDate = mutableMapOf()
         }
 
@@ -28,11 +27,8 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
     override fun loadMealPlanForDateRecipes(selectedDate: String, mealType: MealTypes): Task<Unit> =
         SimpleTask {
             Thread.sleep(200L)
-
             mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
-
             mealPlanForDateRecipesLoaded = true
-
             notifyMealPlanForDateChanges()
         }
 
@@ -44,7 +40,6 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
         } else {
             null
         }
-
         return mealPlanForDateRecipes
     }
 
@@ -62,21 +57,17 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
     override fun mealPlanForDateRecipesAddRecipe(selectedDate: String, mealType: MealTypes, recipe: Recipe): Task<Unit> =
         SimpleTask {
             Thread.sleep(200L)
-
             addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
-
             notifyMealPlanForDateChanges()
         }
 
     private fun addRecipeToMealPlanForDate(selectedDate: String, mealType: MealTypes, recipe: Recipe) {
         val newMealPlanForTodayRecipesItem = MealPlanRecipes(mealType, mutableListOf(recipe))
-
         val mealPlanForDateRecipesListItem: MealPlanRecipes?
         if (mealPlanForDate.containsKey(selectedDate)) {
             mealPlanForDateRecipesListItem = mealPlanForDate
                 .getValue(selectedDate)
                 .firstOrNull { it?.mealType == mealType }
-
             if (mealPlanForDateRecipesListItem == null) {
                 mealPlanForDateRecipes = newMealPlanForTodayRecipesItem
                 mealPlanForDate[selectedDate]?.add(newMealPlanForTodayRecipesItem)
@@ -95,29 +86,25 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
     override fun mealPlanForDateRecipesDeleteRecipe(selectedDate: String, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?> =
         SimpleTask {
             Thread.sleep(200L)
-
             deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
-
             mealPlanForDateRecipes
         }
 
     private fun deleteRecipeFromMealPlanForDate(selectedDate: String, mealType: MealTypes, recipe: Recipe) {
         var recipeList: MutableList<Recipe>
-
         if (mealPlanForDate.containsKey(selectedDate)) {
             val mealPlanForDateRecipesList = mealPlanForDate.getValue(selectedDate)
             mealPlanForDateRecipesList.forEach { mealPlanForDateRecipesListItem ->
                 if (mealPlanForDateRecipesListItem?.mealType == mealType) {
                     recipeList = mealPlanForDateRecipesListItem.recipesList
-
                     val indexToDelete = recipeList.indexOfFirst { it == recipe }
                     if (indexToDelete != -1) {
                         recipeList.removeAt(indexToDelete)
                     }
-
                     mealPlanForDateRecipes = if (recipeList.isNotEmpty()) {
                         mealPlanForDateRecipesListItem
                     } else {
+                        mealPlanForDate.remove(selectedDate)
                         null
                     }
                 }

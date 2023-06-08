@@ -26,38 +26,31 @@ class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
         CalendarViewModel(Repositories.calendarRepository)
     }
 
-    // Перенести инициализацию текущего дня во viewModel
     private var selectedDate = Date()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMealPlanBinding.bind(view)
-
         initCalendar()
-
         initMealPlanForDate(selectedDate.toString())
     }
 
     private fun initCalendar() {
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.calendarRecyclerView)
-
         setUpCalendar()
     }
 
     private fun setUpCalendar() {
         calendarViewModel.loadCalendar()
         calendarAdapter = CalendarAdapter(calendarViewModel)
-
         calendarViewModel.daysInMonth.observe(viewLifecycleOwner) {
             calendarAdapter.daysInMonth = it
         }
-
         calendarViewModel.selectedData.observe(viewLifecycleOwner) {
             selectedDate = it
             initMealPlanForDate(sdf.format(it))
         }
-
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.calendarRecyclerView.layoutManager = layoutManager
         binding.calendarRecyclerView.adapter = calendarAdapter
@@ -67,15 +60,12 @@ class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
         binding.breakfastForDateDetailsButton.setOnClickListener {
             onMealPlanForSelectedDateItemPressed(MealTypes.BREAKFAST, selectedDate)
         }
-
         binding.lunchForDateDetailsButton.setOnClickListener {
             onMealPlanForSelectedDateItemPressed(MealTypes.LUNCH, selectedDate)
         }
-
         binding.dinnerForDateDetailsButton.setOnClickListener {
             onMealPlanForSelectedDateItemPressed(MealTypes.DINNER, selectedDate)
         }
-
         binding.snackForDateDetailsButton.setOnClickListener {
             onMealPlanForSelectedDateItemPressed(MealTypes.SNACK, selectedDate)
         }
@@ -83,7 +73,6 @@ class MealPlanFragment : Fragment(R.layout.fragment_meal_plan) {
 
     private fun onMealPlanForSelectedDateItemPressed(mealTypeName: MealTypes, selectedDate: String) {
         val direction = TabsFragmentDirections.actionTabsFragmentToRecipesFragment(mealTypeName, selectedDate)
-
         findTopNavController().navigate(direction)
     }
 }

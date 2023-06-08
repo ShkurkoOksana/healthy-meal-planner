@@ -25,13 +25,11 @@ class RecipeCategoriesFragment : Fragment(R.layout.fragment_recipe_categories) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRecipeCategoriesBinding.bind(view)
-
         initRecipeCategories()
     }
 
     private fun initRecipeCategories() {
         recipeCategoriesAdapter = RecipeCategoriesAdapter(recipeCategoriesViewModel)
-
         recipeCategoriesViewModel.recipeCategories.observe(viewLifecycleOwner) {
             hideAll()
             when (it) {
@@ -53,11 +51,9 @@ class RecipeCategoriesFragment : Fragment(R.layout.fragment_recipe_categories) {
                 }
             }
         }
-
         recipeCategoriesViewModel.actionShowDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { recipeCategory -> onRecipeCategoryPressed(recipeCategory.id) }
         }
-
         val recipeCategoriesLayoutManager =
             GridLayoutManager(requireContext(), 2)
         binding.recipeCategoriesRecyclerView.layoutManager = recipeCategoriesLayoutManager
@@ -67,7 +63,6 @@ class RecipeCategoriesFragment : Fragment(R.layout.fragment_recipe_categories) {
     private fun hideAll() = with(binding) {
         recipeCategoriesRecyclerView.visibility = View.GONE
         recipesRecipeCategoriesProgressBar.visibility = View.GONE
-
         noRecipeCategoriesTextView.visibility = View.GONE
     }
 

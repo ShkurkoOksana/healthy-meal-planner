@@ -23,7 +23,6 @@ class InMemoryShoppingListRepository(
 
     override fun loadShoppingList(): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         shoppingList = mutableListOf()
         shoppingListLoaded = true
         notifyShoppingListChanges()
@@ -48,9 +47,7 @@ class InMemoryShoppingListRepository(
     override fun shoppingListIngredientsAddIngredient(recipeId: Long, recipeIngredient: RecipeIngredient): Task<Unit> =
         SimpleTask {
             Thread.sleep(200L)
-
             addIngredientToShoppingListIngredients(recipeId, recipeIngredient)
-
             notifyShoppingListChanges()
         }
 
@@ -58,7 +55,6 @@ class InMemoryShoppingListRepository(
         val recipeDetails =
             recipesRepository.getRecipesDetails().firstOrNull { it.recipe.id == recipeId } ?: throw RecipeDetailsNotFoundException()
         val shoppingListRecipe = shoppingList.firstOrNull { shoppingListRecipe -> shoppingListRecipe.recipe.id == recipeId }
-
         if (shoppingListRecipe == null) {
             val shoppingListItemIngredients = mutableListOf(
                 ShoppingListRecipeIngredient(
@@ -88,9 +84,7 @@ class InMemoryShoppingListRepository(
 
     override fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         addAllIngredientsToShoppingListIngredients(recipeId, isSelected)
-
         notifyShoppingListChanges()
     }
 
@@ -109,7 +103,6 @@ class InMemoryShoppingListRepository(
             recipe,
             allShoppingListRecipeIngredients,
         )
-
         if (isSelected) {
             if (shoppingListRecipe == null) {
                 shoppingList.add(shoppingListRecipeWithAllIngredients)
@@ -133,13 +126,10 @@ class InMemoryShoppingListRepository(
         isChecked: Boolean,
     ): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
         val shoppingListRecipeIngredientsItem =
             shoppingListItem.shoppingListIngredients.firstOrNull { it == shoppingListRecipeIngredient } ?: throw IngredientsNotFoundException()
-
         shoppingListRecipeIngredientsItem.isSelectAndCross = isChecked
-
         notifyShoppingListChanges()
     }
 
@@ -148,9 +138,7 @@ class InMemoryShoppingListRepository(
         ingredient: RecipeIngredient,
     ): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
-
         notifyShoppingListChanges()
     }
 
@@ -158,7 +146,6 @@ class InMemoryShoppingListRepository(
         val shoppingListRecipe = shoppingList.firstOrNull { it.recipe.id == recipeId } ?: throw ShoppingListRecipeNotFoundException()
         val shoppingListIngredients = shoppingListRecipe.shoppingListIngredients
         val shoppingListRecipeIngredient = shoppingListIngredients.firstOrNull { it.recipeIngredient == ingredient }
-
         val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
         val indexToDelete = shoppingListItem.shoppingListIngredients.indexOfFirst { it == shoppingListRecipeIngredient }
         if (indexToDelete != -1) {

@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.recipes
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -33,17 +34,11 @@ class RecipesInCategoryFragment : Fragment(R.layout.fragment_recipes_in_category
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRecipesInCategoryBinding.bind(view)
-
         initRecipesInCategoryRecycleViewSection()
-
-        recipesInCategoryListViewModel.recipeCategory.observe(viewLifecycleOwner) {
-
-        }
     }
 
     private fun initRecipesInCategoryRecycleViewSection() {
         recipesInCategoryAdapter = RecipesInCategoryAdapter(recipesInCategoryListViewModel)
-
         recipesInCategoryListViewModel.recipesInCategory.observe(viewLifecycleOwner) {
             hideAll()
             when (it) {
@@ -65,13 +60,14 @@ class RecipesInCategoryFragment : Fragment(R.layout.fragment_recipes_in_category
                 }
             }
         }
-
+        recipesInCategoryListViewModel.actionShowToast.observe(viewLifecycleOwner) {
+            it.getValue()?.let { messageRes -> Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show() }
+        }
         recipesInCategoryListViewModel.actionShowDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { recipe ->
                 showRecipeDetails(recipe.id)
             }
         }
-
         val recipeCategoriesLayoutManager =
             GridLayoutManager(requireContext(), 2)
         binding.recipesInCategoryRecyclerView.layoutManager =

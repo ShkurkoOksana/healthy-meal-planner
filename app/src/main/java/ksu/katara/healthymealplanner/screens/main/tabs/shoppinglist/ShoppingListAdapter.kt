@@ -46,7 +46,6 @@ class ShoppingListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemShoppingListBinding.inflate(inflater, parent, false)
-
         return ShoppingListViewHolder(binding)
     }
 
@@ -58,9 +57,7 @@ class ShoppingListAdapter(
 
         with(holder.binding) {
             holder.itemView.tag = shoppingListRecipe
-
             holder.binding.root.setOnClickListener(this@ShoppingListAdapter)
-
             shoppingListRecipeNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
                 Glide.with(shoppingListRecipePhotoImageView.context)
@@ -74,7 +71,6 @@ class ShoppingListAdapter(
                 shoppingListRecipePhotoImageView.setImageResource(R.drawable.ic_recipe_default_photo)
             }
         }
-
         initShoppingListIngredients(shoppingListRecipe, shoppingListIngredientsItem, holder)
     }
 
@@ -84,9 +80,7 @@ class ShoppingListAdapter(
         holder: ShoppingListViewHolder
     ) {
         val shoppingListIngredientsAdapter = ShoppingListIngredientsAdapter(shoppingListRecipe, shoppingListViewModel)
-
         shoppingListIngredientsAdapter.shoppingListIngredients = shoppingListRecipeIngredients
-
         val shoppingListIngredientsLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         holder.binding.shoppingListIngredientsRecyclerView.layoutManager = shoppingListIngredientsLayoutManager
         holder.binding.shoppingListIngredientsRecyclerView.adapter = shoppingListIngredientsAdapter

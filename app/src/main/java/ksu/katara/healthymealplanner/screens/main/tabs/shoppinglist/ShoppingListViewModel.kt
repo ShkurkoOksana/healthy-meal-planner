@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.shoppinglist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.model.shoppinglist.ShoppingListListener
 import ksu.katara.healthymealplanner.model.shoppinglist.ShoppingListRepository
@@ -10,7 +11,6 @@ import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecip
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
 import ksu.katara.healthymealplanner.screens.base.Event
 import ksu.katara.healthymealplanner.tasks.EmptyResult
-import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
@@ -33,6 +33,9 @@ class ShoppingListViewModel(
 
     private val _shoppingList = MutableLiveData<StatusResult<MutableList<ShoppingListRecipeItem>>>()
     val shoppingList: LiveData<StatusResult<MutableList<ShoppingListRecipeItem>>> = _shoppingList
+
+    private val _actionShowToast = MutableLiveData<Event<Int>>()
+    val actionShowToast: LiveData<Event<Int>> = _actionShowToast
 
     private val _actionShowRecipeDetails = MutableLiveData<Event<ShoppingListRecipe>>()
     val actionShowRecipeDetails: LiveData<Event<ShoppingListRecipe>> = _actionShowRecipeDetails
@@ -62,10 +65,8 @@ class ShoppingListViewModel(
     private fun loadShoppingList() {
         shoppingListResult = PendingResult()
         shoppingListRepository.loadShoppingList()
-            .onSuccess {
-            }
             .onError {
-                shoppingListResult = ErrorResult(it)
+                _actionShowToast.value = Event(R.string.cant_load_shopping_list)
             }
             .autoCancel()
     }
@@ -74,7 +75,6 @@ class ShoppingListViewModel(
         super.onCleared()
         shoppingListRepository.removeShoppingListListener(listener)
     }
-
 
     private fun notifyUpdates() {
         _shoppingList.postValue(shoppingListResult.resultMap { shoppingListRecipes ->
@@ -104,9 +104,11 @@ class ShoppingListViewModel(
     ) {
         if (isSelectInProgress(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)) return
         addSelectProgressTo(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
-
         shoppingListRepository.shoppingListIngredientsSelectIngredient(shoppingListRecipe, shoppingListRecipeIngredient, isChecked)
             .onSuccess {
+                removeSelectProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
+            }
+            .onError {
                 removeSelectProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
             }
             .autoCancel()
@@ -122,8 +124,10 @@ class ShoppingListViewModel(
             .onSuccess {
                 removeDeleteProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
             }
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_delete_ingredient_from_shopping_list)
+            }
             .autoCancel()
-
         recipesRepository.setIngredientSelected(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient, false)
     }
 

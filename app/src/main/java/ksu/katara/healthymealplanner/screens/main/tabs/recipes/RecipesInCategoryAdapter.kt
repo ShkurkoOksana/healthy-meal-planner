@@ -15,7 +15,7 @@ class RecipesInCategoryAdapter(
     private val actionListener: RecipesInCategoryActionListener
 ) : RecyclerView.Adapter<RecipesInCategoryAdapter.RecipesInCategoryViewHolder>(), View.OnClickListener {
 
-    var recipesInCategory: List<RecipesInCategoryListItem> = emptyList()
+    var recipesInCategory: List<Recipe> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
@@ -31,23 +31,15 @@ class RecipesInCategoryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipesInCategoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemRecipeInCategoryBinding.inflate(inflater, parent, false)
-
         return RecipesInCategoryViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RecipesInCategoryViewHolder, position: Int) {
-        val recipeInCategoryListItem = recipesInCategory[position]
-        val recipe = recipeInCategoryListItem.recipe
+        val recipe = recipesInCategory[position]
 
         with(holder.binding) {
             holder.itemView.tag = recipe
-
-            if (recipeInCategoryListItem.isInProgress) {
-                holder.binding.root.setOnClickListener(null)
-            } else {
-                holder.binding.root.setOnClickListener(this@RecipesInCategoryAdapter)
-            }
-
+            holder.binding.root.setOnClickListener(this@RecipesInCategoryAdapter)
             recipeInCategoryNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
                 Glide.with(recipeInCategoryPhotoImageView.context)

@@ -2,29 +2,27 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.model.dietTips.DietTipsChaptersListener
 import ksu.katara.healthymealplanner.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipsChapter
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
+import ksu.katara.healthymealplanner.screens.base.Event
 import ksu.katara.healthymealplanner.tasks.EmptyResult
-import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
-
-data class DietTipsChaptersListItem(
-    val dietTipsChapter: DietTipsChapter,
-    val isInProgress: Boolean
-)
 
 class DietTipsChaptersViewModel(
     private val dietTipsRepository: DietTipsRepository
 ) : BaseViewModel() {
 
-    private val _dietTipsChapters = MutableLiveData<StatusResult<List<DietTipsChaptersListItem>>>()
-    val dietTipsChapters: LiveData<StatusResult<List<DietTipsChaptersListItem>>> = _dietTipsChapters
+    private val _dietTipsChapters = MutableLiveData<StatusResult<List<DietTipsChapter>>>()
+    val dietTipsChapters: LiveData<StatusResult<List<DietTipsChapter>>> = _dietTipsChapters
 
-    private val dietTipsChapterIdsInProgress = mutableSetOf<Long>()
+    private val _actionShowToast = MutableLiveData<Event<Int>>()
+    val actionShowToast: LiveData<Event<Int>> = _actionShowToast
+
     private var dietTipsChapterResult: StatusResult<List<DietTipsChapter>> = EmptyResult()
         set(value) {
             field = value
@@ -48,7 +46,7 @@ class DietTipsChaptersViewModel(
         dietTipsChapterResult = PendingResult()
         dietTipsRepository.loadDietTipsChapters()
             .onError {
-                dietTipsChapterResult = ErrorResult(it)
+                _actionShowToast.value = Event(R.string.cant_load_diet_tips_chapters)
             }
             .autoCancel()
     }
@@ -58,13 +56,7 @@ class DietTipsChaptersViewModel(
         dietTipsRepository.removeDietTipsChaptersListener(listener)
     }
 
-    private fun isInProgress(dietTipsChapter: DietTipsChapter): Boolean {
-        return dietTipsChapterIdsInProgress.contains(dietTipsChapter.id)
-    }
-
     private fun notifyUpdates() {
-        _dietTipsChapters.postValue(dietTipsChapterResult.resultMap { dietTipsChapters ->
-            dietTipsChapters.map { dietTipsChapter -> DietTipsChaptersListItem(dietTipsChapter, isInProgress(dietTipsChapter)) }
-        })
+        _dietTipsChapters.postValue(dietTipsChapterResult)
     }
 }

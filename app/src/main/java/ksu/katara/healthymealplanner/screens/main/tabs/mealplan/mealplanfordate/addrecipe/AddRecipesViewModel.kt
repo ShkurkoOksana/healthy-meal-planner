@@ -2,14 +2,15 @@ package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.model.addrecipes.AddRecipesListener
 import ksu.katara.healthymealplanner.model.addrecipes.AddRecipesRepository
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
+import ksu.katara.healthymealplanner.screens.base.Event
 import ksu.katara.healthymealplanner.tasks.EmptyResult
-import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
@@ -28,6 +29,9 @@ class AddRecipesListViewModel(
 
     private val _addRecipes = MutableLiveData<StatusResult<MutableList<AddRecipesItem>>>()
     val addRecipes: LiveData<StatusResult<MutableList<AddRecipesItem>>> = _addRecipes
+
+    private val _actionShowToast = MutableLiveData<Event<Int>>()
+    val actionShowToast: LiveData<Event<Int>> = _actionShowToast
 
     private val addRecipesDeleteItemIdsInProgress = mutableSetOf<Long>()
 
@@ -54,7 +58,7 @@ class AddRecipesListViewModel(
         addRecipesResult = PendingResult()
         addRecipesRepository.loadAddRecipes(selectedDate, mealType)
             .onError {
-                addRecipesResult = ErrorResult(it)
+                _actionShowToast.value = Event(R.string.cant_load_recipes)
             }
             .autoCancel()
     }
@@ -69,17 +73,17 @@ class AddRecipesListViewModel(
         addDeleteProgressTo(recipe)
         mealPlanForDateRecipesRepository.mealPlanForDateRecipesAddRecipe(selectedDate, mealType, recipe)
             .onError {
-            }
-            .onSuccess {
+                _actionShowToast.value = Event(R.string.cant_add_recipe_to_meal_plan)
             }
             .autoCancel()
 
         addRecipesRepository.addRecipesDeleteRecipe(recipe)
-            .onError {
-
-            }
             .onSuccess {
                 removeDeleteProgressFrom(recipe)
+            }
+            .onError {
+                removeDeleteProgressFrom(recipe)
+                _actionShowToast.value = Event(R.string.cant_delete_recipe_from_meal_plan)
             }
             .autoCancel()
     }

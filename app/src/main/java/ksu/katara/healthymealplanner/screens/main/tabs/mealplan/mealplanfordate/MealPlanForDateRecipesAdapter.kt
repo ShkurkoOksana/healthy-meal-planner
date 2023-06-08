@@ -46,21 +46,17 @@ class MealPlanForDateRecipesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealPlanForDateRecipesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMealPlanForDateRecipeBinding.inflate(inflater, parent, false)
-
         binding.root.setOnClickListener(this)
         binding.mealPlanForDateRecipesItemDeleteViewButton.setOnClickListener(this)
-
         return MealPlanForDateRecipesViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MealPlanForDateRecipesViewHolder, position: Int) {
         val mealPlanForDateRecipesItem = mealPlanForDateRecipes[position]
         val recipe = mealPlanForDateRecipesItem.recipe
-
         with(holder.binding) {
             holder.itemView.tag = recipe
             mealPlanForDateRecipesItemDeleteViewButton.tag = recipe
-
             if (mealPlanForDateRecipesItem.isInProgress) {
                 mealPlanForDateRecipesItemDeleteViewButton.visibility = View.INVISIBLE
                 itemMealPlanForDateRecipesItemProgressBar.visibility = View.VISIBLE
@@ -70,7 +66,6 @@ class MealPlanForDateRecipesAdapter(
                 itemMealPlanForDateRecipesItemProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@MealPlanForDateRecipesAdapter)
             }
-
             mealPlanForDateRecipesItemNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
                 Glide.with(mealPlanForDateRecipesItemPhotoImageView.context)

@@ -13,8 +13,8 @@
             android:id="@+id/action_tabsFragment_to_dietTipDetailsFragment"
             app:destination="@id/dietTipDetailsFragment" />
         <action
-            android:id="@+id/action_tabsFragment_to_dietTipDetailsMoreFragment"
-            app:destination="@id/dietTipDetailsMoreFragment" />
+            android:id="@+id/action_tabsFragment_to_dietTipsChaptersFragment"
+            app:destination="@id/dietTipsChaptersFragment" />
         <action
             android:id="@+id/action_tabsFragment_to_recipesFragment"
             app:destination="@id/mealPlanForDateFragment" />
@@ -34,19 +34,19 @@
             app:argType="long" />
     </fragment>
     <fragment
-        android:id="@+id/dietTipDetailsMoreFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsMoreFragment"
+        android:id="@+id/dietTipsChaptersFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsChaptersFragment"
         android:label="Полезные советы"
-        tools:layout="@layout/fragment_diet_tip_details_more">
+        tools:layout="@layout/fragment_diet_tips_chapters">
         <action
-            android:id="@+id/action_dietTipDetailsMoreFragment_to_dietTipDetailsFragment"
+            android:id="@+id/action_dietTipsChaptersFragment_to_dietTipDetailsFragment"
             app:destination="@id/dietTipDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.RecipeFragment"
+        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.RecipeDetailsFragment"
         android:label="Рецепт"
-        tools:layout="@layout/fragment_recipe" >
+        tools:layout="@layout/fragment_recipe_details" >
         <argument
             android:name="recipe_id"
             app:argType="long" />

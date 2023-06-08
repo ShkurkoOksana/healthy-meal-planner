@@ -36,6 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="4dp"
+        android:visibility="gone"
         android:indeterminateTint="@color/green"
         app:layout_constraintTop_toTopOf="@id/addRecipePhotoImageView"
         app:layout_constraintEnd_toEndOf="@id/addRecipePhotoImageView"

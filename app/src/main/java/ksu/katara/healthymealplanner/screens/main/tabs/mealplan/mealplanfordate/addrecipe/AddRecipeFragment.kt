@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
@@ -37,9 +38,7 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAddRecipesBinding.bind(view)
-
         initSearchAddRecipes()
-
         initAddRecipesList()
     }
 
@@ -49,8 +48,6 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
             onActionViewExpanded()
             isIconified = false
             clearFocus()
-
-
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return false
@@ -58,9 +55,7 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     filterString = newText
-
                     addRecipesListAdapter.filter.filter(newText)
-
                     return false
                 }
             })
@@ -77,10 +72,8 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
                 is SuccessResult -> {
                     binding.addRecipesListRecyclerView.visibility = View.VISIBLE
                     binding.addRecipesListProgressBar.visibility = View.INVISIBLE
-
                     addRecipesListAdapter.addRecipesList = statusResult.data
                     addRecipesListAdapter.filter.filter(filterString)
-
                     addRecipesListAdapter.addRecipesListFilter = statusResult.data
                 }
 
@@ -97,7 +90,9 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
                 }
             }
         }
-
+        addRecipesListViewModel.actionShowToast.observe(viewLifecycleOwner) {
+            it.getValue()?.let { messageRes -> Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show() }
+        }
         val recipesListLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.addRecipesListRecyclerView.layoutManager =

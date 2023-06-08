@@ -28,16 +28,13 @@ class InMemoryCategoriesRepository : CategoriesRepository {
 
     override fun loadRecipeCategories(): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
-
         recipeCategories = getRecipeCategories()
-
         loaded = true
         notifyChanges()
     }
 
     private fun getRecipeCategories(): MutableList<Category> {
         val recipeCategories = mutableListOf<Category>()
-
         RECIPE_CATEGORIES.forEach { (id, categoriesList) ->
             recipeCategories.add(
                 Category(
@@ -47,13 +44,11 @@ class InMemoryCategoriesRepository : CategoriesRepository {
                 )
             )
         }
-
         return recipeCategories
     }
 
     override fun getCategoryById(id: Long): Task<Category> = SimpleTask(Callable {
         Thread.sleep(200L)
-
         return@Callable recipeCategories.firstOrNull<Category> { it.id == id }
             ?: throw RecipeCategoryNotFoundException()
     })

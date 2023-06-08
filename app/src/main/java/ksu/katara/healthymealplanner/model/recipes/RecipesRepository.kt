@@ -10,10 +10,6 @@ interface RecipesRepository {
 
     fun getRecipes(): MutableList<Recipe>
 
-    fun getRecipesDetails(): MutableList<RecipeDetails>
-
-    fun getRecipeDetailsById(recipeId: Long): Task<RecipeDetails>
-
     fun loadRecipesInCategory(recipeCategoryId: Long): Task<Unit>
 
     fun getRecipeInCategoryById(id: Long): Task<RecipeDetails>
@@ -21,6 +17,14 @@ interface RecipesRepository {
     fun addRecipeInCategoryListener(listener: RecipesInCategoryListener)
 
     fun removeRecipeInCategoryListener(listener: RecipesInCategoryListener)
+
+    fun getRecipesDetails(): MutableList<RecipeDetails>
+
+    fun loadRecipeDetails(recipeId: Long): Task<RecipeDetails>
+
+    fun addRecipeDetailsListener(listener: RecipeDetailsListener)
+
+    fun removeRecipeDetailsListener(listener: RecipeDetailsListener)
 
     fun loadRecipeTypes(recipeId: Long): Task<List<String>>
 

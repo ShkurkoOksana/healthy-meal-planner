@@ -24,7 +24,6 @@ class AddRecipesListAdapter(
             field = newValue
             notifyDataSetChanged()
         }
-
     var addRecipesListFilter = mutableListOf<AddRecipesItem>()
 
     override fun onClick(v: View) {
@@ -37,19 +36,15 @@ class AddRecipesListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipesListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemAddRecipesRecipeBinding.inflate(inflater, parent, false)
-
         binding.root.setOnClickListener(this)
-
         return RecipesListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RecipesListViewHolder, position: Int) {
         val recipesItem = addRecipesList[position]
         val recipe = recipesItem.recipe
-
         with(holder.binding) {
             holder.itemView.tag = recipe
-
             if (recipesItem.isDeleteInProgress) {
                 addRecipeAddProgressBar.visibility = View.VISIBLE
                 holder.binding.root.setOnClickListener(null)
@@ -57,7 +52,6 @@ class AddRecipesListAdapter(
                 addRecipeAddProgressBar.visibility = View.INVISIBLE
                 holder.binding.root.setOnClickListener(this@AddRecipesListAdapter)
             }
-
             addRecipeNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
                 Glide.with(addRecipePhotoImageView.context)
@@ -95,7 +89,6 @@ class AddRecipesListAdapter(
                     filterResults.values = addRecipesFilterResult
                     filterResults.count = addRecipesFilterResult.size
                 }
-
                 return filterResults
             }
 

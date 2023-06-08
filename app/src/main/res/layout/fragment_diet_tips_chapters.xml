@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".screens.main.tabs.home.diettips.DietTipDetailsMoreFragment">
+    tools:context=".screens.main.tabs.home.diettips.DietTipsChaptersFragment">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dietTipsChaptersRecyclerView"
@@ -21,8 +21,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:indeterminateTint="@color/green"
-                android:visibility="visible" />
+                android:visibility="gone"
+                android:indeterminateTint="@color/green" />
 
             <LinearLayout
                 android:id="@+id/dietTipsChaptersTryAgainContainer"
@@ -31,12 +31,12 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/failed_to_load_diet_tips" />
+                    android:text="@string/failed_to_load_diet_tips_chapters" />
 
                 <Button
                     android:id="@+id/dietTipsChaptersTryAgainButton"
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/no_diet_tips"
-                android:visibility="visible" />
+                android:visibility="gone"
+                android:text="@string/no_diet_tips_chapters" />
 
 </FrameLayout>

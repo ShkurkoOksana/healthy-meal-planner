@@ -15,7 +15,7 @@ class DietTipsAdapter(
     private val dietTipActionListener: DietTipActionListener
 ) : RecyclerView.Adapter<DietTipsAdapter.DietTipsViewHolder>(), View.OnClickListener {
 
-    var dietTips: List<DietTipsListItem> = emptyList()
+    var dietTips: List<DietTip> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
@@ -36,20 +36,12 @@ class DietTipsAdapter(
     }
 
     override fun onBindViewHolder(holder: DietTipsViewHolder, position: Int) {
-        val dietTipListItem = dietTips[position]
-        val dietTip = dietTipListItem.dietTip
+        val dietTip = dietTips[position]
 
         with(holder.binding) {
             holder.itemView.tag = dietTip
-
-            if (dietTipListItem.isInProgress) {
-                holder.binding.root.setOnClickListener(null)
-            } else {
-                holder.binding.root.setOnClickListener(this@DietTipsAdapter)
-            }
-
+            holder.binding.root.setOnClickListener(this@DietTipsAdapter)
             dietTipNameTextView.text = dietTip.name
-
             if (dietTip.photo.isNotBlank()) {
                 Glide.with(dietTipPhotoImageView.context)
                     .load(dietTip.photo)

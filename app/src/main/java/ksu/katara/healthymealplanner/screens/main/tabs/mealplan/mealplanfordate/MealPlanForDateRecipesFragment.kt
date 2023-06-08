@@ -107,8 +107,8 @@ class MealPlanForDateRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_
         mealPlanForDateRecipesTryAgainContainer.visibility = View.GONE
         noMealPlanForDateRecipesTextView.visibility = View.GONE
 
-        mealPlanForDateRecipesAddRecipeButton.visibility = View.INVISIBLE
-        mealPlanForDateRecipesProgressBarForAddButton.visibility = View.INVISIBLE
+        mealPlanForDateRecipesAddRecipeButton.visibility = View.GONE
+        mealPlanForDateRecipesProgressBarForAddButton.visibility = View.GONE
     }
 
     private fun getMealType() = args.mealType

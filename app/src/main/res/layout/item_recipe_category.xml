@@ -8,7 +8,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
-        android:id="@+id/recipePhotoImageView"
+        android:id="@+id/recipeDetailsPhotoImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_margin="@dimen/large_space"
@@ -27,9 +27,9 @@
         android:lines="1"
         android:ellipsize="end"
         tools:text="Salads"
-        app:layout_constraintStart_toStartOf="@+id/recipePhotoImageView"
-        app:layout_constraintEnd_toEndOf="@+id/recipePhotoImageView"
-        app:layout_constraintTop_toBottomOf="@+id/recipePhotoImageView"
+        app:layout_constraintStart_toStartOf="@+id/recipeDetailsPhotoImageView"
+        app:layout_constraintEnd_toEndOf="@+id/recipeDetailsPhotoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/recipeDetailsPhotoImageView"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

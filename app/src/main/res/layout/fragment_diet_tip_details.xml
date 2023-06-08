@@ -23,7 +23,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/green"
-        android:visibility="visible" />
+        android:visibility="gone"
+        android:indeterminateTint="@color/green" />
+
+    <LinearLayout
+        android:id="@+id/dietTipDetailsTryAgainContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/failed_to_load_diet_tip_details"/>
+
+        <Button
+            android:id="@+id/recipeDetailsTryAgainButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_again"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/noDietTipDetailsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="@string/no_diet_tip_details"/>
 
 </FrameLayout>

@@ -9,14 +9,15 @@ interface DietTipsRepository {
 
     fun loadDietTips(): Task<Unit>
 
-    fun getDietTipDetailsById(id: Long): Task<DietTipDetails>
+    fun addDietTipsListener(listener: DietTipsListener)
+
+    fun removeDietTipsListener(listener: DietTipsListener)
+
+    fun loadDietTipDetails(id: Long): Task<DietTipDetails>
 
     fun addDietTipsChaptersListener(listener: DietTipsChaptersListener)
 
-    fun addDietTipsListener(listener: DietTipsListener)
-
     fun removeDietTipsChaptersListener(listener: DietTipsChaptersListener)
 
-    fun removeDietTipsListener(listener: DietTipsListener)
 
 }

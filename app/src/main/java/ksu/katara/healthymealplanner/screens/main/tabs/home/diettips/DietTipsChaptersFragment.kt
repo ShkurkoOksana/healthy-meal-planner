@@ -2,11 +2,12 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
-import ksu.katara.healthymealplanner.databinding.FragmentDietTipDetailsMoreBinding
+import ksu.katara.healthymealplanner.databinding.FragmentDietTipsChaptersBinding
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.tasks.EmptyResult
 import ksu.katara.healthymealplanner.tasks.ErrorResult
@@ -15,9 +16,9 @@ import ksu.katara.healthymealplanner.tasks.SuccessResult
 import ksu.katara.healthymealplanner.utils.findTopNavController
 import ksu.katara.healthymealplanner.utils.viewModelCreator
 
-class DietTipDetailsMoreFragment : Fragment(R.layout.fragment_diet_tip_details_more) {
+class DietTipsChaptersFragment : Fragment(R.layout.fragment_diet_tips_chapters) {
 
-    private lateinit var binding: FragmentDietTipDetailsMoreBinding
+    private lateinit var binding: FragmentDietTipsChaptersBinding
 
     private lateinit var dietTipsChaptersAdapter: DietTipsChaptersAdapter
 
@@ -26,7 +27,7 @@ class DietTipDetailsMoreFragment : Fragment(R.layout.fragment_diet_tip_details_m
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentDietTipDetailsMoreBinding.bind(view)
+        binding = FragmentDietTipsChaptersBinding.bind(view)
 
         initDietTipsRecycleViewSections()
     }
@@ -36,7 +37,6 @@ class DietTipDetailsMoreFragment : Fragment(R.layout.fragment_diet_tip_details_m
             requireActivity(),
             dietTipsViewModel,
         )
-
         dietTipsChaptersViewModel.dietTipsChapters.observe(viewLifecycleOwner) {
             hideAll()
             when (it) {
@@ -58,22 +58,21 @@ class DietTipDetailsMoreFragment : Fragment(R.layout.fragment_diet_tip_details_m
                 }
             }
         }
-
+        dietTipsViewModel.actionShowToast.observe(viewLifecycleOwner) {
+            it.getValue()?.let { messageRes -> Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show() }
+        }
         dietTipsViewModel.actionShowDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { dietTip -> onDietTipPressed(dietTip) }
         }
-
         val dietTipsChaptersLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
         binding.dietTipsChaptersRecyclerView.layoutManager = dietTipsChaptersLayoutManager
         binding.dietTipsChaptersRecyclerView.adapter = dietTipsChaptersAdapter
     }
 
     private fun onDietTipPressed(dietTip: DietTip) {
         val dietTipArg = dietTip.id
-
-        val direction = DietTipDetailsMoreFragmentDirections.actionDietTipDetailsMoreFragmentToDietTipDetailsFragment(dietTipArg)
+        val direction = DietTipsChaptersFragmentDirections.actionDietTipsChaptersFragmentToDietTipDetailsFragment(dietTipArg)
         findTopNavController().navigate(direction)
     }
 

@@ -51,7 +51,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/failed_to_load_diet_tips" />
+                android:text="@string/failed_to_load_diet_tips_chapters" />
 
             <Button
                 android:id="@+id/dietTipsTryAgainButton"
@@ -66,8 +66,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/no_diet_tips"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:text="@string/no_diet_tips_chapters" />
 
     </FrameLayout>
 

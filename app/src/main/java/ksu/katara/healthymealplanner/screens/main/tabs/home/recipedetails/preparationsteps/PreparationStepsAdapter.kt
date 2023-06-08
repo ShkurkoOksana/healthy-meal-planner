@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.preparationsteps
+package ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.preparationsteps
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -21,13 +21,11 @@ class PreparationStepsAdapter : RecyclerView.Adapter<PreparationStepsAdapter.Pre
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreparationStepsHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPreparationStepsBinding.inflate(inflater, parent, false)
-
         return PreparationStepsHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PreparationStepsHolder, position: Int) {
         val preparationStep = preparationSteps[position]
-
         with(holder.binding) {
             if (preparationStep.photo.isNotBlank()) {
                 Glide.with(preparationStepPhotoImageView.context)
@@ -40,7 +38,6 @@ class PreparationStepsAdapter : RecyclerView.Adapter<PreparationStepsAdapter.Pre
                 Glide.with(preparationStepPhotoImageView.context).clear(preparationStepPhotoImageView)
                 preparationStepPhotoImageView.setImageResource(R.drawable.ic_recipe_default_photo)
             }
-
             preparationStepTitleTextView.text = preparationStep.step.toString()
             preparationStepDescriptionTextView.text = preparationStep.description
         }

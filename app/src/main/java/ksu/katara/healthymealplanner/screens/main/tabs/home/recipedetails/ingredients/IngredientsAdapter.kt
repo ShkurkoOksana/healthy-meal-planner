@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.screens.main.tabs.home.recipe.ingredients
+package ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.ingredients
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,6 @@ class IngredientsAdapter(
 
     override fun onClick(v: View) {
         val ingredient = v.tag as RecipeIngredient
-
         val isSelected = !ingredient.isInShoppingList
         ingredientsViewModel.invoke(ingredient, isSelected)
     }
@@ -31,16 +30,13 @@ class IngredientsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientsListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemIngredientsBinding.inflate(inflater, parent, false)
-
         binding.root.setOnClickListener(this)
-
         return IngredientsListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: IngredientsListViewHolder, position: Int) {
         val ingredientsItemListItem = ingredients[position]
         val ingredient = ingredientsItemListItem.ingredient
-
         with(holder.binding) {
             holder.itemView.tag = ingredient
 
@@ -62,15 +58,12 @@ class IngredientsAdapter(
                 isIngredientSelectedProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@IngredientsAdapter)
             }
-
             ingredientNameTextView.text = ingredient.product.name
-
             if (ingredient.amount == 0.0) {
                 ingredientAmountTextView.text = ""
             } else {
                 ingredientAmountTextView.text = ingredient.amount.toString()
             }
-
             ingredientMeasureTextView.text = ingredient.measure
         }
     }

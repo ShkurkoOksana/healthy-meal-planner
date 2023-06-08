@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.model.meal.enum.MealTypes
 import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesListener
 import ksu.katara.healthymealplanner.model.mealplan.MealPlanForDateRecipesRepository
@@ -10,7 +11,6 @@ import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
 import ksu.katara.healthymealplanner.screens.base.Event
 import ksu.katara.healthymealplanner.tasks.EmptyResult
-import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
@@ -28,6 +28,9 @@ class MealPlanDateRecipesListViewModel(
 
     private val _mealPlanForDateRecipes = MutableLiveData<StatusResult<List<MealPlanForDateRecipesItem>>>()
     val mealPlanForDateRecipes: LiveData<StatusResult<List<MealPlanForDateRecipesItem>>> = _mealPlanForDateRecipes
+
+    private val _actionShowToast = MutableLiveData<Event<Int>>()
+    val actionShowToast: LiveData<Event<Int>> = _actionShowToast
 
     private val _actionShowDetails = MutableLiveData<Event<Recipe>>()
     val actionShowDetails: LiveData<Event<Recipe>> = _actionShowDetails
@@ -56,7 +59,7 @@ class MealPlanDateRecipesListViewModel(
         mealPlanRecipesResult = PendingResult()
         mealPlanForDateRecipesRepository.loadMealPlanForDateRecipes(selectedDate, mealType)
             .onError {
-                mealPlanRecipesResult = ErrorResult(it)
+                _actionShowToast.value = Event(R.string.cant_load_meal_plan_for_date_recipes)
             }
             .autoCancel()
     }
@@ -72,16 +75,14 @@ class MealPlanDateRecipesListViewModel(
         mealPlanForDateRecipesRepository.mealPlanForDateRecipesDeleteRecipe(selectedDate, mealType, recipe)
             .onSuccess {
                 removeDeleteProgressFrom(recipe)
-
                 if (it == null) {
                     mealPlanRecipesResult = EmptyResult()
                 }
             }
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_delete_recipe_from_meal_plan)
+            }
             .autoCancel()
-    }
-
-    override fun onMealPlanForDateRecipesItemDetails(recipe: Recipe) {
-        _actionShowDetails.value = Event(recipe)
     }
 
     private fun addDeleteProgressTo(recipe: Recipe) {
@@ -102,5 +103,9 @@ class MealPlanDateRecipesListViewModel(
         _mealPlanForDateRecipes.postValue(mealPlanRecipesResult.resultMap { mealPlanForDateRecipes ->
             mealPlanForDateRecipes.recipesList.map { recipe -> MealPlanForDateRecipesItem(recipe, isDeleteInProgress(recipe)) }
         })
+    }
+
+    override fun onMealPlanForDateRecipesItemDetails(recipe: Recipe) {
+        _actionShowDetails.value = Event(recipe)
     }
 }

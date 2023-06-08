@@ -2,33 +2,30 @@ package ksu.katara.healthymealplanner.screens.main.tabs.recipes
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.model.recipecategories.CategoriesRepository
 import ksu.katara.healthymealplanner.model.recipecategories.RecipeCategoriesListener
 import ksu.katara.healthymealplanner.model.recipecategories.entities.Category
 import ksu.katara.healthymealplanner.screens.base.BaseViewModel
 import ksu.katara.healthymealplanner.screens.base.Event
 import ksu.katara.healthymealplanner.tasks.EmptyResult
-import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.StatusResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
-
-data class RecipeCategoriesListItem(
-    val recipeCategory: Category,
-    val isInProgress: Boolean
-)
 
 class RecipeCategoriesViewModel(
     private val recipeCategoriesRepository: CategoriesRepository
 ) : BaseViewModel(), RecipeCategoryActionListener {
 
-    private val _recipeCategories = MutableLiveData<StatusResult<List<RecipeCategoriesListItem>>>()
-    val recipeCategories: LiveData<StatusResult<List<RecipeCategoriesListItem>>> = _recipeCategories
+    private val _recipeCategories = MutableLiveData<StatusResult<List<Category>>>()
+    val recipeCategories: LiveData<StatusResult<List<Category>>> = _recipeCategories
+
+    private val _actionShowToast = MutableLiveData<Event<Int>>()
+    val actionShowToast: LiveData<Event<Int>> = _actionShowToast
 
     private val _actionShowDetails = MutableLiveData<Event<Category>>()
     val actionShowDetails: LiveData<Event<Category>> = _actionShowDetails
 
-    private val recipeCategoryIdsInProgress = mutableSetOf<Long>()
     private var recipeCategoriesResult: StatusResult<List<Category>> = EmptyResult()
         set(value) {
             field = value
@@ -52,7 +49,7 @@ class RecipeCategoriesViewModel(
         recipeCategoriesResult = PendingResult()
         recipeCategoriesRepository.loadRecipeCategories()
             .onError {
-                recipeCategoriesResult = ErrorResult(it)
+                _actionShowToast.value = Event(R.string.cant_load_recipe_categories)
             }
             .autoCancel()
     }
@@ -62,16 +59,8 @@ class RecipeCategoriesViewModel(
         recipeCategoriesRepository.removeListener(listener)
     }
 
-    private fun isInProgress(recipeCategory: Category): Boolean {
-        return recipeCategoryIdsInProgress.contains(recipeCategory.id)
-    }
-
     private fun notifyUpdates() {
-        _recipeCategories.postValue(recipeCategoriesResult.resultMap { recipeCategories ->
-            recipeCategories.map { recipeCategory ->
-                RecipeCategoriesListItem(recipeCategory, isInProgress(recipeCategory))
-            }
-        })
+        _recipeCategories.postValue(recipeCategoriesResult)
     }
 
     override fun invoke(recipeCategory: Category) {

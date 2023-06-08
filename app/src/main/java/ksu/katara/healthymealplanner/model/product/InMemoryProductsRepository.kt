@@ -14,7 +14,6 @@ class InMemoryProductsRepository : ProductsRepository {
                 id = it.toLong(),
                 name = NAME[it],
             )
-
             products.add(product)
         }
     }

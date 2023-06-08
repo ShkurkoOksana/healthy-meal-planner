@@ -41,24 +41,19 @@ class CalendarAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): CalendarViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemDayOfMonthBinding.inflate(inflater, parent, false)
-
         return CalendarViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val date = daysInMonth[position]
-
         val displayYear = yearSDF.format(date)
         val displayMonth = monthSDF.format(date)
         val displayDay = daySDF.format(date)
         val displayDayOfWeek = dayOfWeekSDF.format(date)
-
         holder.binding.dayOfWeekTextView.text = displayDayOfWeek
         holder.binding.monthTextView.text = displayMonth
         holder.binding.dayTextView.text = displayDay
-
         setCalendarListener(holder, position)
-
         changeVisibilityOfCalendarSelectedItem(holder, displayDay, displayMonth, displayYear, position)
     }
 
