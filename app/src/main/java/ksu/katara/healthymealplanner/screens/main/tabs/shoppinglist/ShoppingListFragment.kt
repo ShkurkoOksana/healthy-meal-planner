@@ -37,7 +37,6 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list) {
 
     private fun initShoppingList() {
         shoppingListAdapter = ShoppingListAdapter(requireContext(), shoppingListViewModel)
-
         shoppingListViewModel.shoppingList.observe(viewLifecycleOwner) {
             hideAll()
             when (it) {

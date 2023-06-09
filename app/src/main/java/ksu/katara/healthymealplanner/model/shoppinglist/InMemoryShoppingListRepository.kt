@@ -8,6 +8,7 @@ import ksu.katara.healthymealplanner.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecipeIngredient
+import ksu.katara.healthymealplanner.screens.main.tabs.shoppinglist.ShoppingListFragment
 import ksu.katara.healthymealplanner.tasks.SimpleTask
 import ksu.katara.healthymealplanner.tasks.Task
 
@@ -21,11 +22,11 @@ class InMemoryShoppingListRepository(
     private var shoppingListLoaded = false
     private val shoppingListListeners = mutableSetOf<ShoppingListListener>()
 
-    override fun loadShoppingList(): Task<Unit> = SimpleTask {
+    override fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>> = SimpleTask {
         Thread.sleep(200L)
-        shoppingList = mutableListOf()
         shoppingListLoaded = true
         notifyShoppingListChanges()
+        return@SimpleTask shoppingList
     }
 
     override fun addShoppingListListener(listener: ShoppingListListener) {

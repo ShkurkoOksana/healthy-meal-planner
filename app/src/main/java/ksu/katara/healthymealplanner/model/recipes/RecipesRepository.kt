@@ -34,7 +34,7 @@ interface RecipesRepository {
 
     fun removeIngredientsListener(listener: RecipeIngredientsListener)
 
-    fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Boolean>
+    fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Unit>
 
     fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean): Task<Unit>
 

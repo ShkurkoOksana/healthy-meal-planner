@@ -1,5 +1,7 @@
 package ksu.katara.healthymealplanner.screens.main.tabs.shoppinglist
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ksu.katara.healthymealplanner.R
@@ -58,6 +60,7 @@ class ShoppingListViewModel(
     }
 
     init {
+        Log.d(TAG, "init ShoppingListViewModel")
         shoppingListRepository.addShoppingListListener(listener)
         loadShoppingList()
     }
@@ -65,6 +68,9 @@ class ShoppingListViewModel(
     private fun loadShoppingList() {
         shoppingListResult = PendingResult()
         shoppingListRepository.loadShoppingList()
+            .onSuccess {
+                shoppingListResult = SuccessResult(it)
+            }
             .onError {
                 _actionShowToast.value = Event(R.string.cant_load_shopping_list)
             }

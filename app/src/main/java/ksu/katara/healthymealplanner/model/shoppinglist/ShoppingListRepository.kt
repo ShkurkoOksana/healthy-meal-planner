@@ -7,7 +7,7 @@ import ksu.katara.healthymealplanner.tasks.Task
 
 interface ShoppingListRepository {
 
-    fun loadShoppingList(): Task<Unit>
+    fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>>
 
     fun addShoppingListListener(listener: ShoppingListListener)
 

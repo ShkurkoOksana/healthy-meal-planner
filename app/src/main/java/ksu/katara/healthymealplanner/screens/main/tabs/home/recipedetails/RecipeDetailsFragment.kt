@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
@@ -23,6 +24,7 @@ import ksu.katara.healthymealplanner.tasks.ErrorResult
 import ksu.katara.healthymealplanner.tasks.PendingResult
 import ksu.katara.healthymealplanner.tasks.SuccessResult
 import ksu.katara.healthymealplanner.utils.viewModelCreator
+import kotlin.properties.Delegates
 
 class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
 
@@ -31,6 +33,8 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
     private lateinit var recipeTypesAdapter: TypesAdapter
     private lateinit var ingredientsAdapter: IngredientsAdapter
     private lateinit var preparationStepsAdapter: PreparationStepsAdapter
+
+    private var isAllIngredientsSelected by Delegates.notNull<Boolean>()
 
     private val recipeDetailsViewModel by viewModelCreator {
         RecipeDetailsViewModel(
@@ -82,15 +86,12 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
                     binding.recipeDetailsContentContainer.visibility = View.VISIBLE
                     initRecipeDetails(it.data)
                 }
-
                 is ErrorResult -> {
                     binding.recipeDetailsTryAgainContainer.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.recipeDetailsProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noRecipeDetailsTextView.visibility = View.VISIBLE
                 }
@@ -142,15 +143,12 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
                     binding.recipeDetailsPreparationStepsRecyclerView.visibility = View.VISIBLE
                     preparationStepsAdapter.preparationSteps = it.data
                 }
-
                 is ErrorResult -> {
                     binding.recipeDetailsPreparationStepsTryAgainContainer.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.recipeDetailsPreparationStepsProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noRecipeDetailsPreparationStepsTextView.visibility = View.VISIBLE
                 }
@@ -173,32 +171,31 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
     }
 
     private fun initSelectAllIngredients() {
-        binding.isAllIngredientsSelectedCheckBox.setOnCheckedChangeListener { _, isSelected ->
-            ingredientsViewModel.setAllIngredientsSelected(isSelected)
-            binding.isAllIngredientsSelectedCheckBox.isChecked = isSelected
-        }
         ingredientsViewModel.isAllIngredientsSelected.observe(viewLifecycleOwner) { statusResult ->
             when (statusResult) {
                 is SuccessResult -> {
                     binding.isAllIngredientsSelectedCheckBox.isChecked = statusResult.data
                     binding.isAllIngredientsSelectedCheckBox.visibility = View.VISIBLE
                     binding.recipeDetailsIsAllIngredientsSelectedProgressBar.visibility = View.INVISIBLE
+                    isAllIngredientsSelected = statusResult.data
                 }
-
                 is ErrorResult -> {
                 }
-
                 is PendingResult -> {
                     binding.isAllIngredientsSelectedCheckBox.visibility = View.INVISIBLE
                     binding.recipeDetailsIsAllIngredientsSelectedProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                 }
             }
         }
         ingredientsViewModel.actionShowToast.observe(viewLifecycleOwner) {
             it.getValue()?.let { messageRes -> Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show() }
+        }
+        binding.recipeDetailsSelectAllIngredientsContainer.setOnClickListener {
+            ingredientsViewModel.setAllIngredientsSelected(!isAllIngredientsSelected)
+            binding.isAllIngredientsSelectedCheckBox.isChecked = !isAllIngredientsSelected
+            isAllIngredientsSelected = !isAllIngredientsSelected
         }
     }
 
@@ -213,15 +210,12 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
                     binding.recipeDetailsIngredientsProgressBar.visibility = View.INVISIBLE
                     ingredientsAdapter.ingredients = statusResult.data
                 }
-
                 is ErrorResult -> {
                     binding.recipeDetailsIngredientsTryAgainContainer.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.recipeDetailsIngredientsProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noRecipeDetailsIngredientsTextView.visibility = View.VISIBLE
                 }
@@ -235,6 +229,10 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
         binding.recipeDetailsIngredientsRecyclerView.layoutManager =
             ingredientsItemListLayoutManager
         binding.recipeDetailsIngredientsRecyclerView.adapter = ingredientsAdapter
+        val ingredientsAnimator = binding.recipeDetailsIngredientsRecyclerView.itemAnimator
+        if (ingredientsAnimator is DefaultItemAnimator) {
+            ingredientsAnimator.supportsChangeAnimations = false
+        }
     }
 
     private fun hideAllIngredients() = with(binding) {
@@ -264,15 +262,12 @@ class RecipeDetailsFragment : Fragment(R.layout.fragment_recipe_details) {
                     binding.recipeDetailsTypesRecyclerView.visibility = View.VISIBLE
                     recipeTypesAdapter.recipeTypes = it.data
                 }
-
                 is ErrorResult -> {
                     binding.recipeDetailsTypesTryAgainContainer.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.recipeDetailsTypesProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noRecipeDetailsTypesTextView.visibility = View.VISIBLE
                 }

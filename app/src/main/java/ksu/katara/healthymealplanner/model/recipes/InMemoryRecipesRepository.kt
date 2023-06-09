@@ -1,5 +1,7 @@
 package ksu.katara.healthymealplanner.model.recipes
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import ksu.katara.healthymealplanner.exceptions.IngredientsNotFoundException
 import ksu.katara.healthymealplanner.exceptions.RecipeNotFoundException
 import ksu.katara.healthymealplanner.model.product.ProductsRepository
@@ -40,8 +42,6 @@ class InMemoryRecipesRepository(
     private var preparationStepsLoaded = false
 
     private val recipesSize = PHOTOES.size
-
-    private var isAllIngredientsSelected = false
 
     init {
         recipes = (0 until recipesSize).map {
@@ -187,20 +187,8 @@ class InMemoryRecipesRepository(
             recipeIngredients = recipeDetails.ingredients
             recipeIngredientsLoaded = true
             notifyIngredientsChanges()
-            isAllIngredientsSelected = isAllIngredientsSelectedResult(recipeId)
             return@Callable recipeIngredients
         })
-
-    private fun isAllIngredientsSelectedResult(id: Long): Boolean {
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == id } ?: throw IngredientsNotFoundException()
-        var countRecipeIngredientsSelected = 0
-        recipeDetails.ingredients.forEach { recipeIngredient ->
-            if (recipeIngredient.isInShoppingList) {
-                countRecipeIngredientsSelected++
-            }
-        }
-        return countRecipeIngredientsSelected == recipeIngredients.size && recipeIngredients.size != 0
-    }
 
     override fun addIngredientListener(listener: RecipeIngredientsListener) {
         recipeIngredientsListeners.add(listener)
@@ -218,31 +206,43 @@ class InMemoryRecipesRepository(
         recipeIngredientsListeners.forEach { it.invoke(recipeIngredients) }
     }
 
-    override fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Boolean> = SimpleTask {
+    override fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         val recipeIngredient = recipeDetails.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
+        //Log.d(TAG, "is Selected in Repository = $isSelected")
         recipeIngredient.isInShoppingList = isSelected
-        isAllIngredientsSelected = isAllIngredientsSelectedResult(recipeId)
-        recipeDetails.isAllIngredientsInShoppingList = isAllIngredientsSelected
-        return@SimpleTask isAllIngredientsSelected
+        //Log.d(TAG, "ingredient in Repository = $recipeIngredient")
     }
 
     override fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean): Task<Unit> = SimpleTask {
         Thread.sleep(200L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         recipeDetails.ingredients.forEach { it.isInShoppingList = isSelected }
+        //Log.d(TAG, "ingredient after allSelected = ${recipeDetails.ingredients}")
         recipeDetails.isAllIngredientsInShoppingList = isSelected
-        isAllIngredientsSelected = isSelected
     }
 
     override fun isAllIngredientsSelected(recipeId: Long) = SimpleTask(
         Callable {
             Thread.sleep(200L)
-            val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
-            return@Callable recipeDetails.isAllIngredientsInShoppingList
+            return@Callable isAllIngredientsSelectedResult(recipeId)
         }
     )
+
+    private fun isAllIngredientsSelectedResult(recipeId: Long): Boolean {
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        var countRecipeIngredientsSelected = 0
+        Log.d(TAG, recipeDetails.ingredients.joinToString(separator = "\n"))
+        recipeDetails.ingredients.forEach { recipeIngredient ->
+            if (recipeIngredient.isInShoppingList) {
+                countRecipeIngredientsSelected++
+            }
+        }
+        Log.d(TAG, "count = $countRecipeIngredientsSelected")
+        Log.d(TAG, "isAllIngredientsSelected = ${countRecipeIngredientsSelected == recipeDetails.ingredients.size && countRecipeIngredientsSelected != 0}")
+        return countRecipeIngredientsSelected == recipeDetails.ingredients.size && countRecipeIngredientsSelected != 0
+    }
 
     override fun loadPreparationSteps(recipeId: Long): Task<MutableList<RecipePreparationStep>> =
         SimpleTask(Callable {

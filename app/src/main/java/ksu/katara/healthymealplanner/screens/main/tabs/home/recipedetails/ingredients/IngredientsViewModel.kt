@@ -1,5 +1,7 @@
 package ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.ingredients
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ksu.katara.healthymealplanner.R
@@ -38,7 +40,6 @@ class IngredientsViewModel(
     private val ingredientsItemIdsInProgress = mutableSetOf<Long>()
 
     private var allIngredients: List<RecipeIngredient> = mutableListOf()
-    private var isAddIngredientPressed = false
 
     private var ingredientsResult: StatusResult<List<RecipeIngredient>> = EmptyResult()
         set(value) {
@@ -61,7 +62,6 @@ class IngredientsViewModel(
 
     private fun loadIngredients(recipeId: Long) {
         ingredientsResult = PendingResult()
-
         recipesRepository.loadIngredients(recipeId)
             .onSuccess {
                 allIngredients = it
@@ -70,10 +70,35 @@ class IngredientsViewModel(
                 _actionShowToast.value = Event(R.string.cant_load_ingredients)
             }
             .autoCancel()
-
         recipesRepository.isAllIngredientsSelected(recipeId)
             .onSuccess {
-                _isAllIngredientsSelected.value = SuccessResult(it)
+                if (it) {
+                    _isAllIngredientsSelected.value = SuccessResult(true)
+                } else {
+                    _isAllIngredientsSelected.value = SuccessResult(false)
+                }
+            }
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_make_all_ingredients_selected)
+            }
+            .autoCancel()
+    }
+
+    fun setAllIngredientsSelected(isSelected: Boolean) {
+        _isAllIngredientsSelected.value = PendingResult()
+        allIngredients.forEach { ingredient -> addProgressTo(ingredient) }
+        recipesRepository.setAllIngredientsSelected(recipeId, isSelected)
+            .onSuccess {
+                _isAllIngredientsSelected.value = SuccessResult(isSelected)
+                allIngredients.forEach { ingredient -> removeProgressFrom(ingredient) }
+            }
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_make_all_ingredients_selected)
+            }
+            .autoCancel()
+        shoppingListRepository.shoppingListIngredientsAddAllIngredients(recipeId, isSelected)
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_add_all_ingredient_to_shopping_list)
             }
             .autoCancel()
     }
@@ -84,38 +109,34 @@ class IngredientsViewModel(
     }
 
     override fun invoke(ingredient: RecipeIngredient, isSelected: Boolean) {
-        isAddIngredientPressed = true
         if (isInProgress(ingredient)) return
         addProgressTo(ingredient)
         recipesRepository.setIngredientSelected(recipeId, ingredient, isSelected)
             .onSuccess {
                 removeProgressFrom(ingredient)
-                if (it) {
-                    _isAllIngredientsSelected.value = SuccessResult(true)
-                    shoppingListRepository.shoppingListIngredientsAddAllIngredients(recipeId, isSelected)
-                } else {
-                    _isAllIngredientsSelected.value = SuccessResult(false)
-                    isAddIngredientPressed = false
-                }
             }
             .onError {
                 removeProgressFrom(ingredient)
             }
             .autoCancel()
-
-        if (isSelected) {
-            shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
-                .onError {
-                    _actionShowToast.value = Event(R.string.cant_add_ingredient_to_shopping_list)
+        recipesRepository.isAllIngredientsSelected(recipeId)
+            .onSuccess {
+                Log.d(TAG, "recipesRepository.isAllIngredientsSelected = $it")
+                if (it) {
+                    _isAllIngredientsSelected.value = SuccessResult(true)
+                } else {
+                    _isAllIngredientsSelected.value = SuccessResult(false)
                 }
-                .autoCancel()
-        } else {
-            shoppingListRepository.shoppingListIngredientsDeleteIngredient(recipeId, ingredient)
-                .onError {
-                    _actionShowToast.value = Event(R.string.cant_delete_ingredient_from_shopping_list)
-                }
-                .autoCancel()
-        }
+            }
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_make_all_ingredients_selected)
+            }
+            .autoCancel()
+        shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
+            .onError {
+                _actionShowToast.value = Event(R.string.cant_add_ingredient_to_shopping_list)
+            }
+            .autoCancel()
     }
 
     private fun addProgressTo(ingredient: RecipeIngredient) {
@@ -136,36 +157,5 @@ class IngredientsViewModel(
         _ingredients.postValue(ingredientsResult.resultMap { ingredientsItemList ->
             ingredientsItemList.map { ingredient -> IngredientsItem(ingredient, isInProgress(ingredient)) }
         })
-    }
-
-    fun setAllIngredientsSelected(isSelected: Boolean) {
-        _isAllIngredientsSelected.value = PendingResult()
-        allIngredients.forEach { ingredient -> if (isInProgress(ingredient)) return }
-        if (isAddIngredientPressed) {
-            var count = 0
-            allIngredients.forEach { if (!it.isInShoppingList) count++ }
-            if (count == 0) {
-                _isAllIngredientsSelected.value = SuccessResult(isSelected)
-            } else {
-                _isAllIngredientsSelected.value = EmptyResult()
-            }
-            isAddIngredientPressed = false
-        } else {
-            recipesRepository.setAllIngredientsSelected(recipeId, isSelected)
-                .onSuccess {
-                    _isAllIngredientsSelected.value = SuccessResult(isSelected)
-                    allIngredients.forEach { ingredient -> addProgressTo(ingredient) }
-                    allIngredients.forEach { ingredient -> removeProgressFrom(ingredient) }
-                }
-                .onError {
-                    _actionShowToast.value = Event(R.string.cant_set_all_ingredients_selected)
-                }
-                .autoCancel()
-        }
-        shoppingListRepository.shoppingListIngredientsAddAllIngredients(recipeId, isSelected)
-            .onError {
-                _actionShowToast.value = Event(R.string.cant_add_all_ingredient_to_shopping_list)
-            }
-            .autoCancel()
     }
 }
