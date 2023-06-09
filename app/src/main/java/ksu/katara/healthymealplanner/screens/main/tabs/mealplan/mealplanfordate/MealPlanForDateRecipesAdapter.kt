@@ -3,6 +3,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
@@ -17,14 +18,35 @@ interface MealPlanDateRecipeActionListener {
 
 }
 
+class MealPlanForDateRecipesDiffCallback(
+    private val oldList: List<MealPlanForDateRecipesItem>,
+    private val newList: List<MealPlanForDateRecipesItem>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldMealPlanForDateRecipesItem = oldList[oldItemPosition]
+        val newMealPlanForDateRecipesItem = newList[newItemPosition]
+        return oldMealPlanForDateRecipesItem.recipe.id == newMealPlanForDateRecipesItem.recipe.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldMealPlanForDateRecipesItem = oldList[oldItemPosition]
+        val newMealPlanForDateRecipesItem = newList[newItemPosition]
+        return oldMealPlanForDateRecipesItem.recipe == newMealPlanForDateRecipesItem.recipe && oldMealPlanForDateRecipesItem.isInProgress == newMealPlanForDateRecipesItem.isInProgress
+    }
+}
+
 class MealPlanForDateRecipesAdapter(
     private val mealPlanDateRecipeActionListener: MealPlanDateRecipeActionListener
 ) : RecyclerView.Adapter<MealPlanForDateRecipesAdapter.MealPlanForDateRecipesViewHolder>(), View.OnClickListener {
 
     var mealPlanForDateRecipes: List<MealPlanForDateRecipesItem> = emptyList()
         set(newValue) {
+            val diffCallback = MealPlanForDateRecipesDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onClick(v: View) {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
@@ -35,20 +36,16 @@ class MealPlanForDateRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMealPlanForDateRecipesBinding.bind(view)
-
         binding.mealPlanForDateRecipesAddRecipeButton.setOnClickListener {
             onMealPlanForDateAddButtonPressed(getSelectedDate(), getMealType())
         }
-
         initMealPlanForDateRecipes()
     }
 
     private fun onMealPlanForDateAddButtonPressed(selectedDate: String, mealType: MealTypes) {
         val direction =
             MealPlanForDateRecipesFragmentDirections.actionMealPlanForDateFragmentToAddRecipeFragment(mealType, selectedDate)
-
         findTopNavController().navigate(direction)
-
         binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.INVISIBLE
         binding.mealPlanForDateRecipesProgressBarForAddButton.visibility = View.VISIBLE
     }
@@ -56,7 +53,6 @@ class MealPlanForDateRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_
     private fun initMealPlanForDateRecipes() {
         mealPlanForDateRecipesAdapter =
             MealPlanForDateRecipesAdapter(mealPlanForDateRecipesViewModel)
-
         mealPlanForDateRecipesViewModel.mealPlanForDateRecipes.observe(viewLifecycleOwner) { statusResult ->
             hideAll()
             when (statusResult) {
@@ -66,32 +62,31 @@ class MealPlanForDateRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_
                     binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.VISIBLE
                     mealPlanForDateRecipesAdapter.mealPlanForDateRecipes = statusResult.data
                 }
-
                 is ErrorResult -> {
                     binding.mealPlanForDateRecipesTryAgainContainer.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.mealPlanForDateRecipesProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noMealPlanForDateRecipesTextView.visibility = View.VISIBLE
                     binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.VISIBLE
                 }
             }
         }
-
         mealPlanForDateRecipesViewModel.actionShowDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { recipe -> onMealPlanForDateRecipesItemPressed(recipe.id) }
         }
-
         val mealPlanForDateRecipesLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.mealPlanForDateRecipesRecyclerView.layoutManager =
             mealPlanForDateRecipesLayoutManager
         binding.mealPlanForDateRecipesRecyclerView.adapter =
             mealPlanForDateRecipesAdapter
+        val mealPlanForDateRecipesViewModelAnimator = binding.mealPlanForDateRecipesRecyclerView.itemAnimator
+        if (mealPlanForDateRecipesViewModelAnimator is DefaultItemAnimator) {
+            mealPlanForDateRecipesViewModelAnimator.supportsChangeAnimations = false
+        }
     }
 
     private fun onMealPlanForDateRecipesItemPressed(recipeId: Long) {
@@ -106,7 +101,6 @@ class MealPlanForDateRecipesFragment : Fragment(R.layout.fragment_meal_plan_for_
         mealPlanForDateRecipesProgressBar.visibility = View.GONE
         mealPlanForDateRecipesTryAgainContainer.visibility = View.GONE
         noMealPlanForDateRecipesTextView.visibility = View.GONE
-
         mealPlanForDateRecipesAddRecipeButton.visibility = View.GONE
         mealPlanForDateRecipesProgressBarForAddButton.visibility = View.GONE
     }

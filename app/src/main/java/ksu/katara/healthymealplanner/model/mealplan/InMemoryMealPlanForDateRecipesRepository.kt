@@ -85,7 +85,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
 
     override fun mealPlanForDateRecipesDeleteRecipe(selectedDate: String, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
             mealPlanForDateRecipes
         }

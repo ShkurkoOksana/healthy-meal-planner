@@ -28,6 +28,7 @@ class InMemoryAddRecipesRepository(
         }
 
     private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
+        Thread.sleep(200L)
         val allRecipesList = recipesRepository.getRecipes().map { it }.toMutableList()
         list.forEach { mealPlanForDateRecipesListItem ->
             allRecipesList.removeIf { it == mealPlanForDateRecipesListItem }

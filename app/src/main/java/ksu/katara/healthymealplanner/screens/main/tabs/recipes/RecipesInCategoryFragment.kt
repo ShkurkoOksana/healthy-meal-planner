@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
@@ -46,15 +47,12 @@ class RecipesInCategoryFragment : Fragment(R.layout.fragment_recipes_in_category
                     binding.recipesInCategoryRecyclerView.visibility = View.VISIBLE
                     recipesInCategoryAdapter.recipesInCategory = it.data
                 }
-
                 is ErrorResult -> {
                     binding.noRecipesInCategoryTextView.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.recipesInCategoryProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noRecipesInCategoryTextView.visibility = View.VISIBLE
                 }
@@ -73,6 +71,10 @@ class RecipesInCategoryFragment : Fragment(R.layout.fragment_recipes_in_category
         binding.recipesInCategoryRecyclerView.layoutManager =
             recipeCategoriesLayoutManager
         binding.recipesInCategoryRecyclerView.adapter = recipesInCategoryAdapter
+        val recipesInCategoryAnimator = binding.recipesInCategoryRecyclerView.itemAnimator
+        if (recipesInCategoryAnimator is DefaultItemAnimator) {
+            recipesInCategoryAnimator.supportsChangeAnimations = false
+        }
     }
 
     private fun hideAll() = with(binding) {

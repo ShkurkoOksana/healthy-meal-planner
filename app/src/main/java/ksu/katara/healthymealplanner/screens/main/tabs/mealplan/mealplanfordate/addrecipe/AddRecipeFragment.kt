@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
@@ -99,6 +100,10 @@ class AddRecipeFragment : Fragment(R.layout.fragment_add_recipes) {
             recipesListLayoutManager
         binding.addRecipesListRecyclerView.adapter =
             addRecipesListAdapter
+        val addRecipesListAnimator = binding.addRecipesListRecyclerView.itemAnimator
+        if (addRecipesListAnimator is DefaultItemAnimator) {
+            addRecipesListAnimator.supportsChangeAnimations = false
+        }
     }
 
     private fun hideAllAddRecipesList() = with(binding) {

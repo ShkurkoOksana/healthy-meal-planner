@@ -3,6 +3,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.recipes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
@@ -11,14 +12,34 @@ import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
 typealias RecipesInCategoryActionListener = (recipe: Recipe) -> Unit
 
+class RecipesInCategoryDiffCallback(
+    private val oldList: List<Recipe>,
+    private val newList: List<Recipe>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldRecipeInCategory = oldList[oldItemPosition]
+        val newRecipeInCategory = newList[newItemPosition]
+        return oldRecipeInCategory.id == newRecipeInCategory.id
+    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldRecipeInCategory = oldList[oldItemPosition]
+        val newRecipeInCategory = newList[newItemPosition]
+        return oldRecipeInCategory == newRecipeInCategory
+    }
+}
+
 class RecipesInCategoryAdapter(
     private val actionListener: RecipesInCategoryActionListener
 ) : RecyclerView.Adapter<RecipesInCategoryAdapter.RecipesInCategoryViewHolder>(), View.OnClickListener {
 
     var recipesInCategory: List<Recipe> = emptyList()
         set(newValue) {
+            val diffCallback = RecipesInCategoryDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onClick(v: View) {

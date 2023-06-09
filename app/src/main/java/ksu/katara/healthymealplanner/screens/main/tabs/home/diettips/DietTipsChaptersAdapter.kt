@@ -3,10 +3,29 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.diettips
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.databinding.ItemDietTipsChapterBinding
 import ksu.katara.healthymealplanner.model.dietTips.entities.DietTipsChapter
+
+class DietTipsChaptersDiffCallback(
+    private val oldList: List<DietTipsChapter>,
+    private val newList: List<DietTipsChapter>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldDietTipsChapter = oldList[oldItemPosition]
+        val newDietTipsChapter = newList[newItemPosition]
+        return oldDietTipsChapter.id == newDietTipsChapter.id
+    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldDietTipsChapter = oldList[oldItemPosition]
+        val newDietTipsChapter = newList[newItemPosition]
+        return oldDietTipsChapter == newDietTipsChapter
+    }
+}
 
 class DietTipsChaptersAdapter(
     private val context: Context,
@@ -15,8 +34,10 @@ class DietTipsChaptersAdapter(
 
     var dietTipsChapters: List<DietTipsChapter> = emptyList()
         set(newValue) {
+            val diffCallback = DietTipsChaptersDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun getItemCount(): Int = dietTipsChapters.size

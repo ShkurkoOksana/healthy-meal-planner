@@ -3,11 +3,30 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.ingre
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.databinding.ItemIngredientsBinding
 import ksu.katara.healthymealplanner.model.recipes.entities.RecipeIngredient
 
 typealias IngredientSelectedActionListener = (ingredient: RecipeIngredient, isSelected: Boolean) -> Unit
+
+class IngredientsDiffCallback(
+    private val oldList: List<IngredientsItem>,
+    private val newList: List<IngredientsItem>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldIngredientsItem = oldList[oldItemPosition]
+        val newIngredientsItem = newList[newItemPosition]
+        return oldIngredientsItem.ingredient.id == newIngredientsItem.ingredient.id
+    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldIngredientsItem = oldList[oldItemPosition]
+        val newIngredientsItem = newList[newItemPosition]
+        return oldIngredientsItem.ingredient == newIngredientsItem.ingredient && oldIngredientsItem.isInProgress == newIngredientsItem.isInProgress
+    }
+}
 
 class IngredientsAdapter(
     private val ingredientsViewModel: IngredientsViewModel
@@ -15,8 +34,10 @@ class IngredientsAdapter(
 
     var ingredients: List<IngredientsItem> = emptyList()
         set(newValue) {
+            val diffCallback = IngredientsDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onClick(v: View) {

@@ -6,11 +6,30 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ItemShoppingListIngredientsBinding
 import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.model.shoppinglist.entity.ShoppingListRecipeIngredient
+
+class ShoppingListIngredientsDiffCallback(
+    private val oldList: List<ShoppingListIngredientsItem>,
+    private val newList: List<ShoppingListIngredientsItem>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldShoppingListIngredientsItem = oldList[oldItemPosition]
+        val newShoppingListIngredientsItem = newList[newItemPosition]
+        return oldShoppingListIngredientsItem.shoppingListRecipeIngredient.recipeIngredient.id == newShoppingListIngredientsItem.shoppingListRecipeIngredient.recipeIngredient.id
+    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldShoppingListIngredientsItem = oldList[oldItemPosition]
+        val newShoppingListIngredientsItem = newList[newItemPosition]
+        return oldShoppingListIngredientsItem == newShoppingListIngredientsItem
+    }
+}
 
 class ShoppingListIngredientsAdapter(
     private val shoppingListRecipe: ShoppingListRecipe,
@@ -18,8 +37,10 @@ class ShoppingListIngredientsAdapter(
 ) : RecyclerView.Adapter<ShoppingListIngredientsAdapter.ShoppingListIngredientsViewHolder>(), View.OnClickListener {
     var shoppingListIngredients: MutableList<ShoppingListIngredientsItem> = mutableListOf()
         set(newValue) {
+            val diffCallback = ShoppingListIngredientsDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onClick(v: View) {

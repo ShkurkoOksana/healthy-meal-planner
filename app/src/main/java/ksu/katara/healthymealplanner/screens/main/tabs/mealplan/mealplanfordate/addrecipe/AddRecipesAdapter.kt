@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
@@ -12,6 +13,25 @@ import ksu.katara.healthymealplanner.databinding.ItemAddRecipesRecipeBinding
 import ksu.katara.healthymealplanner.model.recipes.entities.Recipe
 
 typealias AddRecipesActionListener = (recipe: Recipe) -> Unit
+
+class AddRecipesListDiffCallback(
+    private val oldList: List<AddRecipesItem>,
+    private val newList: List<AddRecipesItem>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldAddRecipeItem = oldList[oldItemPosition]
+        val newAddRecipeItem = newList[newItemPosition]
+        return oldAddRecipeItem.recipe.id == newAddRecipeItem.recipe.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldAddRecipeItem = oldList[oldItemPosition]
+        val newAddRecipeItem = newList[newItemPosition]
+        return oldAddRecipeItem.recipe == newAddRecipeItem.recipe && oldAddRecipeItem.isDeleteInProgress == newAddRecipeItem.isDeleteInProgress
+    }
+}
 
 class AddRecipesListAdapter(
     private val addRecipesActionListener: AddRecipesActionListener,
@@ -21,8 +41,10 @@ class AddRecipesListAdapter(
 
     var addRecipesList = mutableListOf<AddRecipesItem>()
         set(newValue) {
+            val diffCallback = AddRecipesListDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
     var addRecipesListFilter = mutableListOf<AddRecipesItem>()
 

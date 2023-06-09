@@ -3,6 +3,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.shoppinglist
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
@@ -31,7 +32,6 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentShoppingListBinding.bind(view)
-
         initShoppingList()
     }
 
@@ -45,30 +45,29 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list) {
                     binding.shoppingListRecyclerView.visibility = View.VISIBLE
                     shoppingListAdapter.shoppingList = it.data
                 }
-
                 is ErrorResult -> {
                     binding.noShoppingListTextView.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
                     binding.shoppingListProgressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
                     binding.noShoppingListTextView.visibility = View.VISIBLE
                 }
             }
         }
-
         shoppingListViewModel.actionShowRecipeDetails.observe(viewLifecycleOwner) {
             it.getValue()?.let { shoppingListRecipe ->
                 showRecipeDetails(shoppingListRecipe.recipe.id)
             }
         }
-
         val shoppingListLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.shoppingListRecyclerView.layoutManager = shoppingListLayoutManager
         binding.shoppingListRecyclerView.adapter = shoppingListAdapter
+        val shoppingListAnimator = binding.shoppingListRecyclerView.itemAnimator
+        if (shoppingListAnimator is DefaultItemAnimator) {
+            shoppingListAnimator.supportsChangeAnimations = false
+        }
     }
 
     private fun hideAll() = with(binding) {

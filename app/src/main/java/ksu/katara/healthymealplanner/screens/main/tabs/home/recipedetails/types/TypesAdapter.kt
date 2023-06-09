@@ -2,15 +2,36 @@ package ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.types
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.databinding.ItemRecipeTypeBinding
+
+class RecipeTypesDiffCallback(
+    private val oldList: List<String>,
+    private val newList: List<String>,
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldRecipeType = oldList[oldItemPosition]
+        val newRecipeType = newList[newItemPosition]
+        return oldRecipeType == newRecipeType
+    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldRecipeType = oldList[oldItemPosition]
+        val newRecipeType = newList[newItemPosition]
+        return oldRecipeType == newRecipeType
+    }
+}
 
 class TypesAdapter : RecyclerView.Adapter<TypesAdapter.RecipeTypesHolder>() {
 
     var recipeTypes: List<String> = emptyList()
         set(newValue) {
+            val diffCallback = RecipeTypesDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun getItemCount(): Int = recipeTypes.size

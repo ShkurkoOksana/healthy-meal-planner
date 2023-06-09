@@ -3,6 +3,7 @@ package ksu.katara.healthymealplanner.screens.main.tabs.recipes
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.Repositories
@@ -58,6 +59,10 @@ class RecipeCategoriesFragment : Fragment(R.layout.fragment_recipe_categories) {
             GridLayoutManager(requireContext(), 2)
         binding.recipeCategoriesRecyclerView.layoutManager = recipeCategoriesLayoutManager
         binding.recipeCategoriesRecyclerView.adapter = recipeCategoriesAdapter
+        val recipeCategoriesAnimator = binding.recipeCategoriesRecyclerView.itemAnimator
+        if (recipeCategoriesAnimator is DefaultItemAnimator) {
+            recipeCategoriesAnimator.supportsChangeAnimations = false
+        }
     }
 
     private fun hideAll() = with(binding) {
