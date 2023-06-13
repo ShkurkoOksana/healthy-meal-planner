@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.HomeFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.home.HomeFragment"
         android:label="Главная"
         tools:layout="@layout/fragment_home" />
 </navigation>

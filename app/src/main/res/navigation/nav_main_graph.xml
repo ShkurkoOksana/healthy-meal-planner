@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/tabsFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.TabsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.TabsFragment"
         tools:layout="@layout/fragment_tabs" >
         <action
             android:id="@+id/action_tabsFragment_to_dietTipDetailsFragment"
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/dietTipDetailsFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipDetailsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.home.diettips.DietTipDetailsFragment"
         tools:layout="@layout/fragment_diet_tip_details">
         <argument
             android:name="diet_tip_id"
@@ -35,7 +35,7 @@
     </fragment>
     <fragment
         android:id="@+id/dietTipsChaptersFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.diettips.DietTipsChaptersFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.home.diettips.DietTipsChaptersFragment"
         android:label="Полезные советы"
         tools:layout="@layout/fragment_diet_tips_chapters">
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.home.recipedetails.RecipeDetailsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.home.recipedetails.RecipeDetailsFragment"
         android:label="Рецепт"
         tools:layout="@layout/fragment_recipe_details" >
         <argument
@@ -53,18 +53,19 @@
     </fragment>
     <fragment
         android:id="@+id/addRecipeFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate.addrecipe.AddRecipeFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.mealplan.mealplanfordate.addrecipe.AddRecipeFragment"
         android:label="Добавить рецепт"
         tools:layout="@layout/fragment_add_recipes" >
-        <argument android:name="meal_type"
-            app:argType="ksu.katara.healthymealplanner.model.meal.enum.MealTypes" />
         <argument
             android:name="selected_date"
             app:argType="string" />
+        <argument
+            android:name="meal_type"
+            app:argType="ksu.katara.healthymealplanner.mvvm.model.meal.MealTypes" />
     </fragment>
     <fragment
         android:id="@+id/mealPlanForDateFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment"
         android:label="{meal_type}"
         tools:layout="@layout/item_meal_plan_for_date_recipe" >
         <action
@@ -74,15 +75,15 @@
             android:id="@+id/action_mealPlanForDateFragment_to_recipeFragment"
             app:destination="@id/recipeFragment" />
         <argument
-            android:name="meal_type"
-            app:argType="ksu.katara.healthymealplanner.model.meal.enum.MealTypes" />
-        <argument
             android:name="selected_date"
             app:argType="string" />
+        <argument
+            android:name="meal_type"
+            app:argType="ksu.katara.healthymealplanner.mvvm.model.meal.MealTypes" />
     </fragment>
     <fragment
         android:id="@+id/recipesInCategoryFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.recipes.RecipesInCategoryFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.recipes.RecipesInCategoryFragment"
         android:label="Рецепты в категории"
         tools:layout="@layout/fragment_recipes_in_category" >
         <action

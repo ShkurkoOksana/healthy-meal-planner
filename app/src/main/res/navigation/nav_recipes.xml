@@ -6,7 +6,7 @@
     app:startDestination="@id/recipeCategoriesFragment">
     <fragment
         android:id="@+id/recipeCategoriesFragment"
-        android:name="ksu.katara.healthymealplanner.screens.main.tabs.recipes.RecipeCategoriesFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.recipes.RecipeCategoriesFragment"
         android:label="Список категорий рецептов"
         tools:layout="@layout/fragment_recipe_categories" />
 </navigation>
