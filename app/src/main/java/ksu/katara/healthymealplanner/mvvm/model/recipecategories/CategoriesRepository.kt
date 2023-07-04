@@ -1,8 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipecategories
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
+import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 
 typealias RecipeCategoriesListener = (recipeCategories: List<Category>) -> Unit
 

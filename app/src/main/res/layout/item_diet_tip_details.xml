@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
-        tools:src="@drawable/ic_diet_tip_details_default_background" />
+        tools:src="@drawable/ic_diet_tip_details" />
 
     <ScrollView
         android:layout_width="match_parent"

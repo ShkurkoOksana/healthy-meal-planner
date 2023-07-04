@@ -6,7 +6,8 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import ksu.katara.healthymealplanner.R
-import ksu.katara.healthymealplanner.mvvm.screens.splash.SplashFragment
+import ksu.katara.healthymealplanner.mvvm.views.splash.SplashFragment
+
 
 /**
  * Entry point of the app.
@@ -19,7 +20,10 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction
+            .add(R.id.splashFragmentContainer, SplashFragment())
+            .commit()
         setFullScreen()
     }
 

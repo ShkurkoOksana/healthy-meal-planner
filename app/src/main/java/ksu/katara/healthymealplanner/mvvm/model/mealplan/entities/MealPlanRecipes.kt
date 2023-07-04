@@ -1,7 +1,7 @@
 package ksu.katara.healthymealplanner.mvvm.model.mealplan.entities
 
-import ksu.katara.healthymealplanner.mvvm.model.meal.MealTypes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
 
 /**
  * Represents meal plan recipes data

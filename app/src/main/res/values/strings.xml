@@ -5,11 +5,12 @@
     <string name="please_wait">Пожалуйста, подождите…</string>
 
     <!--Resources for HomeFragment-->
+    <string name="home_title">Главная</string>
     <string name="home">Главная</string>
     <string name="action_go_to_profile_details"><![CDATA[Профиль >]]></string>
     <string name="toast_functionality_is_not_available">Функционал пока не доступен</string>
     <string name="diet_tips_title">Полезные советы</string>
-    <string name="meal_plan_for_date_title">План питания на сегодня</string>
+    <string name="meal_plan_for_today_title">План питания на сегодня</string>
     <string name="action_go_to_breakfast_for_date_details">Завтрак</string>
     <string name="action_go_to_lunch_for_date_details">Обед</string>
     <string name="action_go_to_dinner_for_date_details">Ужин</string>
@@ -31,11 +32,23 @@
     <string name="nutrition_risk_factor_in_development_of_disease_title">Питание как фактор риска в развитии заболеваний</string>
     <string name="restoration_of_digestive_tract_title">Восстановление работы ЖКТ</string>
 
-    <!--Resources for MealPlanForDateFragment-->
-    <string name="failed_to_load_meal_plan_for_date">Не удалось загрузить раздел План питания на сегодня</string>
-    <string name="no_meal_plan_for_date">Выберите рецепты для Плана питания на сегодня</string>
+    <!--Resources for DietTipsChaptersFragment-->
+    <string name="diet_tips_chapters_title">Полезные советы</string>
 
+    <!--Resources for MealPlanFragment-->
+    <string name="meal_plan_title">План питания</string>
+
+    <!--Resources for MealPlanForDateRecipesFragment-->
+    <string name="meal_plan_for_date_title">%1$s на %2$s</string>
+    <string name="meal_plan">План питания</string>
+    <string name="failed_to_load_meal_plan_for_date">Не удалось загрузить раздел План питания на сегодня</string>
+    <string name="cant_load_meal_plan_for_date_recipes">Не удалось загрузить рецепты в План питания</string>
+    <string name="no_meal_plan_for_date">Выберите рецепты для Плана питания на сегодня</string>
+    <string name="cant_add_recipe_to_meal_plan">Не удалось добавить рецепт в План питания</string>
+    <string name="cant_delete_recipe_from_meal_plan">Не удалось удалить рецепт из Плана питания</string>
+    
     <!--Resources for RecipeFragment-->
+    <string name="recipe_details_title">%1$s</string>
     <string name="recipe_name">Название рецепта</string>
     <string name="recipes">Рецепты</string>
     <string name="cuisine_type">Кухня</string>
@@ -72,30 +85,27 @@
     <string name="cant_load_recipe">Не загружается информация в разделе Детали рецепта</string>
 
     <!--Resources for AddRecipeFragment-->
+    <string name="add_recipe_title">Добавить рецепты</string>
     <string name="recipe_search">Поиск рецепта</string>
     <string name="failed_to_load_recipes">Не удалось загрузить список Рецептов</string>
     <string name="no_recipes">Нет данных в списке Рецептов</string>
     <string name="cant_load_recipes">Не загружается информация в список Рецептов</string>
     <string name="no_ricipes_found">Рецепты с таким именем не найдены</string>
 
-    <!--Resources for MealPlanForDateRecipesFragment-->
-    <string name="meal_plan">План питания</string>
-    <string name="cant_load_meal_plan_for_date_recipes">Не удалось pfзагрузить рецепты в План питания</string>
-    <string name="cant_add_recipe_to_meal_plan">Не удалось добавить рецепт в План питания</string>
-    <string name="cant_delete_recipe_from_meal_plan">Не удалось удалить рецепт из Плана питания</string>
-
-
     <!--Resources for RecipeCategoriesFragment-->
+    <string name="recipes_categories_title">Рецепты</string>
     <string name="failed_to_load_recipe_categories">Не удалось загрузить список Категории рецептов</string>
     <string name="cant_load_recipe_categories">Не загружается информация в список Категорий рецептов</string>
     <string name="no_recipe_categories">Нет данных в разделе Категории рецептов</string>
 
     <!--Resources for RecipeInCategoryFragment-->
+    <string name="recipe_in_category_title">%1$s</string>
     <string name="failed_to_load_recipe_in_category">Не удалось загрузить список Рецептов в категории</string>
     <string name="cant_load_recipe_in_category">Не загружается информация в список Рецептов в категории</string>
     <string name="no_recipe_in_category">Нет данных в разделе Рецепты в категории</string>
 
     <!--Resources for ShoppingListFragment-->
+    <string name="shopping_list_title">Список покупок</string>
     <string name="shopping_list">Список покупок</string>
     <string name="failed_to_load_shopping_list">Не удалось загрузить Список покупок</string>
     <string name="cant_load_shopping_list">Не загружается информация в Список покупок</string>
@@ -105,6 +115,7 @@
     <string name="no_shopping_list_ingredients">Нет данных в разделе Список ингредиентов в списке покупок</string>
     <string name="cant_add_ingredient_to_shopping_list">Не удалось добавить ингредиент в список покупок</string>
     <string name="cant_delete_ingredient_from_shopping_list">Не удалось удалить ингредиент из списка покупок</string>
+    <string name="tabs">Tabs title</string>
 
     <string-array name="number_of_portions">
         <item>1 порция</item>
@@ -118,5 +129,29 @@
         <item>9 порция</item>
         <item>10 порция</item>
     </string-array>
+
+
+
+
+    <string name="action_sign_in">Sign In</string>
+    <string name="screen_sign_in">Sign In</string>
+    <string name="sign_up_success">Wow, you have created a new account. Now you can login with it.</string>
+    <string name="screen_sign_up">Create Account</string>
+    <string name="field_username">Username</string>
+    <string name="field_email">Email</string>
+    <string name="field_password">Password</string>
+    <string name="field_created_at">Created at</string>
+    <string name="field_repeat_password">Repeat Password</string>
+    <string name="field_is_empty">Field is empty</string>
+    <string name="password_mismatch">Password mismatch</string>
+    <string name="account_already_exists">Account already exists</string>
+    <string name="edit_profile_description">Right now you can edit only username</string>
+    <string name="invalid_email_or_password">Invalid email or password</string>
+    <string name="enable_checkbox">Enable %1$s box</string>
+    <string name="settings_description">Enable or disable any box you want</string>
+    <string name="placeholder">-</string>
+    <string name="action_create_account">Create Account</string>
+    <string name="profile_details_title">Профиль</string>
+
 
 </resources>

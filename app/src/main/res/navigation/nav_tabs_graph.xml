@@ -2,11 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tabs_graph"
-    app:startDestination="@id/menu_home">
+    app:startDestination="@id/home">
+
 
     <include app:graph="@navigation/nav_home" />
     <include app:graph="@navigation/nav_meal_plan" />
     <include app:graph="@navigation/nav_recipes" />
     <include app:graph="@navigation/nav_shopping_list" />
-
 </navigation>

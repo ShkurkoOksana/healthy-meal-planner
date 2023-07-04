@@ -1,11 +1,11 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
-import ksu.katara.healthymealplanner.mvvm.exceptions.DietTipsNotFoundException
+import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
+import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.mvvm.model.DietTipsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
-import ksu.katara.healthymealplanner.mvvm.tasks.SimpleTask
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 import java.util.concurrent.Callable
 import kotlin.properties.Delegates
 

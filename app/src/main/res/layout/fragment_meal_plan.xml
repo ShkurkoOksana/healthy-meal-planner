@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:orientation="vertical"
-    tools:context=".mvvm.screens.main.tabs.mealplan.MealPlanFragment">
+    tools:context=".mvvm.views.main.tabs.mealplan.MealPlanFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarRecyclerView"

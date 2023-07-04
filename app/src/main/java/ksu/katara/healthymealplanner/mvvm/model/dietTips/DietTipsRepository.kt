@@ -1,10 +1,10 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
+import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 
 typealias DietTipsChaptersListener = (dietTipsChapters: List<DietTipsChapter>) -> Unit
 typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit

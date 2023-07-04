@@ -1,9 +1,9 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipecategories
 
-import ksu.katara.healthymealplanner.mvvm.exceptions.RecipeCategoryNotFoundException
+import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
+import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.mvvm.model.RecipeCategoryNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
-import ksu.katara.healthymealplanner.mvvm.tasks.SimpleTask
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 import java.util.concurrent.Callable
 
 /**
@@ -50,7 +50,7 @@ class InMemoryCategoriesRepository : CategoriesRepository {
 
     override fun getCategoryById(id: Long): Task<Category> = SimpleTask(Callable {
         Thread.sleep(200L)
-        return@Callable recipeCategories.firstOrNull<Category> { it.id == id }
+        return@Callable recipeCategories.firstOrNull { it.id == id }
             ?: throw RecipeCategoryNotFoundException()
     })
 

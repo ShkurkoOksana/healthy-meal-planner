@@ -1,15 +1,15 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
-import ksu.katara.healthymealplanner.mvvm.exceptions.IngredientsNotFoundException
-import ksu.katara.healthymealplanner.mvvm.exceptions.RecipeDetailsNotFoundException
-import ksu.katara.healthymealplanner.mvvm.exceptions.RecipeNotFoundException
-import ksu.katara.healthymealplanner.mvvm.exceptions.ShoppingListRecipeNotFoundException
+import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
+import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
+import ksu.katara.healthymealplanner.mvvm.model.RecipeDetailsNotFoundException
+import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
+import ksu.katara.healthymealplanner.mvvm.model.ShoppingListRecipeNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
-import ksu.katara.healthymealplanner.mvvm.tasks.SimpleTask
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 
 /**
  * Simple in-memory implementation of [ShoppingListRepository]

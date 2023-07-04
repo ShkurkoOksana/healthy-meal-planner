@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preparationStepTitleTextView"
-        tools:src="@drawable/ic_diet_tip_default_photo" />
+        tools:src="@drawable/ic_diet_tip" />
 
     <TextView
         android:id="@+id/preparationStepDescriptionTextView"

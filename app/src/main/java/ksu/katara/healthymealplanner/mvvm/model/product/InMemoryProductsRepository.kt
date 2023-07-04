@@ -1,6 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.product
 
-import ksu.katara.healthymealplanner.mvvm.exceptions.ProductNotFoundException
+import ksu.katara.healthymealplanner.mvvm.model.ProductNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.product.entities.Product
 
 /**

@@ -1,16 +1,14 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipes
 
-import android.content.ContentValues.TAG
-import android.util.Log
-import ksu.katara.healthymealplanner.mvvm.exceptions.IngredientsNotFoundException
-import ksu.katara.healthymealplanner.mvvm.exceptions.RecipeNotFoundException
+import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
+import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
+import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.product.ProductsRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparationStep
-import ksu.katara.healthymealplanner.mvvm.tasks.SimpleTask
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 import java.util.concurrent.Callable
 
 /**
@@ -216,7 +214,6 @@ class InMemoryRecipesRepository(
         Thread.sleep(200L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         recipeDetails.ingredients.forEach { it.isInShoppingList = isSelected }
-        //Log.d(TAG, "ingredient after allSelected = ${recipeDetails.ingredients}")
         recipeDetails.isAllIngredientsInShoppingList = isSelected
     }
 
@@ -230,14 +227,11 @@ class InMemoryRecipesRepository(
     private fun isAllIngredientsSelectedResult(recipeId: Long): Boolean {
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
         var countRecipeIngredientsSelected = 0
-        Log.d(TAG, recipeDetails.ingredients.joinToString(separator = "\n"))
         recipeDetails.ingredients.forEach { recipeIngredient ->
             if (recipeIngredient.isInShoppingList) {
                 countRecipeIngredientsSelected++
             }
         }
-        Log.d(TAG, "count = $countRecipeIngredientsSelected")
-        Log.d(TAG, "isAllIngredientsSelected = ${countRecipeIngredientsSelected == recipeDetails.ingredients.size && countRecipeIngredientsSelected != 0}")
         return countRecipeIngredientsSelected == recipeDetails.ingredients.size && countRecipeIngredientsSelected != 0
     }
 

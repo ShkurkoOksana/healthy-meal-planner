@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".mvvm.screens.main.tabs.home.recipedetails.RecipeDetailsFragment">
+    tools:context=".mvvm.views.main.tabs.home.recipedetails.RecipeDetailsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_recipe_default_photo" />
+            tools:src="@drawable/ic_recipe" />
 
         <View
             android:layout_width="match_parent"

@@ -1,10 +1,12 @@
 package ksu.katara.healthymealplanner.mvvm.model.mealplan
 
-import ksu.katara.healthymealplanner.mvvm.model.meal.MealTypes
+import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
+import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
-import ksu.katara.healthymealplanner.mvvm.tasks.SimpleTask
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.sdf
+import java.util.Date
 
 /**
  * Simple in-memory implementation of [MealPlanForDateRecipesRepository]
@@ -25,7 +27,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
 
     override fun getMealPlan() = mealPlanForDate
 
-    override fun loadMealPlanForDateRecipes(selectedDate: String, mealType: MealTypes): Task<Unit> =
+    override fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): Task<Unit> =
         SimpleTask {
             Thread.sleep(200L)
             mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
@@ -33,10 +35,11 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
             notifyMealPlanForDateChanges()
         }
 
-    private fun getMealPlanForDateRecipes(selectedDate: String, mealType: MealTypes): MealPlanRecipes? {
-        val mealPlanForDateRecipes: MealPlanRecipes? = if (mealPlanForDate.containsKey(selectedDate)) {
+    private fun getMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? {
+        val date = sdf.format(selectedDate)
+        val mealPlanForDateRecipes: MealPlanRecipes? = if (mealPlanForDate.containsKey(date)) {
             mealPlanForDate
-                .getValue(selectedDate)
+                .getValue(date)
                 .firstOrNull { it?.mealType == mealType }
         } else {
             null
@@ -55,46 +58,49 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
         mealPlanForDateRecipesListeners.remove(listener)
     }
 
-    override fun mealPlanForDateRecipesAddRecipe(selectedDate: String, mealType: MealTypes, recipe: Recipe): Task<Unit> =
+    override fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<Unit> =
         SimpleTask {
             Thread.sleep(200L)
             addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
             notifyMealPlanForDateChanges()
         }
 
-    private fun addRecipeToMealPlanForDate(selectedDate: String, mealType: MealTypes, recipe: Recipe) {
+    private fun addRecipeToMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
         val newMealPlanForTodayRecipesItem = MealPlanRecipes(mealType, mutableListOf(recipe))
         val mealPlanForDateRecipesListItem: MealPlanRecipes?
-        if (mealPlanForDate.containsKey(selectedDate)) {
+        val date = sdf.format(selectedDate)
+        if (mealPlanForDate.containsKey(date)) {
             mealPlanForDateRecipesListItem = mealPlanForDate
-                .getValue(selectedDate)
+                .getValue(date)
                 .firstOrNull { it?.mealType == mealType }
             if (mealPlanForDateRecipesListItem == null) {
                 mealPlanForDateRecipes = newMealPlanForTodayRecipesItem
-                mealPlanForDate[selectedDate]?.add(newMealPlanForTodayRecipesItem)
+                mealPlanForDate[date]?.add(newMealPlanForTodayRecipesItem)
             } else {
-                val index = mealPlanForDate[selectedDate]?.indexOfFirst { it == mealPlanForDateRecipesListItem }
+                val index = mealPlanForDate[date]?.indexOfFirst { it == mealPlanForDateRecipesListItem }
                 mealPlanForDateRecipesListItem.recipesList.add(recipe)
                 mealPlanForDateRecipes = mealPlanForDateRecipesListItem
-                mealPlanForDate[selectedDate]?.set(index!!, mealPlanForDateRecipesListItem)
+                mealPlanForDate[date]?.set(index!!, mealPlanForDateRecipesListItem)
             }
         } else {
             mealPlanForDateRecipes = newMealPlanForTodayRecipesItem
-            mealPlanForDate[selectedDate] = mutableListOf(newMealPlanForTodayRecipesItem)
+            mealPlanForDate[date] = mutableListOf(newMealPlanForTodayRecipesItem)
         }
     }
 
-    override fun mealPlanForDateRecipesDeleteRecipe(selectedDate: String, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?> =
+    override fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?> =
         SimpleTask {
             Thread.sleep(2000L)
             deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
+            notifyMealPlanForDateChanges()
             mealPlanForDateRecipes
         }
 
-    private fun deleteRecipeFromMealPlanForDate(selectedDate: String, mealType: MealTypes, recipe: Recipe) {
+    private fun deleteRecipeFromMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
         var recipeList: MutableList<Recipe>
-        if (mealPlanForDate.containsKey(selectedDate)) {
-            val mealPlanForDateRecipesList = mealPlanForDate.getValue(selectedDate)
+        val date = sdf.format(selectedDate)
+        if (mealPlanForDate.containsKey(date)) {
+            val mealPlanForDateRecipesList = mealPlanForDate.getValue(date)
             mealPlanForDateRecipesList.forEach { mealPlanForDateRecipesListItem ->
                 if (mealPlanForDateRecipesListItem?.mealType == mealType) {
                     recipeList = mealPlanForDateRecipesListItem.recipesList
@@ -105,7 +111,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
                     mealPlanForDateRecipes = if (recipeList.isNotEmpty()) {
                         mealPlanForDateRecipesListItem
                     } else {
-                        mealPlanForDate.remove(selectedDate)
+                        mealPlanForDate.remove(date)
                         null
                     }
                 }

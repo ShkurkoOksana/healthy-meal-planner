@@ -1,11 +1,11 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipes
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
+import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparationStep
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 
 typealias RecipeDetailsListener = (recipeDetails: List<RecipeDetails>) -> Unit
 typealias RecipeIngredientsListener = (recipeIngredients: List<RecipeIngredient>) -> Unit

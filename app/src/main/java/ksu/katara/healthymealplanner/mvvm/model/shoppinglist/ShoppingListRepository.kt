@@ -1,10 +1,10 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
+import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
-import ksu.katara.healthymealplanner.mvvm.tasks.Task
 
 typealias ShoppingListListener = (shoppingListItemList: MutableList<ShoppingListRecipe>) -> Unit
 

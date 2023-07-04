@@ -2,11 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/menu_home"
-    app:startDestination="@id/homeFragment">
+    android:id="@+id/home"
+    app:startDestination="@id/tabHomeFragment">
+
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.screens.main.tabs.home.HomeFragment"
-        android:label="Главная"
+        android:id="@+id/tabHomeFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.HomeFragment"
+        android:label="@string/home_title"
         tools:layout="@layout/fragment_home" />
 </navigation>
