@@ -22,8 +22,12 @@ class DietTipDetailsViewModel(
     private val dietTipsRepository: DietTipsRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel() {
+
     private val _dietTipDetails = MutableLiveData<StatusResult<DietTipDetails>>()
     val dietTipDetails: LiveData<StatusResult<DietTipDetails>> = _dietTipDetails
+
+    private val _screenTitle = MutableLiveData<String>()
+    val screenTitle: LiveData<String> = _screenTitle
 
     private var dietTipDetailsResult: StatusResult<DietTipDetails> = EmptyResult()
         set(value) {
@@ -34,6 +38,7 @@ class DietTipDetailsViewModel(
     private val dietTipId = screen.dietTipId
 
     init {
+        _screenTitle.value = uiActions.getString(R.string.diet_tips_details_title)
         loadDietTipDetails(dietTipId)
     }
 

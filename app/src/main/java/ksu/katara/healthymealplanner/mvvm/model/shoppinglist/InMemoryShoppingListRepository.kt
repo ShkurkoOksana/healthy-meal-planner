@@ -23,7 +23,7 @@ class InMemoryShoppingListRepository(
     private val shoppingListListeners = mutableSetOf<ShoppingListListener>()
 
     override fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         shoppingListLoaded = true
         notifyShoppingListChanges()
         return@SimpleTask shoppingList
@@ -47,7 +47,7 @@ class InMemoryShoppingListRepository(
 
     override fun shoppingListIngredientsAddIngredient(recipeId: Long, recipeIngredient: RecipeIngredient): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             addIngredientToShoppingListIngredients(recipeId, recipeIngredient)
             notifyShoppingListChanges()
         }
@@ -84,7 +84,7 @@ class InMemoryShoppingListRepository(
     }
 
     override fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         addAllIngredientsToShoppingListIngredients(recipeId, isSelected)
         notifyShoppingListChanges()
     }
@@ -126,7 +126,7 @@ class InMemoryShoppingListRepository(
         shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean,
     ): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
         val shoppingListRecipeIngredientsItem =
             shoppingListItem.shoppingListIngredients.firstOrNull { it == shoppingListRecipeIngredient } ?: throw IngredientsNotFoundException()
@@ -138,7 +138,7 @@ class InMemoryShoppingListRepository(
         recipeId: Long,
         ingredient: RecipeIngredient,
     ): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
         notifyShoppingListChanges()
     }

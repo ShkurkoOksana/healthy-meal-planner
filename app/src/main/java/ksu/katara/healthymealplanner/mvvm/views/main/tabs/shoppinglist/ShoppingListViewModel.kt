@@ -11,6 +11,8 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
+import ksu.katara.healthymealplanner.foundation.views.LiveResult
+import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListListener
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
@@ -39,8 +41,8 @@ class ShoppingListViewModel(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(), ShoppingListRecipeActionListener {
 
-    private val _shoppingList = MutableLiveData<StatusResult<MutableList<ShoppingListRecipeItem>>>()
-    val shoppingList: LiveData<StatusResult<MutableList<ShoppingListRecipeItem>>> = _shoppingList
+    private val _shoppingList = MutableLiveResult<MutableList<ShoppingListRecipeItem>>()
+    val shoppingList: LiveResult<MutableList<ShoppingListRecipeItem>> = _shoppingList
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle

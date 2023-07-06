@@ -12,63 +12,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/medium_space"
         android:layout_marginTop="@dimen/medium_space"
+        android:layout_marginBottom="@dimen/medium_space"
         android:text="@string/foundation_of_healthy_lifestyle_title" />
 
-
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dietTipsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/medium_space"
-        android:layout_marginTop="@dimen/medium_space" >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dietTipsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="visible"
-            tools:itemCount="20"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_diet_tip" />
-
-        <ProgressBar
-            android:id="@+id/dietTipsProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/green"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/dietTipsTryAgainContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/failed_to_load_diet_tips_chapters" />
-
-            <Button
-                android:id="@+id/dietTipsTryAgainButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/try_again" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/noDietTipsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:text="@string/no_diet_tips_chapters" />
-
-    </FrameLayout>
+        android:orientation="horizontal"
+        android:visibility="visible"
+        tools:itemCount="20"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_diet_tip" />
 
 </LinearLayout>

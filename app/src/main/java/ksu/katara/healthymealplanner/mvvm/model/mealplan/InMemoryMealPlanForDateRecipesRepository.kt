@@ -21,7 +21,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
 
     override fun loadMealPlan(): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             mealPlanForDate = mutableMapOf()
         }
 
@@ -29,7 +29,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
 
     override fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
             mealPlanForDateRecipesLoaded = true
             notifyMealPlanForDateChanges()
@@ -60,7 +60,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
 
     override fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
             notifyMealPlanForDateChanges()
         }

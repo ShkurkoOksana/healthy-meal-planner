@@ -25,7 +25,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
     private var dietTipsSize by Delegates.notNull<Int>()
 
     override fun loadDietTipsChapters(): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         dietTipsChapters = getDietTipsChapters()
         dietTipsChaptersLoaded = true
         notifyDietTipsChaptersChanges()
@@ -59,7 +59,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
     }
 
     override fun loadDietTips(): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         dietTips = getDietTips()
         dietTipsLoaded = true
         notifyDietTipsChanges()
@@ -99,7 +99,7 @@ class InMemoryDietTipsRepository : DietTipsRepository {
     }
 
     override fun loadDietTipDetails(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipsNotFoundException()
         return@Callable DietTipDetails(
             dietTip = dietTip,

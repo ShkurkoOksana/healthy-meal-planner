@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentRecipeCategoriesBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
@@ -25,6 +26,7 @@ class RecipeCategoriesFragment : BaseFragment(), HasScreenTitle {
     class Screen : BaseScreen
 
     private lateinit var binding: FragmentRecipeCategoriesBinding
+    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var recipeCategoriesAdapter: RecipeCategoriesAdapter
 
@@ -38,6 +40,7 @@ class RecipeCategoriesFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRecipeCategoriesBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         arguments = bundleOf(BaseScreen.ARG_SCREEN to Screen())
         initRecipeCategories()
         return binding.root
@@ -53,13 +56,13 @@ class RecipeCategoriesFragment : BaseFragment(), HasScreenTitle {
                     recipeCategoriesAdapter.recipeCategories = it.data
                 }
                 is ErrorResult -> {
-                    binding.noRecipeCategoriesTextView.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
                 is PendingResult -> {
-                    binding.recipesRecipeCategoriesProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
                 is EmptyResult -> {
-                    binding.noRecipeCategoriesTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                 }
             }
         }
@@ -73,10 +76,11 @@ class RecipeCategoriesFragment : BaseFragment(), HasScreenTitle {
         }
     }
 
-    private fun hideAll() = with(binding) {
-        recipeCategoriesRecyclerView.visibility = View.GONE
-        recipesRecipeCategoriesProgressBar.visibility = View.GONE
-        noRecipeCategoriesTextView.visibility = View.GONE
+    private fun hideAll() {
+        binding.recipeCategoriesRecyclerView.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

@@ -65,7 +65,7 @@
     <fragment
         android:id="@+id/dietTipDetailsFragment"
         android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsFragment"
-        android:label="@string/diet_tips_title" />
+        android:label="@string/diet_tips_details_title" />
     <fragment
         android:id="@+id/recipesInCategoryFragment"
         android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipes.RecipesInCategoryFragment"

@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentMealPlanForDateRecipesBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
@@ -30,6 +31,7 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
     ) : BaseScreen
 
     private lateinit var binding: FragmentMealPlanForDateRecipesBinding
+    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var mealPlanForDateRecipesAdapter: MealPlanForDateRecipesAdapter
 
@@ -43,6 +45,7 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMealPlanForDateRecipesBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         binding.mealPlanForDateRecipesAddRecipeButton.setOnClickListener {
             viewModel.onMealPlanForDateAddButtonPressed()
             binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.INVISIBLE
@@ -60,18 +63,18 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
             when (statusResult) {
                 is SuccessResult -> {
                     binding.mealPlanForDateRecipesRecyclerView.visibility = View.VISIBLE
-                    binding.mealPlanForDateRecipesProgressBar.visibility = View.INVISIBLE
+                    resultBinding.progressBar.visibility = View.GONE
                     binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.VISIBLE
                     mealPlanForDateRecipesAdapter.mealPlanForDateRecipes = statusResult.data
                 }
                 is ErrorResult -> {
-                    binding.mealPlanForDateRecipesTryAgainContainer.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
                 is PendingResult -> {
-                    binding.mealPlanForDateRecipesProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
                 is EmptyResult -> {
-                    binding.noMealPlanForDateRecipesTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                     binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.VISIBLE
                 }
             }
@@ -88,13 +91,13 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
         }
     }
 
-    private fun hideAll() = with(binding) {
-        mealPlanForDateRecipesRecyclerView.visibility = View.GONE
-        mealPlanForDateRecipesProgressBar.visibility = View.GONE
-        mealPlanForDateRecipesTryAgainContainer.visibility = View.GONE
-        noMealPlanForDateRecipesTextView.visibility = View.GONE
-        mealPlanForDateRecipesAddRecipeButton.visibility = View.GONE
-        mealPlanForDateRecipesProgressBarForAddButton.visibility = View.GONE
+    private fun hideAll() {
+        binding.mealPlanForDateRecipesRecyclerView.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
+        binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.GONE
+        binding.mealPlanForDateRecipesProgressBarForAddButton.visibility = View.GONE
     }
 
     companion object {

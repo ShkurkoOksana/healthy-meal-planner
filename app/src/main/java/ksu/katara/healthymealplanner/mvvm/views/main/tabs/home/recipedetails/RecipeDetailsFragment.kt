@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.FragmentRecipeDetailsBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
@@ -33,6 +34,7 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
     ) : BaseScreen
 
     private lateinit var binding: FragmentRecipeDetailsBinding
+    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var recipeTypesAdapter: TypesAdapter
     private lateinit var ingredientsAdapter: IngredientsAdapter
@@ -50,6 +52,7 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         initRecipeDetails()
         initRecipeTypes()
         initNumberOfPortions()
@@ -68,13 +71,13 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                     initRecipeDetails(it.data)
                 }
                 is ErrorResult -> {
-                    binding.recipeDetailsTryAgainContainer.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
                 is PendingResult -> {
-                    binding.recipeDetailsProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
                 is EmptyResult -> {
-                    binding.noRecipeDetailsTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                 }
             }
         }
@@ -105,11 +108,11 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
             getString(R.string.protein_value, recipeDetails.carbohydrates.toString())
     }
 
-    private fun hideAllInRecipeDetails() = with(binding) {
-        recipeDetailsContentContainer.visibility = View.GONE
-        recipeDetailsProgressBar.visibility = View.GONE
-        recipeDetailsTryAgainContainer.visibility = View.GONE
-        noRecipeDetailsTextView.visibility = View.GONE
+    private fun hideAllInRecipeDetails() {
+        binding.recipeDetailsContentContainer.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
     }
 
     private fun initPreparationSteps() {

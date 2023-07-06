@@ -11,6 +11,8 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
+import ksu.katara.healthymealplanner.foundation.views.LiveResult
+import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesInCategoryListener
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
@@ -25,11 +27,11 @@ class RecipesInCategoryViewModel(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(), RecipesInCategoryActionListener {
 
+    private val _recipesInCategory = MutableLiveResult<List<Recipe>>()
+    val recipesInCategory: LiveResult<List<Recipe>> = _recipesInCategory
+
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
-
-    private val _recipesInCategory = MutableLiveData<StatusResult<List<Recipe>>>()
-    val recipesInCategory: LiveData<StatusResult<List<Recipe>>> = _recipesInCategory
 
     private var recipesInCategoryResult: StatusResult<List<Recipe>> = EmptyResult()
         set(value) {

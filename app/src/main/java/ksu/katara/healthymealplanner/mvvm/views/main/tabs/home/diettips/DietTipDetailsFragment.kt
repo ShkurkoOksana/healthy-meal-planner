@@ -6,15 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import ksu.katara.healthymealplanner.databinding.FragmentDietTipDetailsBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
+import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
-class DietTipDetailsFragment : BaseFragment() {
+class DietTipDetailsFragment : BaseFragment(), HasScreenTitle {
 
     /**
      * This screen has 1 argument: id of chosen dietTip
@@ -24,8 +26,11 @@ class DietTipDetailsFragment : BaseFragment() {
     ) : BaseScreen
 
     private lateinit var binding: FragmentDietTipDetailsBinding
+    private lateinit var resultBinding: PartResultBinding
 
     override val viewModel by screenViewModel<DietTipDetailsViewModel>()
+
+    override fun getScreenTitle(): String? = viewModel.screenTitle.value
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +38,7 @@ class DietTipDetailsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDietTipDetailsBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         initDietTipDetailsViewPager()
         return binding.root
     }
@@ -46,27 +52,24 @@ class DietTipDetailsFragment : BaseFragment() {
                     val dietTipDetailsViewPagerAdapter = DietTipDetailsViewPagerAdapter(it.data)
                     binding.dietTipDetailsViewPager.adapter = dietTipDetailsViewPagerAdapter
                 }
-
                 is ErrorResult -> {
-                    binding.dietTipDetailsTryAgainContainer.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
-
                 is PendingResult -> {
-                    binding.dietTipDetailsProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
-
                 is EmptyResult -> {
-                    binding.noDietTipDetailsTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    private fun hideAllInDietTipDetails() = with(binding) {
-        dietTipDetailsContentContainer.visibility = View.GONE
-        dietTipDetailsProgressBar.visibility = View.GONE
-        dietTipDetailsTryAgainContainer.visibility = View.GONE
-        noDietTipDetailsTextView.visibility = View.GONE
+    private fun hideAllInDietTipDetails() {
+        binding.dietTipDetailsContentContainer.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

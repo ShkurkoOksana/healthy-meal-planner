@@ -11,6 +11,8 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
+import ksu.katara.healthymealplanner.foundation.views.LiveResult
+import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipeIngredientsListener
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
@@ -32,23 +34,24 @@ class RecipeDetailsViewModel(
     private val shoppingListRepository: ShoppingListRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(), IngredientSelectedActionListener {
+
+    private val _recipeDetails = MutableLiveResult<RecipeDetails>()
+    val recipeDetails: LiveResult<RecipeDetails> = _recipeDetails
+
+    private val _recipeTypes = MutableLiveResult<List<String>>()
+    val recipeTypes: LiveResult<List<String>> = _recipeTypes
+
+    private val _ingredients = MutableLiveResult<List<IngredientsItem>>()
+    val ingredients: LiveResult<List<IngredientsItem>> = _ingredients
+
+    private val _isAllIngredientsSelected = MutableLiveResult<Boolean>()
+    val isAllIngredientsSelected: LiveResult<Boolean> = _isAllIngredientsSelected
+
+    private val _preparationSteps = MutableLiveResult<List<RecipePreparationStep>>()
+    val preparationSteps: LiveResult<List<RecipePreparationStep>> = _preparationSteps
+
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
-
-    private val _recipeDetails = MutableLiveData<StatusResult<RecipeDetails>>()
-    val recipeDetails: LiveData<StatusResult<RecipeDetails>> = _recipeDetails
-
-    private val _recipeTypes = MutableLiveData<StatusResult<List<String>>>()
-    val recipeTypes: LiveData<StatusResult<List<String>>> = _recipeTypes
-
-    private val _ingredients = MutableLiveData<StatusResult<List<IngredientsItem>>>()
-    val ingredients: LiveData<StatusResult<List<IngredientsItem>>> = _ingredients
-
-    private val _isAllIngredientsSelected = MutableLiveData<StatusResult<Boolean>>()
-    val isAllIngredientsSelected: LiveData<StatusResult<Boolean>> = _isAllIngredientsSelected
-
-    private val _preparationSteps = MutableLiveData<StatusResult<List<RecipePreparationStep>>>()
-    val preparationSteps: LiveData<StatusResult<List<RecipePreparationStep>>> = _preparationSteps
 
     private val ingredientsItemIdsInProgress = mutableSetOf<Long>()
 

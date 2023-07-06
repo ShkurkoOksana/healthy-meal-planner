@@ -11,6 +11,8 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
+import ksu.katara.healthymealplanner.foundation.views.LiveResult
+import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsChaptersListener
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsListener
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
@@ -25,14 +27,15 @@ class DietTipsChaptersViewModel(
     private val dietTipsRepository: DietTipsRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(), DietTipActionListener {
+
+    private val _dietTipsChapters = MutableLiveResult<List<DietTipsChapter>>()
+    val dietTipsChapters: LiveResult<List<DietTipsChapter>> = _dietTipsChapters
+
+    private val _dietTips = MutableLiveResult<List<DietTip>>()
+    val dietTips: LiveResult<List<DietTip>> = _dietTips
+
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
-
-    private val _dietTipsChapters = MutableLiveData<StatusResult<List<DietTipsChapter>>>()
-    val dietTipsChapters: LiveData<StatusResult<List<DietTipsChapter>>> = _dietTipsChapters
-
-    private val _dietTips = MutableLiveData<StatusResult<List<DietTip>>>()
-    val dietTips: LiveData<StatusResult<List<DietTip>>> = _dietTips
 
     private var dietTipsChaptersResult: StatusResult<List<DietTipsChapter>> = EmptyResult()
         set(value) {

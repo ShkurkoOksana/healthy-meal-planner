@@ -4,12 +4,17 @@
 
     <string name="please_wait">Пожалуйста, подождите…</string>
 
+    <!--Resources for part_result-->
+    <string name="no_data">Нет данных в разделе</string>
+    <string name="error_loading_data">Ошибка при загрузке данных.\nПожалуйста, попробуйте позже.</string>
+    <string name="try_again">Попробуй еще раз</string>
+
     <!--Resources for HomeFragment-->
     <string name="home_title">Главная</string>
     <string name="home">Главная</string>
     <string name="action_go_to_profile_details"><![CDATA[Профиль >]]></string>
     <string name="toast_functionality_is_not_available">Функционал пока не доступен</string>
-    <string name="diet_tips_title">Полезные советы</string>
+    <string name="diet_tips_details_title">Полезные советы</string>
     <string name="meal_plan_for_today_title">План питания на сегодня</string>
     <string name="action_go_to_breakfast_for_date_details">Завтрак</string>
     <string name="action_go_to_lunch_for_date_details">Обед</string>
@@ -17,7 +22,6 @@
     <string name="action_go_to_snack_for_date_details">Перекус</string>
     <string name="statistics_title">Статистика</string>
     <string name="action_go_diary_details">Дневник</string>
-    <string name="try_again">Попробуй еще раз</string>
     <string name="failed_to_load_diet_tips">Не удалось загрузить раздел Полезные советы</string>
     <string name="cant_load_diet_tips">Не загружается информация в разделе Полезные советы</string>
     <string name="no_diet_tips">Нет данных в разделе Полезные советы</string>

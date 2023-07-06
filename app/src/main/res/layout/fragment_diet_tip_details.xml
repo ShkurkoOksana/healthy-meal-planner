@@ -1,59 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".mvvm.views.main.tabs.home.diettips.DietTipDetailsFragment">
 
     <FrameLayout
         android:id="@+id/dietTipDetailsContentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/dietTipDetailsViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </FrameLayout>
 
-    <ProgressBar
-        android:id="@+id/dietTipDetailsProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:indeterminateTint="@color/green" />
+    <include layout="@layout/part_result"/>
 
-    <LinearLayout
-        android:id="@+id/dietTipDetailsTryAgainContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/failed_to_load_diet_tip_details"/>
-
-        <Button
-            android:id="@+id/recipeDetailsTryAgainButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/try_again"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/noDietTipDetailsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:text="@string/no_diet_tip_details"/>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

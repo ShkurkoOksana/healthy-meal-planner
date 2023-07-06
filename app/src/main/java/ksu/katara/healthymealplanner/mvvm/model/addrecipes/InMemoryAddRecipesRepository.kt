@@ -22,7 +22,7 @@ class InMemoryAddRecipesRepository(
 
     override fun loadAddRecipes(selectedDate: Date, mealType: MealTypes): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             val mealPlanForDateRecipesList: MutableList<Recipe> = getMealPlanForDateRecipesList(selectedDate, mealType)
             addRecipes = getAddRecipes(mealPlanForDateRecipesList)
             addRecipesLoaded = true
@@ -30,7 +30,7 @@ class InMemoryAddRecipesRepository(
         }
 
     private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         val recipesList = recipesRepository.getRecipes().map { it }.toMutableList()
         list.forEach { mealPlanForDateRecipesListItem ->
             recipesList.removeIf { it == mealPlanForDateRecipesListItem }
@@ -71,7 +71,7 @@ class InMemoryAddRecipesRepository(
 
     override fun addRecipesDeleteRecipe(recipe: Recipe): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             val indexToDelete = addRecipes.indexOfFirst { it == recipe }
             if (indexToDelete != -1) {
                 addRecipes.removeAt(indexToDelete)

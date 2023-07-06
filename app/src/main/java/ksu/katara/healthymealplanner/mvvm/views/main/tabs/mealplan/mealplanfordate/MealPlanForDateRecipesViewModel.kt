@@ -11,6 +11,8 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
+import ksu.katara.healthymealplanner.foundation.views.LiveResult
+import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesListener
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
@@ -34,11 +36,12 @@ class MealPlanForDateRecipesViewModel(
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel(), MealPlanDateRecipeActionListener {
+
+    private val _mealPlanForDateRecipes = MutableLiveResult<List<MealPlanForDateRecipesItem>>()
+    val mealPlanForDateRecipes: LiveResult<List<MealPlanForDateRecipesItem>> = _mealPlanForDateRecipes
+
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
-
-    private val _mealPlanForDateRecipes = MutableLiveData<StatusResult<List<MealPlanForDateRecipesItem>>>()
-    val mealPlanForDateRecipes: LiveData<StatusResult<List<MealPlanForDateRecipesItem>>> = _mealPlanForDateRecipes
 
     private val mealPlanForDateRecipesDeleteItemIdsInProgress = mutableSetOf<Long>()
     private var mealPlanRecipesResult: StatusResult<MealPlanRecipes> = EmptyResult()

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentDietTipsChaptersBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
@@ -24,6 +25,7 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
     class Screen : BaseScreen
 
     private lateinit var binding: FragmentDietTipsChaptersBinding
+    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var dietTipsChaptersAdapter: DietTipsChaptersAdapter
 
@@ -40,6 +42,7 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDietTipsChaptersBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         initDietTipsRecycleViewSections()
         return binding.root
     }
@@ -58,15 +61,15 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
                 }
 
                 is ErrorResult -> {
-                    binding.dietTipsChaptersTryAgainContainer.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
 
                 is PendingResult -> {
-                    binding.dietTipsChaptersProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
 
                 is EmptyResult -> {
-                    binding.noDietTipsChaptersTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                 }
             }
         }
@@ -76,11 +79,11 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
         binding.dietTipsChaptersRecyclerView.adapter = dietTipsChaptersAdapter
     }
 
-    private fun hideAll() = with(binding) {
-        dietTipsChaptersRecyclerView.visibility = View.GONE
-        dietTipsChaptersProgressBar.visibility = View.GONE
-        dietTipsChaptersTryAgainContainer.visibility = View.GONE
-        noDietTipsChaptersTextView.visibility = View.GONE
+    private fun hideAll() {
+        binding.dietTipsChaptersRecyclerView.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

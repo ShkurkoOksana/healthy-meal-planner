@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentAddRecipesBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
@@ -31,6 +32,7 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
     ) : BaseScreen
 
     private lateinit var binding: FragmentAddRecipesBinding
+    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var addRecipesAdapter: AddRecipesAdapter
 
@@ -49,6 +51,7 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddRecipesBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         initSearchAddRecipes()
         initAddRecipesList()
         return binding.root
@@ -82,19 +85,19 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
             when (statusResult) {
                 is SuccessResult -> {
                     binding.addRecipesListRecyclerView.visibility = View.VISIBLE
-                    binding.addRecipesListProgressBar.visibility = View.INVISIBLE
+                    resultBinding.progressBar.visibility = View.INVISIBLE
                     addRecipesAdapter.addRecipesList = statusResult.data
                     addRecipesAdapter.filter.filter(filterString)
                     addRecipesAdapter.addRecipesListFilter = statusResult.data
                 }
                 is ErrorResult -> {
-                    binding.recipesListTryAgainContainer.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
                 is PendingResult -> {
-                    binding.addRecipesListProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
                 is EmptyResult -> {
-                    binding.noRecipesTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                 }
             }
         }
@@ -110,11 +113,11 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
         }
     }
 
-    private fun hideAllAddRecipesList() = with(binding) {
-        addRecipesListRecyclerView.visibility = View.GONE
-        addRecipesListProgressBar.visibility = View.GONE
-        recipesListTryAgainContainer.visibility = View.GONE
-        noRecipesTextView.visibility = View.GONE
+    private fun hideAllAddRecipesList() {
+        binding.addRecipesListRecyclerView.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

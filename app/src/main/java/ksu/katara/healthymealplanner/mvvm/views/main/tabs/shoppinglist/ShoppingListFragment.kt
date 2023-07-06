@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentShoppingListBinding
+import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
@@ -25,6 +26,7 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
     class Screen : BaseScreen
 
     private lateinit var binding: FragmentShoppingListBinding
+    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var shoppingListAdapter: ShoppingListAdapter
 
@@ -38,6 +40,7 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentShoppingListBinding.inflate(layoutInflater, container, false)
+        resultBinding = PartResultBinding.bind(binding.root)
         arguments = bundleOf(BaseScreen.ARG_SCREEN to Screen())
         initShoppingList()
         return binding.root
@@ -53,13 +56,13 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
                     shoppingListAdapter.shoppingList = it.data
                 }
                 is ErrorResult -> {
-                    binding.noShoppingListTextView.visibility = View.VISIBLE
+                    resultBinding.errorContainer.visibility = View.VISIBLE
                 }
                 is PendingResult -> {
-                    binding.shoppingListProgressBar.visibility = View.VISIBLE
+                    resultBinding.progressBar.visibility = View.VISIBLE
                 }
                 is EmptyResult -> {
-                    binding.noShoppingListTextView.visibility = View.VISIBLE
+                    resultBinding.noData.visibility = View.VISIBLE
                 }
             }
         }
@@ -72,11 +75,11 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
         }
     }
 
-    private fun hideAll() = with(binding) {
-        shoppingListRecyclerView.visibility = View.GONE
-        shoppingListProgressBar.visibility = View.GONE
-        shoppingListTryAgainContainer.visibility = View.GONE
-        noShoppingListTextView.visibility = View.GONE
+    private fun hideAll() {
+        binding.shoppingListRecyclerView.visibility = View.GONE
+        resultBinding.progressBar.visibility = View.GONE
+        resultBinding.errorContainer.visibility = View.GONE
+        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

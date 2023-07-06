@@ -114,7 +114,7 @@ class InMemoryRecipesRepository(
 
     override fun loadRecipesInCategory(recipeCategoryId: Long): Task<Unit> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             recipesInCategory = recipes.filter { it.categoryId == recipeCategoryId }.toMutableList()
             recipeInCategoryLoaded = true
             notifyRecipeInCategoryChanges()
@@ -122,7 +122,7 @@ class InMemoryRecipesRepository(
 
     override fun getRecipeInCategoryById(id: Long): Task<RecipeDetails> =
         SimpleTask(Callable {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             val recipeInCategory = recipesInCategory.firstOrNull { it.id == id }
             return@Callable recipesDetails.firstOrNull<RecipeDetails> { it.recipe == recipeInCategory }
                 ?: throw RecipeNotFoundException()
@@ -147,7 +147,7 @@ class InMemoryRecipesRepository(
     override fun getRecipesDetails(): MutableList<RecipeDetails> = recipesDetails
 
     override fun loadRecipeDetails(recipeId: Long): Task<RecipeDetails> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         notifyRecipeDetailsChanges()
         return@SimpleTask recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
     }
@@ -170,7 +170,7 @@ class InMemoryRecipesRepository(
 
     override fun loadRecipeTypes(recipeId: Long): Task<List<String>> =
         SimpleTask {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
             recipeTypes = recipeDetails.types
             recipeTypesLoaded = true
@@ -179,7 +179,7 @@ class InMemoryRecipesRepository(
 
     override fun loadIngredients(recipeId: Long): Task<List<RecipeIngredient>> =
         SimpleTask(Callable {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
             recipeIngredients = recipeDetails.ingredients
             recipeIngredientsLoaded = true
@@ -204,14 +204,14 @@ class InMemoryRecipesRepository(
     }
 
     override fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         val recipeIngredient = recipeDetails.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
         recipeIngredient.isInShoppingList = isSelected
     }
 
     override fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean): Task<Unit> = SimpleTask {
-        Thread.sleep(200L)
+        Thread.sleep(2000L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         recipeDetails.ingredients.forEach { it.isInShoppingList = isSelected }
         recipeDetails.isAllIngredientsInShoppingList = isSelected
@@ -219,7 +219,7 @@ class InMemoryRecipesRepository(
 
     override fun isAllIngredientsSelected(recipeId: Long) = SimpleTask(
         Callable {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             return@Callable isAllIngredientsSelectedResult(recipeId)
         }
     )
@@ -237,7 +237,7 @@ class InMemoryRecipesRepository(
 
     override fun loadPreparationSteps(recipeId: Long): Task<MutableList<RecipePreparationStep>> =
         SimpleTask(Callable {
-            Thread.sleep(200L)
+            Thread.sleep(2000L)
             val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
             preparationSteps = recipeDetails.preparationSteps
             preparationStepsLoaded = true
