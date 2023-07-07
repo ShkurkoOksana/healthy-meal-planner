@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
+import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
@@ -60,8 +61,7 @@ class RecipesInCategoryViewModel(
         recipesInCategoryResult = PendingResult()
         recipesRepository.loadRecipesInCategory(recipeCategoryId)
             .onError {
-                val message = uiActions.getString(R.string.cant_load_recipe_in_category)
-                uiActions.toast(message)
+                recipesInCategoryResult = ErrorResult(it)
             }
             .autoCancel()
     }

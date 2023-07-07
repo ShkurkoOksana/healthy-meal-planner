@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
+import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
@@ -70,8 +71,7 @@ class AddRecipesListViewModel(
         addRecipesResult = PendingResult()
         addRecipesRepository.loadAddRecipes(selectedDate, mealType)
             .onError {
-                val message = uiActions.getString(R.string.cant_load_recipes)
-                uiActions.toast(message)
+                addRecipesResult = ErrorResult(it)
             }
             .autoCancel()
     }
@@ -85,19 +85,16 @@ class AddRecipesListViewModel(
         if (isDeleteInProgress(recipe)) return
         addDeleteProgressTo(recipe)
         mealPlanForDateRecipesRepository.mealPlanForDateRecipesAddRecipe(selectedDate, mealType, recipe)
-            .onError {
-                val message = uiActions.getString(R.string.cant_add_recipe_to_meal_plan)
-                uiActions.toast(message)
-            }
-            .autoCancel()
-
-        addRecipesRepository.addRecipesDeleteRecipe(recipe)
             .onSuccess {
-                removeDeleteProgressFrom(recipe)
+                addRecipesRepository.addRecipesDeleteRecipe(recipe)
+                    .onSuccess {
+                        removeDeleteProgressFrom(recipe)
+                    }
+                    .autoCancel()
             }
             .onError {
                 removeDeleteProgressFrom(recipe)
-                val message = uiActions.getString(R.string.cant_delete_recipe_from_meal_plan)
+                val message = uiActions.getString(R.string.cant_add_recipe_to_meal_plan)
                 uiActions.toast(message)
             }
             .autoCancel()

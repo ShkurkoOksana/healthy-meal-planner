@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
+import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
@@ -74,8 +75,7 @@ class ShoppingListViewModel(
         shoppingListResult = PendingResult()
         shoppingListRepository.loadShoppingList()
             .onError {
-                val message = uiActions.getString(R.string.cant_load_shopping_list)
-                uiActions.toast(message)
+                shoppingListResult = ErrorResult(it)
             }
             .autoCancel()
     }
@@ -135,6 +135,7 @@ class ShoppingListViewModel(
                 removeDeleteProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
             }
             .onError {
+                removeDeleteProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
                 val message = uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)
                 uiActions.toast(message)
             }

@@ -50,7 +50,7 @@
     <string name="no_meal_plan_for_date">Выберите рецепты для Плана питания на сегодня</string>
     <string name="cant_add_recipe_to_meal_plan">Не удалось добавить рецепт в План питания</string>
     <string name="cant_delete_recipe_from_meal_plan">Не удалось удалить рецепт из Плана питания</string>
-    
+
     <!--Resources for RecipeFragment-->
     <string name="recipe_details_title">%1$s</string>
     <string name="recipe_name">Название рецепта</string>
@@ -95,6 +95,7 @@
     <string name="no_recipes">Нет данных в списке Рецептов</string>
     <string name="cant_load_recipes">Не загружается информация в список Рецептов</string>
     <string name="no_ricipes_found">Рецепты с таким именем не найдены</string>
+    <string name="cant_delete_recipe_from_add_recipes">Не удалось удалить рецепт из Добавленных рецептов</string>
 
     <!--Resources for RecipeCategoriesFragment-->
     <string name="recipes_categories_title">Рецепты</string>

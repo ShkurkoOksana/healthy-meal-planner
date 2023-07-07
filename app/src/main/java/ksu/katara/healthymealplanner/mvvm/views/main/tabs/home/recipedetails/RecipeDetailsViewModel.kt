@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
+import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
@@ -108,8 +109,7 @@ class RecipeDetailsViewModel(
                 recipeDetailsResult = SuccessResult(it)
             }
             .onError {
-                val message = uiActions.getString(R.string.cant_load_recipe_details)
-                uiActions.toast(message)
+                recipeDetailsResult = ErrorResult(it)
             }
             .autoCancel()
     }
@@ -121,8 +121,7 @@ class RecipeDetailsViewModel(
                 _recipeTypes.value = SuccessResult(it)
             }
             .onError {
-                val message = uiActions.getString(R.string.cant_load_recipe_types)
-                uiActions.toast(message)
+                recipeTypesResult = ErrorResult(it)
             }
             .autoCancel()
     }
@@ -134,8 +133,7 @@ class RecipeDetailsViewModel(
                 allIngredients = it
             }
             .onError {
-                val message = uiActions.getString(R.string.cant_load_ingredients)
-                uiActions.toast(message)
+                ingredientsResult = ErrorResult(it)
             }
             .autoCancel()
         recipesRepository.isAllIngredientsSelected(recipeId)
@@ -160,8 +158,7 @@ class RecipeDetailsViewModel(
                 _preparationSteps.value = SuccessResult(it)
             }
             .onError {
-                val message = uiActions.getString(R.string.cant_load_preparation_steps)
-                uiActions.toast(message)
+                preparationStepsResult = ErrorResult(it)
             }
             .autoCancel()
     }
@@ -210,10 +207,6 @@ class RecipeDetailsViewModel(
                 } else {
                     _isAllIngredientsSelected.value = SuccessResult(false)
                 }
-            }
-            .onError {
-                val message = uiActions.getString(R.string.cant_make_all_ingredients_selected)
-                uiActions.toast(message)
             }
             .autoCancel()
         shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)

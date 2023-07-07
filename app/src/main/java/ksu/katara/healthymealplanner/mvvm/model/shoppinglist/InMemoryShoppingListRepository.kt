@@ -139,6 +139,7 @@ class InMemoryShoppingListRepository(
         ingredient: RecipeIngredient,
     ): Task<Unit> = SimpleTask {
         Thread.sleep(2000L)
+        throw IllegalArgumentException()
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
         notifyShoppingListChanges()
     }
