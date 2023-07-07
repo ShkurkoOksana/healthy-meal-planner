@@ -9,14 +9,10 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.FragmentHomeBinding
-import ksu.katara.healthymealplanner.databinding.PartResultBinding
-import ksu.katara.healthymealplanner.foundation.model.EmptyResult
-import ksu.katara.healthymealplanner.foundation.model.ErrorResult
-import ksu.katara.healthymealplanner.foundation.model.PendingResult
-import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsAdapter
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment
@@ -34,7 +30,6 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
     class Screen : BaseScreen
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var dietTipsAdapter: DietTipsAdapter
 
@@ -48,13 +43,12 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        resultBinding = PartResultBinding.bind(binding.root)
         arguments = bundleOf(BaseScreen.ARG_SCREEN to Screen())
-        initHomeView()
+        initView()
         return binding.root
     }
 
-    private fun initHomeView() {
+    private fun initView() {
         initProfile()
         initDietTips()
         initMealPlanForToday(currentDate = Date())
@@ -102,35 +96,19 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
 
     private fun initDietTipsRecycleView() {
         dietTipsAdapter = DietTipsAdapter(viewModel)
-        viewModel.dietTips.observe(viewLifecycleOwner) {
-            hideAll()
-            when (it) {
-                is SuccessResult -> {
-                    dietTipsAdapter.dietTips = it.data.slice(0..AMOUNT_OF_DIET_TIPS)
-                    binding.dietTipsRecyclerView.visibility = View.VISIBLE
+        viewModel.dietTips.observe(viewLifecycleOwner) { result ->
+            renderSimpleResult(
+                root = binding.dietTipsContentContainer,
+                result = result,
+                onSuccess = {
+                    dietTipsAdapter.dietTips = it.slice(0..AMOUNT_OF_DIET_TIPS)
                 }
-                is ErrorResult -> {
-                    resultBinding.errorContainer.visibility = View.VISIBLE
-                }
-                is PendingResult -> {
-                    resultBinding.progressBar.visibility = View.VISIBLE
-                }
-                is EmptyResult -> {
-                    resultBinding.noData.visibility = View.VISIBLE
-                }
-            }
+            )
         }
         val dietTipsLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.dietTipsRecyclerView.layoutManager = dietTipsLayoutManager
         binding.dietTipsRecyclerView.adapter = dietTipsAdapter
-    }
-
-    private fun hideAll() {
-        binding.dietTipsRecyclerView.visibility = View.GONE
-        resultBinding.progressBar.visibility = View.GONE
-        resultBinding.errorContainer.visibility = View.GONE
-        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

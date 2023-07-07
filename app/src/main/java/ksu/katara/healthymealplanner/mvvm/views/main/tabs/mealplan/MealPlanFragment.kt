@@ -39,9 +39,13 @@ class MealPlanFragment : BaseFragment(), HasScreenTitle {
     ): View {
         binding = FragmentMealPlanBinding.inflate(layoutInflater, container, false)
         arguments = bundleOf(BaseScreen.ARG_SCREEN to Screen())
+        initView()
+        return binding.root
+    }
+
+    private fun initView() {
         initCalendar()
         initMealPlanForDate(selectedDate)
-        return binding.root
     }
 
     private fun initCalendar() {

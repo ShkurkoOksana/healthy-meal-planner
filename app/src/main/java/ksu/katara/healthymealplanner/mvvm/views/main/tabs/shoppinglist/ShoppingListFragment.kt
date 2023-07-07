@@ -8,14 +8,10 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentShoppingListBinding
-import ksu.katara.healthymealplanner.databinding.PartResultBinding
-import ksu.katara.healthymealplanner.foundation.model.EmptyResult
-import ksu.katara.healthymealplanner.foundation.model.ErrorResult
-import ksu.katara.healthymealplanner.foundation.model.PendingResult
-import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
 class ShoppingListFragment : BaseFragment(), HasScreenTitle {
@@ -26,7 +22,6 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
     class Screen : BaseScreen
 
     private lateinit var binding: FragmentShoppingListBinding
-    private lateinit var resultBinding: PartResultBinding
 
     private lateinit var shoppingListAdapter: ShoppingListAdapter
 
@@ -40,31 +35,21 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentShoppingListBinding.inflate(layoutInflater, container, false)
-        resultBinding = PartResultBinding.bind(binding.root)
         arguments = bundleOf(BaseScreen.ARG_SCREEN to Screen())
-        initShoppingList()
+        initView()
         return binding.root
     }
 
-    private fun initShoppingList() {
+    private fun initView() {
         shoppingListAdapter = ShoppingListAdapter(requireContext(), viewModel)
-        viewModel.shoppingList.observe(viewLifecycleOwner) {
-            hideAll()
-            when (it) {
-                is SuccessResult -> {
-                    binding.shoppingListRecyclerView.visibility = View.VISIBLE
-                    shoppingListAdapter.shoppingList = it.data
+        viewModel.shoppingList.observe(viewLifecycleOwner) { result ->
+            renderSimpleResult(
+                root = binding.root,
+                result = result,
+                onSuccess = {
+                    shoppingListAdapter.shoppingList = it
                 }
-                is ErrorResult -> {
-                    resultBinding.errorContainer.visibility = View.VISIBLE
-                }
-                is PendingResult -> {
-                    resultBinding.progressBar.visibility = View.VISIBLE
-                }
-                is EmptyResult -> {
-                    resultBinding.noData.visibility = View.VISIBLE
-                }
-            }
+            )
         }
         val shoppingListLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.shoppingListRecyclerView.layoutManager = shoppingListLayoutManager
@@ -73,13 +58,6 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
         if (shoppingListAnimator is DefaultItemAnimator) {
             shoppingListAnimator.supportsChangeAnimations = false
         }
-    }
-
-    private fun hideAll() {
-        binding.shoppingListRecyclerView.visibility = View.GONE
-        resultBinding.progressBar.visibility = View.GONE
-        resultBinding.errorContainer.visibility = View.GONE
-        resultBinding.noData.visibility = View.GONE
     }
 
     companion object {

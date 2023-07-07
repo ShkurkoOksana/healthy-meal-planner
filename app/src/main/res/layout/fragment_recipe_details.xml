@@ -183,7 +183,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/recipeDetailsCarbohydratesValueTextView" />
 
             <FrameLayout
-                android:id="@+id/recipeDetailsTypesContainer"
+                android:id="@+id/recipeDetailsTypesContentContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -246,7 +246,7 @@
                 android:background="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recipeDetailsTypesContainer" />
+                app:layout_constraintTop_toBottomOf="@+id/recipeDetailsTypesContentContainer" />
 
             <TextView
                 android:id="@+id/recipeDetailsIngredientsTitleTextView"
@@ -255,7 +255,7 @@
                 android:layout_marginTop="@dimen/medium_space"
                 android:text="@string/ingredients_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recipeDetailsTypesContainer" />
+                app:layout_constraintTop_toBottomOf="@+id/recipeDetailsTypesContentContainer" />
 
             <Spinner
                 android:id="@+id/recipeDetailsNumberOfPortionsSpinner"

@@ -19,6 +19,7 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
@@ -53,33 +54,24 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
     ): View {
         binding = FragmentRecipeDetailsBinding.inflate(layoutInflater, container, false)
         resultBinding = PartResultBinding.bind(binding.root)
-        initRecipeDetails()
-        initRecipeTypes()
-        initNumberOfPortions()
-        initIngredients()
-        initSelectAllIngredients()
-        initPreparationSteps()
+        initView()
         return binding.root
     }
 
-    private fun initRecipeDetails() {
-        viewModel.recipeDetails.observe(viewLifecycleOwner) {
-            hideAllInRecipeDetails()
-            when (it) {
-                is SuccessResult -> {
-                    binding.recipeDetailsContentContainer.visibility = View.VISIBLE
-                    initRecipeDetails(it.data)
+    private fun initView() {
+        viewModel.recipeDetails.observe(viewLifecycleOwner) { result ->
+            renderSimpleResult(
+                root = binding.root,
+                result = result,
+                onSuccess = {
+                    initRecipeDetails(it)
+                    initRecipeTypes()
+                    initNumberOfPortions()
+                    initIngredients()
+                    initSelectAllIngredients()
+                    initPreparationSteps()
                 }
-                is ErrorResult -> {
-                    resultBinding.errorContainer.visibility = View.VISIBLE
-                }
-                is PendingResult -> {
-                    resultBinding.progressBar.visibility = View.VISIBLE
-                }
-                is EmptyResult -> {
-                    resultBinding.noData.visibility = View.VISIBLE
-                }
-            }
+            )
         }
     }
 
@@ -106,13 +98,6 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
 
         binding.recipeDetailsCarbohydratesValueTextView.text =
             getString(R.string.protein_value, recipeDetails.carbohydrates.toString())
-    }
-
-    private fun hideAllInRecipeDetails() {
-        binding.recipeDetailsContentContainer.visibility = View.GONE
-        resultBinding.errorContainer.visibility = View.GONE
-        resultBinding.progressBar.visibility = View.GONE
-        resultBinding.noData.visibility = View.GONE
     }
 
     private fun initPreparationSteps() {
