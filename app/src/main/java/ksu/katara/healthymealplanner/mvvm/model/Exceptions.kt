@@ -15,3 +15,5 @@ class RecipeDetailsNotFoundException : AppException()
 class RecipeNotFoundException : AppException()
 
 class ShoppingListRecipeNotFoundException : AppException()
+
+

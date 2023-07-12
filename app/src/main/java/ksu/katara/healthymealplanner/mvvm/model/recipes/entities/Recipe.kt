@@ -30,7 +30,6 @@ data class RecipeDetails(
     val ingredients: MutableList<RecipeIngredient>,
     val preparationSteps: MutableList<RecipePreparationStep>,
     val isFavorite: Boolean,
-    var isAllIngredientsInShoppingList: Boolean
 )
 
 /**

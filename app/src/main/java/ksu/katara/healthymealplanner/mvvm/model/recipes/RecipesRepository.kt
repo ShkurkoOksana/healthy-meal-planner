@@ -26,7 +26,7 @@ interface RecipesRepository : Repository {
     /**
      * Load the list of all available recipes in category with id that may be chosen by the user.
      */
-    fun loadRecipesInCategory(recipeCategoryId: Long): Task<Unit>
+    fun loadRecipesInCategory(recipeCategoryId: Long): Task<List<Recipe>>
 
     /**
      * Get the list of all available recipes in category with id.
@@ -104,6 +104,6 @@ interface RecipesRepository : Repository {
     /**
      * Load the list of all available recipe preparation steps for recipe with id.
      */
-    fun loadPreparationSteps(recipeId: Long): Task<MutableList<RecipePreparationStep>>
+    fun loadPreparationSteps(recipeId: Long): Task<List<RecipePreparationStep>>
 
 }

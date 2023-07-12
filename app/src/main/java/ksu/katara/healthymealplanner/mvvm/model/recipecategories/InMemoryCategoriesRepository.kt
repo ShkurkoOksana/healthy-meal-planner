@@ -1,40 +1,31 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipecategories
 
-import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
 import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
+import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
 import ksu.katara.healthymealplanner.mvvm.model.RecipeCategoryNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
-import java.util.concurrent.Callable
 
 /**
  * Simple in-memory implementation of [CategoriesRepository]
  */
-class InMemoryCategoriesRepository : CategoriesRepository {
+class InMemoryCategoriesRepository(
+    private val tasksFactory: TasksFactory,
+) : CategoriesRepository {
 
-    private var recipeCategories = mutableListOf<Category>()
+    private var recipeCategories = listOf<Category>()
     private var loaded = false
     private val listeners = mutableSetOf<RecipeCategoriesListener>()
 
-    init {
-        RECIPE_CATEGORIES.forEach { (id, categoriesList) ->
-            recipeCategories.add(
-                Category(
-                    id = id.toLong(),
-                    photo = categoriesList[0],
-                    name = categoriesList[1],
-                )
-            )
-        }
-    }
-
-    override fun loadRecipeCategories(): Task<Unit> = SimpleTask {
+    override fun loadRecipeCategories(): Task<List<Category>> = tasksFactory.async {
         Thread.sleep(2000L)
         recipeCategories = getRecipeCategories()
         loaded = true
         notifyChanges()
+        return@async recipeCategories
     }
 
-    private fun getRecipeCategories(): MutableList<Category> {
+    private fun getRecipeCategories(): List<Category> {
         val recipeCategories = mutableListOf<Category>()
         RECIPE_CATEGORIES.forEach { (id, categoriesList) ->
             recipeCategories.add(
@@ -48,11 +39,11 @@ class InMemoryCategoriesRepository : CategoriesRepository {
         return recipeCategories
     }
 
-    override fun getCategoryById(id: Long): Task<Category> = SimpleTask(Callable {
+    override fun getCategoryById(id: Long): Task<Category> = tasksFactory.async {
         Thread.sleep(2000L)
-        return@Callable recipeCategories.firstOrNull { it.id == id }
+        return@async recipeCategories.firstOrNull { it.id == id }
             ?: throw RecipeCategoryNotFoundException()
-    })
+    }
 
     override fun addListener(listener: RecipeCategoriesListener) {
         listeners.add(listener)

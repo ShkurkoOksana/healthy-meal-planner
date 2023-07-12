@@ -1,5 +1,7 @@
 package ksu.katara.healthymealplanner.mvvm.model.product
 
+import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
+import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
 import ksu.katara.healthymealplanner.mvvm.model.ProductNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.product.entities.Product
 

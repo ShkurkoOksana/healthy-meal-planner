@@ -10,6 +10,7 @@ import ksu.katara.healthymealplanner.databinding.FragmentDietTipsChaptersBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
@@ -54,6 +55,9 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
                     dietTipsChaptersAdapter.dietTipsChapters = it
                 }
             )
+        }
+        onTryAgain(binding.root) {
+            viewModel.tryAgain()
         }
         val dietTipsChaptersLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

@@ -16,7 +16,7 @@ interface CategoriesRepository : Repository {
     /**
      * Load the list of all available recipe categories that may be chosen by the user.
      */
-    fun loadRecipeCategories(): Task<Unit>
+    fun loadRecipeCategories(): Task<List<Category>>
 
     /**
      * Get available recipe categories by id.

@@ -12,6 +12,7 @@ import ksu.katara.healthymealplanner.databinding.FragmentAddRecipesBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
@@ -88,6 +89,9 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
                     addRecipesAdapter.addRecipesListFilter = it
                 }
             )
+        }
+        onTryAgain(binding.root) {
+            viewModel.tryAgain()
         }
         val recipesListLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

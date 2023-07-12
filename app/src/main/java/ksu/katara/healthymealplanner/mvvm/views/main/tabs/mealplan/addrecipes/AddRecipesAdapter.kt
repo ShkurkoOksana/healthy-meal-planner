@@ -43,14 +43,14 @@ class AddRecipesAdapter(
     View.OnClickListener,
     Filterable {
 
-    var addRecipesList = mutableListOf<AddRecipesItem>()
+    var addRecipesList = listOf<AddRecipesItem>()
         set(newValue) {
             val diffCallback = AddRecipesListDiffCallback(field, newValue)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
             diffResult.dispatchUpdatesTo(this)
         }
-    var addRecipesListFilter = mutableListOf<AddRecipesItem>()
+    var addRecipesListFilter = listOf<AddRecipesItem>()
 
     override fun onClick(v: View) {
         val recipe = v.tag as Recipe
@@ -119,7 +119,7 @@ class AddRecipesAdapter(
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults) {
-                addRecipesList = results.values as MutableList<AddRecipesItem>
+                addRecipesList = results.values as List<AddRecipesItem>
                 notifyDataSetChanged()
             }
         }

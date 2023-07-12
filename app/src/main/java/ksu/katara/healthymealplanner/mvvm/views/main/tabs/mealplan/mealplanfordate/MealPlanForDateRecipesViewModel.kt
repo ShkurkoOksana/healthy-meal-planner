@@ -10,6 +10,7 @@ import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
+import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
@@ -35,8 +36,9 @@ class MealPlanForDateRecipesViewModel(
     private val navigator: Navigator,
     private val uiActions: UiActions,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel(), MealPlanDateRecipeActionListener {
+    savedStateHandle: SavedStateHandle,
+    private val dispatcher: Dispatcher
+) : BaseViewModel(dispatcher), MealPlanDateRecipeActionListener {
 
     private val _mealPlanForDateRecipes = MutableLiveResult<List<MealPlanForDateRecipesItem>>()
     val mealPlanForDateRecipes: LiveResult<List<MealPlanForDateRecipesItem>> = _mealPlanForDateRecipes
@@ -70,11 +72,10 @@ class MealPlanForDateRecipesViewModel(
 
     private fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes) {
         mealPlanRecipesResult = PendingResult()
-        mealPlanForDateRecipesRepository.loadMealPlanForDateRecipes(selectedDate, mealType)
-            .onError {
-                mealPlanRecipesResult = ErrorResult(it)
-            }
-            .autoCancel()
+        mealPlanForDateRecipesRepository.loadMealPlanForDateRecipes(selectedDate, mealType).enqueue(dispatcher) {
+            //todo
+            if (it is ErrorResult) mealPlanRecipesResult = ErrorResult(IllegalArgumentException())
+        }
     }
 
     fun onMealPlanForDateAddButtonPressed() {
@@ -90,18 +91,20 @@ class MealPlanForDateRecipesViewModel(
     override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
         if (isDeleteInProgress(recipe)) return
         addDeleteProgressTo(recipe)
-        mealPlanForDateRecipesRepository.mealPlanForDateRecipesDeleteRecipe(selectedDate, mealType, recipe)
-            .onSuccess {
-                removeDeleteProgressFrom(recipe)
-                if (it == null) {
-                    mealPlanRecipesResult = EmptyResult()
+        mealPlanForDateRecipesRepository.mealPlanForDateRecipesDeleteRecipe(selectedDate, mealType, recipe).enqueue(dispatcher) {
+            when(it) {
+                is SuccessResult -> {
+                    removeDeleteProgressFrom(recipe)
+                    if (it.data == null) {
+                        mealPlanRecipesResult = EmptyResult()
+                    }
+                }
+                is ErrorResult -> {
+                    val message = uiActions.getString(R.string.cant_delete_recipe_from_meal_plan)
+                    uiActions.toast(message)
                 }
             }
-            .onError {
-                val message = uiActions.getString(R.string.cant_delete_recipe_from_meal_plan)
-                uiActions.toast(message)
-            }
-            .autoCancel()
+        }
     }
 
     private fun addDeleteProgressTo(recipe: Recipe) {
@@ -127,5 +130,9 @@ class MealPlanForDateRecipesViewModel(
     override fun onMealPlanForDateRecipesItemDetails(recipe: Recipe) {
         val screen = RecipeDetailsFragment.Screen(recipe)
         navigator.launch(R.id.recipeDetailsFragment, RecipeDetailsFragment.createArgs(screen))
+    }
+
+    fun tryAgain() {
+        loadMealPlanForDateRecipes(selectedDate, mealType)
     }
 }

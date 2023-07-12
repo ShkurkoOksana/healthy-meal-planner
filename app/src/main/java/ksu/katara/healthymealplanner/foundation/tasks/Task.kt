@@ -1,31 +1,38 @@
 package ksu.katara.healthymealplanner.foundation.tasks
 
-typealias Callback<T> = (T) -> Unit
+import ksu.katara.healthymealplanner.foundation.model.FinalResult
+import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
+
+typealias TaskListener<T> = (FinalResult<T>) -> Unit
+
+class CancelledException(
+    originException: Exception? = null
+) : Exception(originException)
 
 /**
- * Represents abstract async task which may return result or error.
+ * Base interface for all async operations.
  */
 interface Task<T> {
 
     /**
-     * Register listener which will be called when task finishes with success result
-     */
-    fun onSuccess(callback: Callback<T>): Task<T>
-
-    /**
-     * Register listener which will be called when task finishes with exception
-     */
-    fun onError(callback: Callback<Throwable>): Task<T>
-
-    /**
-     * Cancel task and remove all listeners
-     */
-    fun cancel()
-
-    /**
-     * Block current thread and wait for the results synchronously.
-     * Exception is thrown in case of error results.
+     * Blocking method for waiting and getting results.
+     * Throws exception in case of error.
+     * @throws [IllegalStateException] if task has been already executed
      */
     fun await(): T
+
+    /**
+     * Non-blocking method for listening task results.
+     * If task is cancelled before finishing, listener is not called.
+     *
+     * Listener is called in main thread.
+     * @throws [IllegalStateException] if task has been already executed.
+     */
+    fun enqueue(dispatcher: Dispatcher, listener: TaskListener<T>)
+
+    /**
+     * Cancel this task and remove listener assigned by [enqueue].
+     */
+    fun cancel()
 
 }

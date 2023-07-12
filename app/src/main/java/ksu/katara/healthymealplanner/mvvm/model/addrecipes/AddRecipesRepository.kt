@@ -18,7 +18,7 @@ interface AddRecipesRepository : Repository {
     /**
      * Load the list of all added available recipes that may be chosen by the user.
      */
-    fun loadAddRecipes(selectedDate: Date, mealTypes: MealTypes): Task<Unit>
+    fun loadAddRecipes(selectedDate: Date, mealTypes: MealTypes): Task<List<Recipe>>
 
     /**
      * Listen for the current added recipes changes.

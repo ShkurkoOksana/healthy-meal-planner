@@ -19,6 +19,7 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
@@ -73,6 +74,9 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                 }
             )
         }
+        onTryAgain(binding.root) {
+            viewModel.tryAgain()
+        }
     }
 
     private fun initRecipeDetails(recipeDetails: RecipeDetails) {
@@ -119,6 +123,9 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                     binding.noRecipeDetailsPreparationStepsTextView.visibility = View.VISIBLE
                 }
             }
+        }
+        binding.recipeDetailsPreparationStepsTryAgainButton.setOnClickListener {
+            viewModel.loadPreparationStepsTryAgain()
         }
         val preparationStepsLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -181,6 +188,9 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                 }
             }
         }
+        binding.recipeDetailsIngredientsTryAgainButton.setOnClickListener {
+            viewModel.loadIngredientsTryAgain()
+        }
         val ingredientsItemListLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recipeDetailsIngredientsRecyclerView.layoutManager =
@@ -229,6 +239,9 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                     binding.noRecipeDetailsTypesTextView.visibility = View.VISIBLE
                 }
             }
+        }
+        binding.recipeDetailsTypesTryAgainButton.setOnClickListener {
+            viewModel.loadRecipeDetailsTypesTryAgain()
         }
         val recipeTypesLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

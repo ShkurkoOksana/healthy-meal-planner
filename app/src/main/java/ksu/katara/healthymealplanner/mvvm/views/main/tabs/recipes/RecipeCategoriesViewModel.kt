@@ -4,18 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
-import ksu.katara.healthymealplanner.foundation.model.EmptyResult
-import ksu.katara.healthymealplanner.foundation.model.ErrorResult
-import ksu.katara.healthymealplanner.foundation.model.PendingResult
-import ksu.katara.healthymealplanner.foundation.model.StatusResult
-import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
+import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.CategoriesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.RecipeCategoriesListener
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipes.RecipeCategoriesFragment.Screen
 
@@ -24,8 +19,9 @@ class RecipeCategoriesViewModel(
     private val navigator: Navigator,
     private val uiActions: UiActions,
     private val recipeCategoriesRepository: CategoriesRepository,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel(), RecipeCategoryActionListener {
+    savedStateHandle: SavedStateHandle,
+    dispatcher: Dispatcher
+) : BaseViewModel(dispatcher), RecipeCategoryActionListener {
 
     private val _recipeCategories = MutableLiveResult<List<Category>>()
     val recipeCategories: LiveResult<List<Category>> = _recipeCategories
@@ -33,46 +29,21 @@ class RecipeCategoriesViewModel(
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
 
-    private var recipeCategoriesResult: StatusResult<List<Category>> = EmptyResult()
-        set(value) {
-            field = value
-            notifyUpdates()
-        }
-
-    private val listener: RecipeCategoriesListener = {
-        recipeCategoriesResult = if (it.isEmpty()) {
-            EmptyResult()
-        } else {
-            SuccessResult(it)
-        }
-    }
-
     init {
         _screenTitle.value = uiActions.getString(R.string.recipes_categories_title)
-        recipeCategoriesRepository.addListener(listener)
         loadRecipeCategories()
     }
 
     private fun loadRecipeCategories() {
-        recipeCategoriesResult = PendingResult()
-        recipeCategoriesRepository.loadRecipeCategories()
-            .onError {
-                recipeCategoriesResult = ErrorResult(it)
-            }
-            .autoCancel()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        recipeCategoriesRepository.removeListener(listener)
-    }
-
-    private fun notifyUpdates() {
-        _recipeCategories.postValue(recipeCategoriesResult)
+        recipeCategoriesRepository.loadRecipeCategories().into(_recipeCategories)
     }
 
     override fun onRecipeCategoryPressed(recipeCategory: Category) {
         val screen = RecipesInCategoryFragment.Screen(recipeCategory)
         navigator.launch(R.id.recipesInCategoryFragment, RecipesInCategoryFragment.createArgs(screen))
+    }
+
+    fun tryAgain() {
+        loadRecipeCategories()
     }
 }

@@ -1,9 +1,7 @@
 package ksu.katara.healthymealplanner.foundation.navigator
 
-import android.content.ContentValues.TAG
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -53,6 +51,13 @@ class StackFragmentNavigator(
         activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentCallbacks)
     }
 
+    fun onBackPressed() {
+        val f = getCurrentFragment()
+        if (f is BaseFragment) {
+            f.viewModel.onBackPressed()
+        }
+    }
+
     fun notifyScreenUpdates() {
         setupActionBar()
         setFullScreen()
@@ -61,17 +66,13 @@ class StackFragmentNavigator(
     private fun setupActionBar() {
         val toolbar = activity.findViewById<MaterialToolbar>(toolbarId)
         activity.setSupportActionBar(toolbar)
-
-        val f = currentFragment
-
+        val f = getCurrentFragment()
         if (navController?.currentDestination?.id == navController?.graph?.startDestinationId) {
             // more than 1 screen -> show back button in the toolbar
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         } else {
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
-
-        Log.d(TAG, "fragment = $currentFragment")
         if (f is HasScreenTitle && f.getScreenTitle() != null) {
             activity.supportActionBar?.title = f.getScreenTitle()
         }
@@ -112,6 +113,8 @@ class StackFragmentNavigator(
             fragment.viewModel.onResult(result)
         }
     }
+
+    private fun getCurrentFragment() = currentFragment
 
     private val fragmentCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {

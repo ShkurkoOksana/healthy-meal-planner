@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
-import ksu.katara.healthymealplanner.foundation.model.EmptyResult
-import ksu.katara.healthymealplanner.foundation.model.ErrorResult
-import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
-import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
+import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
@@ -21,20 +18,15 @@ class DietTipDetailsViewModel(
     private val navigator: Navigator,
     private val uiActions: UiActions,
     private val dietTipsRepository: DietTipsRepository,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel() {
+    savedStateHandle: SavedStateHandle,
+    dispatcher: Dispatcher
+) : BaseViewModel(dispatcher) {
 
     private val _dietTipDetails = MutableLiveData<StatusResult<DietTipDetails>>()
     val dietTipDetails: LiveData<StatusResult<DietTipDetails>> = _dietTipDetails
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
-
-    private var dietTipDetailsResult: StatusResult<DietTipDetails> = EmptyResult()
-        set(value) {
-            field = value
-            notifyUpdates()
-        }
 
     private val dietTipId = screen.dietTipId
 
@@ -44,18 +36,10 @@ class DietTipDetailsViewModel(
     }
 
     private fun loadDietTipDetails(dietTipId: Long) {
-        dietTipDetailsResult = PendingResult()
-        dietTipsRepository.loadDietTipDetails(dietTipId)
-            .onSuccess {
-                dietTipDetailsResult = SuccessResult(it)
-            }
-            .onError {
-                dietTipDetailsResult = ErrorResult(it)
-            }
-            .autoCancel()
+        dietTipsRepository.loadDietTipDetails(dietTipId).into(_dietTipDetails)
     }
 
-    private fun notifyUpdates() {
-        _dietTipDetails.postValue(dietTipDetailsResult)
+    fun tryAgain() {
+        loadDietTipDetails(dietTipId)
     }
 }

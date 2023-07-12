@@ -11,6 +11,7 @@ import ksu.katara.healthymealplanner.databinding.FragmentRecipeCategoriesBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
@@ -50,6 +51,9 @@ class RecipeCategoriesFragment : BaseFragment(), HasScreenTitle {
                     recipeCategoriesAdapter.recipeCategories = it
                 }
             )
+        }
+        onTryAgain(binding.root) {
+            viewModel.tryAgain()
         }
         val recipeCategoriesLayoutManager =
             GridLayoutManager(requireContext(), 2)

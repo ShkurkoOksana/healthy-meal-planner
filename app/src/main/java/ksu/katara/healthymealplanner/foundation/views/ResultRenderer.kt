@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.foundation.views
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.view.children
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.PartResultBinding
@@ -40,4 +41,11 @@ fun <T> BaseFragment.renderSimpleResult(root: ViewGroup, result: StatusResult<T>
             onSuccess(successData)
         }
     )
+}
+
+/**
+ * Assign onClick listener for default try-again button.
+ */
+fun BaseFragment.onTryAgain(root: View, onTryAgainPressed: () -> Unit) {
+    root.findViewById<Button>(R.id.tryAgainButton).setOnClickListener { onTryAgainPressed() }
 }

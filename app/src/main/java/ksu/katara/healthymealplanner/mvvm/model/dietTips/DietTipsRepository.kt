@@ -19,12 +19,12 @@ interface DietTipsRepository : Repository {
     /**
      * Load the list of all available diet tips chapters that may be chosen by the user.
      */
-    fun loadDietTipsChapters(): Task<Unit>
+    fun loadDietTipsChapters(): Task<List<DietTipsChapter>>
 
     /**
      * Load the list of all available diet tips that may be chosen by the user.
      */
-    fun loadDietTips(): Task<Unit>
+    fun loadDietTips(): Task<List<DietTip>>
 
     /**
      * Listen for the current diet tips changes.

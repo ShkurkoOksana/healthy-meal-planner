@@ -10,6 +10,7 @@ import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
+import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
@@ -25,8 +26,9 @@ class RecipesInCategoryViewModel(
     private val navigator: Navigator,
     private val uiActions: UiActions,
     private val recipesRepository: RecipesRepository,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel(), RecipesInCategoryActionListener {
+    savedStateHandle: SavedStateHandle,
+    private val dispatcher: Dispatcher
+) : BaseViewModel(dispatcher), RecipesInCategoryActionListener {
 
     private val _recipesInCategory = MutableLiveResult<List<Recipe>>()
     val recipesInCategory: LiveResult<List<Recipe>> = _recipesInCategory
@@ -59,11 +61,9 @@ class RecipesInCategoryViewModel(
 
     private fun loadRecipesInCategory(recipeCategoryId: Long) {
         recipesInCategoryResult = PendingResult()
-        recipesRepository.loadRecipesInCategory(recipeCategoryId)
-            .onError {
-                recipesInCategoryResult = ErrorResult(it)
-            }
-            .autoCancel()
+        recipesRepository.loadRecipesInCategory(recipeCategoryId).enqueue(dispatcher) {
+            if (it is ErrorResult) recipesInCategoryResult = it
+        }
     }
 
     override fun onCleared() {
@@ -78,5 +78,9 @@ class RecipesInCategoryViewModel(
     override fun onRecipeInCategoryPressed(recipe: Recipe) {
         val screen = RecipeDetailsFragment.Screen(recipe)
         navigator.launch(R.id.recipeDetailsFragment, RecipeDetailsFragment.createArgs(screen))
+    }
+
+    fun tryAgain() {
+        loadRecipesInCategory(recipeCategoryId)
     }
 }

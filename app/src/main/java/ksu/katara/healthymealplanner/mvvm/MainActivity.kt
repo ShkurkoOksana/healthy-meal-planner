@@ -58,7 +58,8 @@ class MainActivity : AppCompatActivity(), FragmentsHolder {
     }
 
     override fun onBackPressed() {
-        navController?.popBackStack()
+        navigator.onBackPressed()
+        super.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean = (navController?.navigateUp() ?: false) || super.onSupportNavigateUp()

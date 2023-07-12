@@ -1,7 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
-import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
 import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
+import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
 import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.RecipeDetailsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
@@ -16,17 +17,18 @@ import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingList
  */
 class InMemoryShoppingListRepository(
     private val recipesRepository: RecipesRepository,
+    private val tasksFactory: TasksFactory,
 ) : ShoppingListRepository {
 
     private var shoppingList: MutableList<ShoppingListRecipe> = mutableListOf()
     private var shoppingListLoaded = false
     private val shoppingListListeners = mutableSetOf<ShoppingListListener>()
 
-    override fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>> = SimpleTask {
+    override fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>> = tasksFactory.async {
         Thread.sleep(2000L)
         shoppingListLoaded = true
         notifyShoppingListChanges()
-        return@SimpleTask shoppingList
+        return@async shoppingList
     }
 
     override fun addShoppingListListener(listener: ShoppingListListener) {
@@ -46,7 +48,7 @@ class InMemoryShoppingListRepository(
     }
 
     override fun shoppingListIngredientsAddIngredient(recipeId: Long, recipeIngredient: RecipeIngredient): Task<Unit> =
-        SimpleTask {
+        tasksFactory.async {
             Thread.sleep(2000L)
             addIngredientToShoppingListIngredients(recipeId, recipeIngredient)
             notifyShoppingListChanges()
@@ -83,7 +85,7 @@ class InMemoryShoppingListRepository(
         }
     }
 
-    override fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit> = SimpleTask {
+    override fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit> = tasksFactory.async {
         Thread.sleep(2000L)
         addAllIngredientsToShoppingListIngredients(recipeId, isSelected)
         notifyShoppingListChanges()
@@ -125,7 +127,7 @@ class InMemoryShoppingListRepository(
         shoppingListRecipe: ShoppingListRecipe,
         shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean,
-    ): Task<Unit> = SimpleTask {
+    ): Task<Unit> = tasksFactory.async {
         Thread.sleep(2000L)
         val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
         val shoppingListRecipeIngredientsItem =
@@ -137,9 +139,8 @@ class InMemoryShoppingListRepository(
     override fun shoppingListIngredientsDeleteIngredient(
         recipeId: Long,
         ingredient: RecipeIngredient,
-    ): Task<Unit> = SimpleTask {
+    ): Task<Unit> = tasksFactory.async {
         Thread.sleep(2000L)
-        throw IllegalArgumentException()
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
         notifyShoppingListChanges()
     }

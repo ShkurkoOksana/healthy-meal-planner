@@ -12,6 +12,7 @@ import ksu.katara.healthymealplanner.databinding.FragmentHomeBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsAdapter
@@ -92,6 +93,9 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
             viewModel.onMorePressed(R.id.dietTipsChaptersFragment, DietTipsChaptersFragment.createArgs(screen))
         }
         initDietTipsRecycleView()
+        onTryAgain(binding.root) {
+            viewModel.tryAgain()
+        }
     }
 
     private fun initDietTipsRecycleView() {

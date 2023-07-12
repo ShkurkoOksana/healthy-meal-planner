@@ -10,6 +10,7 @@ import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
+import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
@@ -33,8 +34,9 @@ class RecipeDetailsViewModel(
     private val uiActions: UiActions,
     private val recipesRepository: RecipesRepository,
     private val shoppingListRepository: ShoppingListRepository,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel(), IngredientSelectedActionListener {
+    savedStateHandle: SavedStateHandle,
+    private val dispatcher: Dispatcher
+) : BaseViewModel(dispatcher), IngredientSelectedActionListener {
 
     private val _recipeDetails = MutableLiveResult<RecipeDetails>()
     val recipeDetails: LiveResult<RecipeDetails> = _recipeDetails
@@ -58,28 +60,10 @@ class RecipeDetailsViewModel(
 
     private var allIngredients: List<RecipeIngredient> = mutableListOf()
 
-    private var recipeDetailsResult: StatusResult<RecipeDetails> = EmptyResult()
-        set(value) {
-            field = value
-            notifyRecipeDetailsUpdates()
-        }
-
-    private var recipeTypesResult: StatusResult<List<String>> = EmptyResult()
-        set(value) {
-            field = value
-            notifyRecipeTypesUpdates()
-        }
-
     private var ingredientsResult: StatusResult<List<RecipeIngredient>> = EmptyResult()
         set(value) {
             field = value
             notifyIngredientsUpdates()
-        }
-
-    private var preparationStepsResult: StatusResult<List<RecipePreparationStep>> = EmptyResult()
-        set(value) {
-            field = value
-            notifyPreparationStepsUpdates()
         }
 
     private val ingredientsListener: RecipeIngredientsListener = {
@@ -103,85 +87,61 @@ class RecipeDetailsViewModel(
     }
 
     private fun loadRecipeDetails(recipeId: Long) {
-        recipeDetailsResult = PendingResult()
-        recipesRepository.loadRecipeDetails(recipeId)
-            .onSuccess {
-                recipeDetailsResult = SuccessResult(it)
-            }
-            .onError {
-                recipeDetailsResult = ErrorResult(it)
-            }
-            .autoCancel()
+        recipesRepository.loadRecipeDetails(recipeId).into(_recipeDetails)
     }
 
     private fun loadRecipeTypes(recipeId: Long) {
-        recipeTypesResult = PendingResult()
-        recipesRepository.loadRecipeTypes(recipeId)
-            .onSuccess {
-                _recipeTypes.value = SuccessResult(it)
-            }
-            .onError {
-                recipeTypesResult = ErrorResult(it)
-            }
-            .autoCancel()
+        recipesRepository.loadRecipeTypes(recipeId).into(_recipeTypes)
     }
 
     private fun loadIngredients(recipeId: Long) {
         ingredientsResult = PendingResult()
-        recipesRepository.loadIngredients(recipeId)
-            .onSuccess {
-                allIngredients = it
+        recipesRepository.loadIngredients(recipeId).enqueue(dispatcher) {
+            when (it) {
+                is SuccessResult -> allIngredients = it.data
+                is ErrorResult -> ingredientsResult = it
             }
-            .onError {
-                ingredientsResult = ErrorResult(it)
-            }
-            .autoCancel()
-        recipesRepository.isAllIngredientsSelected(recipeId)
-            .onSuccess {
-                if (it) {
-                    _isAllIngredientsSelected.value = SuccessResult(true)
-                } else {
-                    _isAllIngredientsSelected.value = SuccessResult(false)
+        }
+        recipesRepository.isAllIngredientsSelected(recipeId).enqueue(dispatcher) {
+            when (it) {
+                is SuccessResult -> {
+                    if (it.data) {
+                        _isAllIngredientsSelected.value = SuccessResult(true)
+                    } else {
+                        _isAllIngredientsSelected.value = SuccessResult(false)
+                    }
+                }
+
+                is ErrorResult -> {
+                    val message = uiActions.getString(R.string.cant_make_all_ingredients_selected)
+                    uiActions.toast(message)
                 }
             }
-            .onError {
-                val message = uiActions.getString(R.string.cant_make_all_ingredients_selected)
-                uiActions.toast(message)
-            }
-            .autoCancel()
-    }
-
-    private fun loadPreparationSteps(recipeId: Long) {
-        preparationStepsResult = PendingResult()
-        recipesRepository.loadPreparationSteps(recipeId)
-            .onSuccess {
-                _preparationSteps.value = SuccessResult(it)
-            }
-            .onError {
-                preparationStepsResult = ErrorResult(it)
-            }
-            .autoCancel()
+        }
     }
 
     fun setAllIngredientsSelected(isSelected: Boolean) {
         _isAllIngredientsSelected.value = PendingResult()
         allIngredients.forEach { ingredient -> addProgressTo(ingredient) }
-        recipesRepository.setAllIngredientsSelected(recipeId, isSelected)
-            .onSuccess {
-                _isAllIngredientsSelected.value = SuccessResult(isSelected)
-                allIngredients.forEach { ingredient -> removeProgressFrom(ingredient) }
+        recipesRepository.setAllIngredientsSelected(recipeId, isSelected).enqueue(dispatcher) {
+            when (it) {
+                is SuccessResult -> {
+                    _isAllIngredientsSelected.value = SuccessResult(isSelected)
+                    allIngredients.forEach { ingredient -> removeProgressFrom(ingredient) }
+                }
+
+                is ErrorResult -> {
+                    val message = uiActions.getString(R.string.cant_make_all_ingredients_selected)
+                    uiActions.toast(message)
+                }
             }
-            .onError {
-                val message = uiActions.getString(R.string.cant_make_all_ingredients_selected)
-                uiActions.toast(message)
-            }
-            .autoCancel()
-        shoppingListRepository.shoppingListIngredientsAddAllIngredients(recipeId, isSelected)
-            .onError {
+        }
+        shoppingListRepository.shoppingListIngredientsAddAllIngredients(recipeId, isSelected).enqueue(dispatcher) {
+            if (it is ErrorResult) {
                 val message = uiActions.getString(R.string.cant_add_all_ingredient_to_shopping_list)
                 uiActions.toast(message)
             }
-            .autoCancel()
+        }
     }
 
     override fun onCleared() {
@@ -192,29 +152,30 @@ class RecipeDetailsViewModel(
     override fun onIngredientPressed(ingredient: RecipeIngredient, isSelected: Boolean) {
         if (isInProgress(ingredient)) return
         addProgressTo(ingredient)
-        recipesRepository.setIngredientSelected(recipeId, ingredient, isSelected)
-            .onSuccess {
-                removeProgressFrom(ingredient)
+        recipesRepository.setIngredientSelected(recipeId, ingredient, isSelected).enqueue(dispatcher) {
+            when (it) {
+                is SuccessResult -> removeProgressFrom(ingredient)
+                is ErrorResult -> removeProgressFrom(ingredient)
             }
-            .onError {
-                removeProgressFrom(ingredient)
-            }
-            .autoCancel()
-        recipesRepository.isAllIngredientsSelected(recipeId)
-            .onSuccess {
-                if (it) {
-                    _isAllIngredientsSelected.value = SuccessResult(true)
-                } else {
-                    _isAllIngredientsSelected.value = SuccessResult(false)
+        }
+        recipesRepository.isAllIngredientsSelected(recipeId).enqueue(dispatcher) {
+            when (it) {
+                is SuccessResult -> {
+                    if (it.data) {
+                        _isAllIngredientsSelected.value = SuccessResult(true)
+                    } else {
+                        _isAllIngredientsSelected.value = SuccessResult(false)
+                    }
                 }
+                is ErrorResult -> removeProgressFrom(ingredient)
             }
-            .autoCancel()
-        shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
-            .onError {
+        }
+        shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient).enqueue(dispatcher) {
+            if (it is ErrorResult) {
                 val message = uiActions.getString(R.string.cant_add_ingredient_to_shopping_list)
                 uiActions.toast(message)
             }
-            .autoCancel()
+        }
     }
 
     private fun addProgressTo(ingredient: RecipeIngredient) {
@@ -231,22 +192,33 @@ class RecipeDetailsViewModel(
         return ingredientsItemIdsInProgress.contains(ingredient.id)
     }
 
-    private fun notifyRecipeDetailsUpdates() {
-        _recipeDetails.postValue(recipeDetailsResult)
-    }
-
-    private fun notifyRecipeTypesUpdates() {
-        _recipeTypes.postValue(recipeTypesResult)
-    }
-
     private fun notifyIngredientsUpdates() {
         _ingredients.postValue(ingredientsResult.resultMap { ingredientsItemList ->
             ingredientsItemList.map { ingredient -> IngredientsItem(ingredient, isInProgress(ingredient)) }
         })
     }
 
-    private fun notifyPreparationStepsUpdates() {
-        _preparationSteps.postValue(preparationStepsResult)
+    private fun loadPreparationSteps(recipeId: Long) {
+        recipesRepository.loadPreparationSteps(recipeId).into(_preparationSteps)
+    }
+
+    fun tryAgain() {
+        loadRecipeDetails(recipeId)
+        loadRecipeTypes(recipeId)
+        loadIngredients(recipeId)
+        loadPreparationSteps(recipeId)
+    }
+
+    fun loadRecipeDetailsTypesTryAgain() {
+        loadRecipeTypes(recipeId)
+    }
+
+    fun loadIngredientsTryAgain() {
+        loadIngredients(recipeId)
+    }
+
+    fun loadPreparationStepsTryAgain() {
+        loadPreparationSteps(recipeId)
     }
 }
 

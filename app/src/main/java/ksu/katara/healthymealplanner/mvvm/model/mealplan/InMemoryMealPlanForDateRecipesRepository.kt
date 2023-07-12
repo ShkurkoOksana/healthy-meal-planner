@@ -1,7 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.mealplan
 
-import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
 import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
+import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
@@ -11,7 +12,9 @@ import java.util.Date
 /**
  * Simple in-memory implementation of [MealPlanForDateRecipesRepository]
  */
-class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepository {
+class InMemoryMealPlanForDateRecipesRepository(
+    private val tasksFactory: TasksFactory,
+) : MealPlanForDateRecipesRepository {
 
     private var mealPlanForDate: MutableMap<String, MutableList<MealPlanRecipes?>> = mutableMapOf()
 
@@ -19,21 +22,20 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
     private var mealPlanForDateRecipesLoaded = false
     private val mealPlanForDateRecipesListeners = mutableSetOf<MealPlanForDateRecipesListener>()
 
-    override fun loadMealPlan(): Task<Unit> =
-        SimpleTask {
-            Thread.sleep(2000L)
-            mealPlanForDate = mutableMapOf()
-        }
+    override fun loadMealPlan(): Task<Unit> = tasksFactory.async {
+        Thread.sleep(2000L)
+        mealPlanForDate = mutableMapOf()
+    }
 
     override fun getMealPlan() = mealPlanForDate
 
-    override fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): Task<Unit> =
-        SimpleTask {
-            Thread.sleep(2000L)
-            mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
-            mealPlanForDateRecipesLoaded = true
-            notifyMealPlanForDateChanges()
-        }
+    override fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): Task<MealPlanRecipes?> = tasksFactory.async {
+        Thread.sleep(2000L)
+        mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
+        mealPlanForDateRecipesLoaded = true
+        notifyMealPlanForDateChanges()
+        return@async mealPlanForDateRecipes
+    }
 
     private fun getMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? {
         val date = sdf.format(selectedDate)
@@ -58,12 +60,11 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
         mealPlanForDateRecipesListeners.remove(listener)
     }
 
-    override fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<Unit> =
-        SimpleTask {
-            Thread.sleep(2000L)
-            addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
-            notifyMealPlanForDateChanges()
-        }
+    override fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<Unit> = tasksFactory.async {
+        Thread.sleep(2000L)
+        addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
+        notifyMealPlanForDateChanges()
+    }
 
     private fun addRecipeToMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
         val newMealPlanForTodayRecipesItem = MealPlanRecipes(mealType, mutableListOf(recipe))
@@ -89,7 +90,7 @@ class InMemoryMealPlanForDateRecipesRepository : MealPlanForDateRecipesRepositor
     }
 
     override fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?> =
-        SimpleTask {
+        tasksFactory.async {
             Thread.sleep(2000L)
             deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
             notifyMealPlanForDateChanges()

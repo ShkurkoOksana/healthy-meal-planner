@@ -1,18 +1,20 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
-import ksu.katara.healthymealplanner.foundation.tasks.SimpleTask
 import ksu.katara.healthymealplanner.foundation.tasks.Task
+import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
+import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
 import ksu.katara.healthymealplanner.mvvm.model.DietTipsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
-import java.util.concurrent.Callable
 import kotlin.properties.Delegates
 
 /**
  * Simple in-memory implementation of [DietTipsRepository]
  */
-class InMemoryDietTipsRepository : DietTipsRepository {
+class InMemoryDietTipsRepository(
+    private val tasksFactory: TasksFactory,
+) : DietTipsRepository {
 
     private lateinit var dietTipsChapters: MutableList<DietTipsChapter>
     private var dietTipsChaptersLoaded = false
@@ -24,11 +26,12 @@ class InMemoryDietTipsRepository : DietTipsRepository {
 
     private var dietTipsSize by Delegates.notNull<Int>()
 
-    override fun loadDietTipsChapters(): Task<Unit> = SimpleTask {
+    override fun loadDietTipsChapters(): Task<List<DietTipsChapter>> = tasksFactory.async {
         Thread.sleep(2000L)
         dietTipsChapters = getDietTipsChapters()
         dietTipsChaptersLoaded = true
         notifyDietTipsChaptersChanges()
+        return@async dietTipsChapters
     }
 
     private fun getDietTipsChapters(): MutableList<DietTipsChapter> {
@@ -58,11 +61,12 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         return dietTipsChapters
     }
 
-    override fun loadDietTips(): Task<Unit> = SimpleTask {
+    override fun loadDietTips(): Task<List<DietTip>> = tasksFactory.async {
         Thread.sleep(2000L)
         dietTips = getDietTips()
         dietTipsLoaded = true
         notifyDietTipsChanges()
+        return@async dietTips
     }
 
     private fun getDietTips(): MutableList<DietTip> {
@@ -98,16 +102,16 @@ class InMemoryDietTipsRepository : DietTipsRepository {
         dietTipsListeners.forEach { it.invoke(dietTips) }
     }
 
-    override fun loadDietTipDetails(id: Long): Task<DietTipDetails> = SimpleTask(Callable {
+    override fun loadDietTipDetails(id: Long): Task<DietTipDetails> = tasksFactory.async {
         Thread.sleep(2000L)
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipsNotFoundException()
-        return@Callable DietTipDetails(
+        return@async DietTipDetails(
             dietTip = dietTip,
             background = DIET_TIPS_DETAILS_BACKGROUND.getValue(dietTip.name),
             titlesList = DIET_TIPS_DETAILS_TITLES.getValue(dietTip.name),
             descriptionsList = DIET_TIPS_DETAILS_DESCRIPTIONS.getValue(dietTip.name),
         )
-    })
+    }
 
     override fun addDietTipsChaptersListener(listener: DietTipsChaptersListener) {
         dietTipsChaptersListeners.add(listener)

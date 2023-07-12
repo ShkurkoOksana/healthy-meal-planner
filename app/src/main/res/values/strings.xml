@@ -78,7 +78,7 @@
     <string name="is_all_ingredients_selected">Выбрать все</string>
     <string name="cant_set_all_ingredients_selected">Не удалось выбрать все ингредиенты</string>
     <string name="add_to_shopping_list">Добавить в список покупок</string>
-    <string name="cant_make_all_ingredients_selected">Не удалось сделать все ингредиенты выбранными</string>
+    <string name="cant_make_all_ingredients_selected">Не удалось установить чекбокс все ингредиенты выбранны</string>
     <string name="cant_add_all_ingredient_to_shopping_list">Не удалось добавить все ингредиент в список покупок</string>
     <string name="cant_add_to_shopping_list">Не загружается информация об ингридиентах в Список покупок</string>
     <string name="go_to_shopping_list">Добавить все в список покупок</string>
