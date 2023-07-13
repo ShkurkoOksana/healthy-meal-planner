@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.foundation.tasks.dispatchers
+package ksu.katara.healthymealplanner.foundation.model.dispatchers
 
 import android.os.Handler
 import android.os.Looper

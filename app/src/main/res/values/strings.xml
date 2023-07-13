@@ -76,6 +76,7 @@
     <string name="cant_load_ingredients">Не загружается информация в разделе Ингредиенты</string>
     <string name="no_ingredients">Нет данных в разделе Ингредиенты</string>
     <string name="is_all_ingredients_selected">Выбрать все</string>
+    <string name="cant_set_ingredient_selected">Не удалось выбрать ингредиент</string>
     <string name="cant_set_all_ingredients_selected">Не удалось выбрать все ингредиенты</string>
     <string name="add_to_shopping_list">Добавить в список покупок</string>
     <string name="cant_make_all_ingredients_selected">Не удалось установить чекбокс все ингредиенты выбранны</string>

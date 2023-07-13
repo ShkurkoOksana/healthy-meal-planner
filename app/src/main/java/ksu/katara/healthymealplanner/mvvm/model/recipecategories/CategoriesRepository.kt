@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipecategories
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
-import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
 
 typealias RecipeCategoriesListener = (recipeCategories: List<Category>) -> Unit
@@ -16,12 +15,12 @@ interface CategoriesRepository : Repository {
     /**
      * Load the list of all available recipe categories that may be chosen by the user.
      */
-    fun loadRecipeCategories(): Task<List<Category>>
+    suspend fun loadRecipeCategories(): List<Category>
 
     /**
      * Get available recipe categories by id.
      */
-    fun getCategoryById(id: Long): Task<Category>
+    suspend fun getCategoryById(id: Long): Category
 
     /**
      * Listen for the current recipe categories changes.

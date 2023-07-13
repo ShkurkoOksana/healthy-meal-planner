@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
-import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.mvvm.model.calendar.CalendarListener
@@ -21,8 +20,7 @@ class MealPlanViewModel(
     private val uiActions: UiActions,
     private val calendarRepository: CalendarRepository,
     savedStateHandle: SavedStateHandle,
-    dispatcher: Dispatcher
-) : BaseViewModel(dispatcher), OnCalendarItemClickListener {
+) : BaseViewModel(), OnCalendarItemClickListener {
     private val _daysInMonth = MutableLiveData<MutableList<Date>>()
     val daysInMonth: LiveData<MutableList<Date>> = _daysInMonth
 

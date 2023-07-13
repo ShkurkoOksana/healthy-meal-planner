@@ -6,7 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
-import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
@@ -19,8 +18,7 @@ class DietTipDetailsViewModel(
     private val uiActions: UiActions,
     private val dietTipsRepository: DietTipsRepository,
     savedStateHandle: SavedStateHandle,
-    dispatcher: Dispatcher
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel() {
 
     private val _dietTipDetails = MutableLiveData<StatusResult<DietTipDetails>>()
     val dietTipDetails: LiveData<StatusResult<DietTipDetails>> = _dietTipDetails
@@ -35,8 +33,8 @@ class DietTipDetailsViewModel(
         loadDietTipDetails(dietTipId)
     }
 
-    private fun loadDietTipDetails(dietTipId: Long) {
-        dietTipsRepository.loadDietTipDetails(dietTipId).into(_dietTipDetails)
+    private fun loadDietTipDetails(dietTipId: Long) = into(_dietTipDetails) {
+        dietTipsRepository.loadDietTipDetails(dietTipId)
     }
 
     fun tryAgain() {

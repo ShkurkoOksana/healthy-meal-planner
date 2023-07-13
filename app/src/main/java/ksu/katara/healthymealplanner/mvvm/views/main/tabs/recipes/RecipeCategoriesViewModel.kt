@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
-import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
@@ -20,8 +19,7 @@ class RecipeCategoriesViewModel(
     private val uiActions: UiActions,
     private val recipeCategoriesRepository: CategoriesRepository,
     savedStateHandle: SavedStateHandle,
-    dispatcher: Dispatcher
-) : BaseViewModel(dispatcher), RecipeCategoryActionListener {
+) : BaseViewModel(), RecipeCategoryActionListener {
 
     private val _recipeCategories = MutableLiveResult<List<Category>>()
     val recipeCategories: LiveResult<List<Category>> = _recipeCategories
@@ -34,8 +32,8 @@ class RecipeCategoriesViewModel(
         loadRecipeCategories()
     }
 
-    private fun loadRecipeCategories() {
-        recipeCategoriesRepository.loadRecipeCategories().into(_recipeCategories)
+    private fun loadRecipeCategories() = into(_recipeCategories) {
+        recipeCategoriesRepository.loadRecipeCategories()
     }
 
     override fun onRecipeCategoryPressed(recipeCategory: Category) {

@@ -1,8 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.mealplan
 
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
-import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
@@ -13,7 +13,7 @@ import java.util.Date
  * Simple in-memory implementation of [MealPlanForDateRecipesRepository]
  */
 class InMemoryMealPlanForDateRecipesRepository(
-    private val tasksFactory: TasksFactory,
+    private val ioDispatcher: IoDispatcher
 ) : MealPlanForDateRecipesRepository {
 
     private var mealPlanForDate: MutableMap<String, MutableList<MealPlanRecipes?>> = mutableMapOf()
@@ -22,19 +22,14 @@ class InMemoryMealPlanForDateRecipesRepository(
     private var mealPlanForDateRecipesLoaded = false
     private val mealPlanForDateRecipesListeners = mutableSetOf<MealPlanForDateRecipesListener>()
 
-    override fun loadMealPlan(): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
-        mealPlanForDate = mutableMapOf()
-    }
-
     override fun getMealPlan() = mealPlanForDate
 
-    override fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): Task<MealPlanRecipes?> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? = withContext(ioDispatcher.value) {
+        delay(1000L)
         mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
         mealPlanForDateRecipesLoaded = true
         notifyMealPlanForDateChanges()
-        return@async mealPlanForDateRecipes
+        return@withContext mealPlanForDateRecipes
     }
 
     private fun getMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? {
@@ -60,8 +55,8 @@ class InMemoryMealPlanForDateRecipesRepository(
         mealPlanForDateRecipesListeners.remove(listener)
     }
 
-    override fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe) = withContext(ioDispatcher.value) {
+        delay(1000L)
         addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
         notifyMealPlanForDateChanges()
     }
@@ -89,13 +84,12 @@ class InMemoryMealPlanForDateRecipesRepository(
         }
     }
 
-    override fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?> =
-        tasksFactory.async {
-            Thread.sleep(2000L)
-            deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
-            notifyMealPlanForDateChanges()
-            mealPlanForDateRecipes
-        }
+    override suspend fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes? = withContext(ioDispatcher.value) {
+        delay(1000L)
+        deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
+        notifyMealPlanForDateChanges()
+        return@withContext mealPlanForDateRecipes
+    }
 
     private fun deleteRecipeFromMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
         var recipeList: MutableList<Recipe>

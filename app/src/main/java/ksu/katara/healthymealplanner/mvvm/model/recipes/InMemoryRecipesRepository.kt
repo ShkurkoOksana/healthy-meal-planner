@@ -1,8 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipes
 
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
-import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.product.ProductsRepository
@@ -16,7 +16,7 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparati
  */
 class InMemoryRecipesRepository(
     private val productRepository: ProductsRepository,
-    private val tasksFactory: TasksFactory,
+    private val ioDispatcher: IoDispatcher
 ) : RecipesRepository {
 
     private var recipes = mutableListOf<Recipe>()
@@ -112,18 +112,18 @@ class InMemoryRecipesRepository(
 
     override fun getRecipes(): MutableList<Recipe> = recipes
 
-    override fun loadRecipesInCategory(recipeCategoryId: Long): Task<List<Recipe>> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadRecipesInCategory(recipeCategoryId: Long): List<Recipe> = withContext(ioDispatcher.value) {
+        delay(1000L)
         recipesInCategory = recipes.filter { it.categoryId == recipeCategoryId }.toMutableList()
         recipeInCategoryLoaded = true
         notifyRecipeInCategoryChanges()
-        return@async recipesInCategory
+        return@withContext recipesInCategory
     }
 
-    override fun getRecipeInCategoryById(id: Long): Task<RecipeDetails> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun getRecipeInCategoryById(id: Long): RecipeDetails = withContext(ioDispatcher.value) {
+        delay(1000L)
         val recipeInCategory = recipesInCategory.firstOrNull { it.id == id }
-        return@async recipesDetails.firstOrNull<RecipeDetails> { it.recipe == recipeInCategory }
+        return@withContext recipesDetails.firstOrNull<RecipeDetails> { it.recipe == recipeInCategory }
             ?: throw RecipeNotFoundException()
     }
 
@@ -145,10 +145,10 @@ class InMemoryRecipesRepository(
 
     override fun getRecipesDetails(): MutableList<RecipeDetails> = recipesDetails
 
-    override fun loadRecipeDetails(recipeId: Long): Task<RecipeDetails> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadRecipeDetails(recipeId: Long): RecipeDetails = withContext(ioDispatcher.value) {
+        delay(1000L)
         notifyRecipeDetailsChanges()
-        return@async recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        return@withContext recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
     }
 
     override fun addRecipeDetailsListener(listener: RecipeDetailsListener) {
@@ -167,24 +167,22 @@ class InMemoryRecipesRepository(
         recipesDetailsListeners.forEach { it.invoke(recipesDetails) }
     }
 
-    override fun loadRecipeTypes(recipeId: Long): Task<List<String>> =
-        tasksFactory.async {
-            Thread.sleep(2000L)
-            val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
-            recipeTypes = recipeDetails.types
-            recipeTypesLoaded = true
-            return@async recipeTypes
-        }
+    override suspend fun loadRecipeTypes(recipeId: Long): List<String> = withContext(ioDispatcher.value) {
+        delay(1000L)
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        recipeTypes = recipeDetails.types
+        recipeTypesLoaded = true
+        return@withContext recipeTypes
+    }
 
-    override fun loadIngredients(recipeId: Long): Task<List<RecipeIngredient>> =
-        tasksFactory.async {
-            Thread.sleep(2000L)
-            val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
-            recipeIngredients = recipeDetails.ingredients
-            recipeIngredientsLoaded = true
-            notifyIngredientsChanges()
-            return@async recipeIngredients
-        }
+    override suspend fun loadIngredients(recipeId: Long): List<RecipeIngredient> = withContext(ioDispatcher.value) {
+        delay(1000L)
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        recipeIngredients = recipeDetails.ingredients
+        recipeIngredientsLoaded = true
+        notifyIngredientsChanges()
+        return@withContext recipeIngredients
+    }
 
     override fun addIngredientListener(listener: RecipeIngredientsListener) {
         recipeIngredientsListeners.add(listener)
@@ -202,22 +200,22 @@ class InMemoryRecipesRepository(
         recipeIngredientsListeners.forEach { it.invoke(recipeIngredients) }
     }
 
-    override fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean) = withContext(ioDispatcher.value) {
+        delay(1000L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         val recipeIngredient = recipeDetails.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
         recipeIngredient.isInShoppingList = isSelected
     }
 
-    override fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean) = withContext(ioDispatcher.value) {
+        delay(1000L)
         val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         recipeDetails.ingredients.forEach { it.isInShoppingList = isSelected }
     }
 
-    override fun isAllIngredientsSelected(recipeId: Long) = tasksFactory.async {
-        Thread.sleep(2000L)
-        return@async isAllIngredientsSelectedResult(recipeId)
+    override suspend fun isAllIngredientsSelected(recipeId: Long): Boolean = withContext(ioDispatcher.value) {
+        delay(1000L)
+        return@withContext isAllIngredientsSelectedResult(recipeId)
     }
 
     private fun isAllIngredientsSelectedResult(recipeId: Long): Boolean {
@@ -231,14 +229,13 @@ class InMemoryRecipesRepository(
         return countRecipeIngredientsSelected == recipeDetails.ingredients.size && countRecipeIngredientsSelected != 0
     }
 
-    override fun loadPreparationSteps(recipeId: Long): Task<List<RecipePreparationStep>> =
-        tasksFactory.async {
-            Thread.sleep(2000L)
-            val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
-            preparationSteps = recipeDetails.preparationSteps
-            preparationStepsLoaded = true
-            return@async preparationSteps
-        }
+    override suspend fun loadPreparationSteps(recipeId: Long): List<RecipePreparationStep> = withContext(ioDispatcher.value) {
+        delay(1000L)
+        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        preparationSteps = recipeDetails.preparationSteps
+        preparationStepsLoaded = true
+        return@withContext preparationSteps
+    }
 
     companion object {
         private val PHOTOES = listOf(

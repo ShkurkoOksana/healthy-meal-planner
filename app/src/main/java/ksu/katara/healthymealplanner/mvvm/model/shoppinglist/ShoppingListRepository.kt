@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
-import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
@@ -13,7 +12,7 @@ interface ShoppingListRepository : Repository {
     /**
      * Load the list of all available shopping list recipes that may be chosen by the user.
      */
-    fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>>
+    suspend fun loadShoppingList(): MutableList<ShoppingListRecipe>
 
     /**
      * Listen for the current shopping list recipes changes.
@@ -29,25 +28,25 @@ interface ShoppingListRepository : Repository {
     /**
      * Add ingredient to shopping list for recipe with id.
      */
-    fun shoppingListIngredientsAddIngredient(recipeId: Long, ingredient: RecipeIngredient): Task<Unit>
+    suspend fun shoppingListIngredientsAddIngredient(recipeId: Long, ingredient: RecipeIngredient)
 
     /**
      * Add all ingredients to shopping list for recipe with id.
      */
-    fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit>
+    suspend fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean)
 
     /**
      * Set for ingredient property isInShoppingList equals isChecked for recipe in shopping list.
      */
-    fun shoppingListIngredientsSelectIngredient(
+    suspend fun shoppingListIngredientsSelectIngredient(
         shoppingListRecipe: ShoppingListRecipe,
         shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean
-    ): Task<Unit>
+    )
 
     /**
      * Delete ingredient to shopping list for recipe with id.
      */
-    fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Task<Unit>
+    suspend fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient)
 
 }

@@ -52,5 +52,5 @@ class SuccessResult<T>(
  * Operation has finished with error
  */
 class ErrorResult<T>(
-    val exception: Throwable
+    val exception: Exception
 ) : FinalResult<T>()

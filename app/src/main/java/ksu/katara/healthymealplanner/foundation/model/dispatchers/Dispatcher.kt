@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.foundation.tasks.dispatchers
+package ksu.katara.healthymealplanner.foundation.model.dispatchers
 
 /**
  * Dispatchers run the specified block of code in some way.

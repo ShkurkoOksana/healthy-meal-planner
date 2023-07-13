@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
-import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
@@ -19,12 +18,12 @@ interface DietTipsRepository : Repository {
     /**
      * Load the list of all available diet tips chapters that may be chosen by the user.
      */
-    fun loadDietTipsChapters(): Task<List<DietTipsChapter>>
+    suspend fun loadDietTipsChapters(): List<DietTipsChapter>
 
     /**
      * Load the list of all available diet tips that may be chosen by the user.
      */
-    fun loadDietTips(): Task<List<DietTip>>
+    suspend fun loadDietTips(): List<DietTip>
 
     /**
      * Listen for the current diet tips changes.
@@ -40,7 +39,7 @@ interface DietTipsRepository : Repository {
     /**
      * Load the list of all available diet tips details that may be chosen by the user.
      */
-    fun loadDietTipDetails(id: Long): Task<DietTipDetails>
+    suspend fun loadDietTipDetails(id: Long): DietTipDetails
 
     /**
      * Listen for the current diet tips chapters changes.

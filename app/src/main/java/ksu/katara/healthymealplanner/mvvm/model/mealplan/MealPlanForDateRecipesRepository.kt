@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.mealplan
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
-import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
@@ -17,11 +16,6 @@ typealias MealPlanForDateRecipesListener = (mealPlanRecipes: MealPlanRecipes?) -
 interface MealPlanForDateRecipesRepository : Repository {
 
     /**
-     * Load available meal plan.
-     */
-    fun loadMealPlan(): Task<Unit>
-
-    /**
      * Get available meal plan.
      */
     fun getMealPlan(): MutableMap<String, MutableList<MealPlanRecipes?>>
@@ -29,7 +23,7 @@ interface MealPlanForDateRecipesRepository : Repository {
     /**
      * Load the list of all available meal plan recipes that may be chosen by the user.
      */
-    fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): Task<Unit>
+    suspend fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes?
 
     /**
      * Listen for the current meal plan recipes changes.
@@ -45,11 +39,11 @@ interface MealPlanForDateRecipesRepository : Repository {
     /**
      * Add recipe to meal plan for selected date and meal type.
      */
-    fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<Unit>
+    suspend fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe)
 
     /**
      * Delete recipe from meal plan for selected date and meal type.
      */
-    fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): Task<MealPlanRecipes?>
+    suspend fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes?
 
 }

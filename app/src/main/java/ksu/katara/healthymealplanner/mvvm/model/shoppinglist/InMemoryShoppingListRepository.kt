@@ -1,8 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
-import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.RecipeDetailsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
@@ -17,18 +17,18 @@ import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingList
  */
 class InMemoryShoppingListRepository(
     private val recipesRepository: RecipesRepository,
-    private val tasksFactory: TasksFactory,
+    private val ioDispatcher: IoDispatcher
 ) : ShoppingListRepository {
 
     private var shoppingList: MutableList<ShoppingListRecipe> = mutableListOf()
     private var shoppingListLoaded = false
     private val shoppingListListeners = mutableSetOf<ShoppingListListener>()
 
-    override fun loadShoppingList(): Task<MutableList<ShoppingListRecipe>> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadShoppingList(): MutableList<ShoppingListRecipe> = withContext(ioDispatcher.value) {
+        delay(1000L)
         shoppingListLoaded = true
         notifyShoppingListChanges()
-        return@async shoppingList
+        return@withContext shoppingList
     }
 
     override fun addShoppingListListener(listener: ShoppingListListener) {
@@ -47,9 +47,8 @@ class InMemoryShoppingListRepository(
         shoppingListListeners.forEach { it.invoke(shoppingList) }
     }
 
-    override fun shoppingListIngredientsAddIngredient(recipeId: Long, recipeIngredient: RecipeIngredient): Task<Unit> =
-        tasksFactory.async {
-            Thread.sleep(2000L)
+    override suspend fun shoppingListIngredientsAddIngredient(recipeId: Long, recipeIngredient: RecipeIngredient) = withContext(ioDispatcher.value) {
+            delay(1000L)
             addIngredientToShoppingListIngredients(recipeId, recipeIngredient)
             notifyShoppingListChanges()
         }
@@ -85,8 +84,8 @@ class InMemoryShoppingListRepository(
         }
     }
 
-    override fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean) = withContext(ioDispatcher.value) {
+        delay(1000L)
         addAllIngredientsToShoppingListIngredients(recipeId, isSelected)
         notifyShoppingListChanges()
     }
@@ -123,12 +122,12 @@ class InMemoryShoppingListRepository(
         }
     }
 
-    override fun shoppingListIngredientsSelectIngredient(
+    override suspend fun shoppingListIngredientsSelectIngredient(
         shoppingListRecipe: ShoppingListRecipe,
         shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean,
-    ): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    ) = withContext(ioDispatcher.value) {
+        delay(1000L)
         val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
         val shoppingListRecipeIngredientsItem =
             shoppingListItem.shoppingListIngredients.firstOrNull { it == shoppingListRecipeIngredient } ?: throw IngredientsNotFoundException()
@@ -136,11 +135,11 @@ class InMemoryShoppingListRepository(
         notifyShoppingListChanges()
     }
 
-    override fun shoppingListIngredientsDeleteIngredient(
+    override suspend fun shoppingListIngredientsDeleteIngredient(
         recipeId: Long,
         ingredient: RecipeIngredient,
-    ): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    ) = withContext(ioDispatcher.value) {
+        delay(1000L)
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
         notifyShoppingListChanges()
     }

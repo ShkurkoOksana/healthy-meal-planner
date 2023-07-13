@@ -39,7 +39,7 @@ abstract class BaseFragment : Fragment() {
     fun <T> renderResult(root: ViewGroup, result: StatusResult<T>,
                          onEmpty: () -> Unit,
                          onPending: () -> Unit,
-                         onError: (Throwable) -> Unit,
+                         onError: (Exception) -> Unit,
                          onSuccess: (T) -> Unit) {
 
         root.children.forEach { it.visibility = View.GONE }

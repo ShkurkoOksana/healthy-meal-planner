@@ -3,6 +3,8 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.addrecipes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
@@ -10,7 +12,6 @@ import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
-import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
@@ -35,8 +36,7 @@ class AddRecipesListViewModel(
     private val addRecipesRepository: AddRecipesRepository,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
     savedStateHandle: SavedStateHandle,
-    private val dispatcher: Dispatcher
-) : BaseViewModel(dispatcher), AddRecipesActionListener {
+) : BaseViewModel(), AddRecipesActionListener {
 
     private val _addRecipes = MutableLiveResult<List<AddRecipesItem>>()
     val addRecipes: LiveResult<List<AddRecipesItem>> = _addRecipes
@@ -71,8 +71,12 @@ class AddRecipesListViewModel(
 
     private fun loadAddRecipes(selectedDate: Date, mealType: MealTypes) {
         addRecipesResult = PendingResult()
-        addRecipesRepository.loadAddRecipes(selectedDate, mealType).enqueue(dispatcher) {
-            if (it is ErrorResult) addRecipesResult = it
+        viewModelScope.launch {
+            try {
+                addRecipesRepository.loadAddRecipes(selectedDate, mealType)
+            } catch (e: Exception) {
+                if (e !is CancellationException) addRecipesResult = ErrorResult(e)
+            }
         }
     }
 
@@ -84,14 +88,22 @@ class AddRecipesListViewModel(
     override fun onAddRecipePressed(recipe: Recipe) {
         if (isDeleteInProgress(recipe)) return
         addDeleteProgressTo(recipe)
-        mealPlanForDateRecipesRepository.mealPlanForDateRecipesAddRecipe(selectedDate, mealType, recipe).enqueue(dispatcher) {
-            when(it) {
-                is SuccessResult -> {
-                    addRecipesRepository.addRecipesDeleteRecipe(recipe).enqueue(dispatcher) { result ->
-                        if (result is SuccessResult) removeDeleteProgressFrom(recipe)
+        viewModelScope.launch {
+            try {
+                mealPlanForDateRecipesRepository.mealPlanForDateRecipesAddRecipe(selectedDate, mealType, recipe)
+                viewModelScope.launch {
+                    try {
+                        addRecipesRepository.addRecipesDeleteRecipe(recipe)
+                        removeDeleteProgressFrom(recipe)
+                    } catch (e: Exception) {
+                        if (e !is CancellationException) {
+                            val message = uiActions.getString(R.string.cant_delete_recipe_from_add_recipes)
+                            uiActions.toast(message)
+                        }
                     }
                 }
-                is ErrorResult -> {
+            } catch (e: Exception) {
+                if (e !is CancellationException) {
                     removeDeleteProgressFrom(recipe)
                     val message = uiActions.getString(R.string.cant_add_recipe_to_meal_plan)
                     uiActions.toast(message)

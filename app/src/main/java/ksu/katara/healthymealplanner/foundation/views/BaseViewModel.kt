@@ -3,11 +3,15 @@ package ksu.katara.healthymealplanner.foundation.views
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.TaskListener
-import ksu.katara.healthymealplanner.foundation.tasks.dispatchers.Dispatcher
+import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 
 typealias LiveResult<T> = LiveData<StatusResult<T>>
 typealias MutableLiveResult<T> = MutableLiveData<StatusResult<T>>
@@ -15,9 +19,10 @@ typealias MutableLiveResult<T> = MutableLiveData<StatusResult<T>>
 /**
  * Base class for all view-models.
  */
-open class BaseViewModel(
-    private val dispatcher: Dispatcher
-) : ViewModel() {
+open class BaseViewModel : ViewModel() {
+
+    private val coroutineContext = SupervisorJob() + Dispatchers.Main.immediate
+    protected val viewModelScope: CoroutineScope = CoroutineScope(coroutineContext)
 
     /**
      * Override this method in child classes if you want to listen for results
@@ -28,41 +33,29 @@ open class BaseViewModel(
     }
 
     fun onBackPressed() {
-        clearTasks()
+        clearViewModelScope()
     }
-
-    private val tasks = mutableListOf<Task<*>>()
 
     override fun onCleared() {
-        clearTasks()
+        clearViewModelScope()
     }
 
     /**
-     * Launch task asynchronously, listen for its result and
-     * automatically unsubscribe the listener in case of view-model destroying.
+     * Launch the specified suspending [block] and use its result as a value for the
+     * provided [liveResult].
      */
-    fun <T> Task<T>.safeEnqueue(listener: TaskListener<T>? = null) {
-        tasks.add(this)
-        this.enqueue(dispatcher) {
-            tasks.remove(this)
-            listener?.invoke(it)
-        }
-    }
-
-    /**
-     * Launch task asynchronously and map its result to the specified
-     * [liveResult].
-     * Task is cancelled automatically if view-model is going to be destroyed.
-     */
-    fun <T> Task<T>.into(liveResult: MutableLiveResult<T>) {
+    fun <T> into(liveResult: MutableLiveResult<T>, block: suspend () -> T) {
         liveResult.value = PendingResult()
-        this.safeEnqueue {
-            liveResult.value = it
+        viewModelScope.launch {
+            try {
+                liveResult.postValue(SuccessResult(block()))
+            } catch (e: Exception) {
+                liveResult.postValue(ErrorResult(e))
+            }
         }
     }
 
-    private fun clearTasks() {
-        tasks.forEach { it.cancel() }
-        tasks.clear()
+    private fun clearViewModelScope() {
+        viewModelScope.cancel()
     }
 }

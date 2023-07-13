@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipes
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
-import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
@@ -26,12 +25,12 @@ interface RecipesRepository : Repository {
     /**
      * Load the list of all available recipes in category with id that may be chosen by the user.
      */
-    fun loadRecipesInCategory(recipeCategoryId: Long): Task<List<Recipe>>
+    suspend fun loadRecipesInCategory(recipeCategoryId: Long): List<Recipe>
 
     /**
      * Get the list of all available recipes in category with id.
      */
-    fun getRecipeInCategoryById(id: Long): Task<RecipeDetails>
+    suspend fun getRecipeInCategoryById(id: Long): RecipeDetails
 
     /**
      * Listen for the current recipes in category changes.
@@ -52,7 +51,7 @@ interface RecipesRepository : Repository {
     /**
      * Load the list of all available recipe details for recipe with id.
      */
-    fun loadRecipeDetails(recipeId: Long): Task<RecipeDetails>
+    suspend fun loadRecipeDetails(recipeId: Long): RecipeDetails
 
     /**
      * Listen for the current recipe details changes.
@@ -68,12 +67,12 @@ interface RecipesRepository : Repository {
     /**
      * Load the list of all available recipe types for recipe with id.
      */
-    fun loadRecipeTypes(recipeId: Long): Task<List<String>>
+    suspend fun loadRecipeTypes(recipeId: Long): List<String>
 
     /**
      * Load the list of all available recipe ingredients for recipe with id.
      */
-    fun loadIngredients(recipeId: Long): Task<List<RecipeIngredient>>
+    suspend fun loadIngredients(recipeId: Long): List<RecipeIngredient>
 
     /**
      * Listen for the current recipe ingredients changes.
@@ -89,21 +88,21 @@ interface RecipesRepository : Repository {
     /**
      * Set for recipe ingredient property isInShoppingList equals isSelected
      */
-    fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean): Task<Unit>
+    suspend fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean)
 
     /**
      * Set for all ingredients for recipe with id property isInShoppingList equals isSelected
      */
-    fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean): Task<Unit>
+    suspend fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean)
 
     /**
      * Determines if all ingredients are selected for recipe with id
      */
-    fun isAllIngredientsSelected(recipeId: Long): Task<Boolean>
+    suspend fun isAllIngredientsSelected(recipeId: Long): Boolean
 
     /**
      * Load the list of all available recipe preparation steps for recipe with id.
      */
-    fun loadPreparationSteps(recipeId: Long): Task<List<RecipePreparationStep>>
+    suspend fun loadPreparationSteps(recipeId: Long): List<RecipePreparationStep>
 
 }

@@ -1,8 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
-import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.DietTipsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
@@ -13,7 +13,7 @@ import kotlin.properties.Delegates
  * Simple in-memory implementation of [DietTipsRepository]
  */
 class InMemoryDietTipsRepository(
-    private val tasksFactory: TasksFactory,
+    private val ioDispatcher: IoDispatcher
 ) : DietTipsRepository {
 
     private lateinit var dietTipsChapters: MutableList<DietTipsChapter>
@@ -26,12 +26,12 @@ class InMemoryDietTipsRepository(
 
     private var dietTipsSize by Delegates.notNull<Int>()
 
-    override fun loadDietTipsChapters(): Task<List<DietTipsChapter>> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadDietTipsChapters(): List<DietTipsChapter> = withContext(ioDispatcher.value) {
+        delay(1000L)
         dietTipsChapters = getDietTipsChapters()
         dietTipsChaptersLoaded = true
         notifyDietTipsChaptersChanges()
-        return@async dietTipsChapters
+        return@withContext dietTipsChapters
     }
 
     private fun getDietTipsChapters(): MutableList<DietTipsChapter> {
@@ -61,12 +61,12 @@ class InMemoryDietTipsRepository(
         return dietTipsChapters
     }
 
-    override fun loadDietTips(): Task<List<DietTip>> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadDietTips(): List<DietTip> = withContext(ioDispatcher.value) {
+        delay(1000L)
         dietTips = getDietTips()
         dietTipsLoaded = true
         notifyDietTipsChanges()
-        return@async dietTips
+        return@withContext dietTips
     }
 
     private fun getDietTips(): MutableList<DietTip> {
@@ -102,10 +102,10 @@ class InMemoryDietTipsRepository(
         dietTipsListeners.forEach { it.invoke(dietTips) }
     }
 
-    override fun loadDietTipDetails(id: Long): Task<DietTipDetails> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadDietTipDetails(id: Long): DietTipDetails  = withContext(ioDispatcher.value) {
+        delay(1000L)
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipsNotFoundException()
-        return@async DietTipDetails(
+        return@withContext DietTipDetails(
             dietTip = dietTip,
             background = DIET_TIPS_DETAILS_BACKGROUND.getValue(dietTip.name),
             titlesList = DIET_TIPS_DETAILS_TITLES.getValue(dietTip.name),

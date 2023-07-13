@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.addrecipes
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
-import ksu.katara.healthymealplanner.foundation.tasks.Task
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
 import java.util.Date
@@ -18,7 +17,7 @@ interface AddRecipesRepository : Repository {
     /**
      * Load the list of all added available recipes that may be chosen by the user.
      */
-    fun loadAddRecipes(selectedDate: Date, mealTypes: MealTypes): Task<List<Recipe>>
+    suspend fun loadAddRecipes(selectedDate: Date, mealTypes: MealTypes): List<Recipe>
 
     /**
      * Listen for the current added recipes changes.
@@ -34,6 +33,6 @@ interface AddRecipesRepository : Repository {
     /**
      * Delete recipe from  available added recipes.
      */
-    fun addRecipesDeleteRecipe(recipe: Recipe): Task<Unit>
+    suspend fun addRecipesDeleteRecipe(recipe: Recipe)
 
 }

@@ -1,9 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.addrecipes
 
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
-import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
-import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
@@ -17,24 +16,22 @@ import java.util.Date
 class InMemoryAddRecipesRepository(
     private val recipesRepository: RecipesRepository,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
-    private val tasksFactory: TasksFactory,
-    private val threadUtils: ThreadUtils
+    private val ioDispatcher: IoDispatcher
 ) : AddRecipesRepository {
     private lateinit var addRecipes: MutableList<Recipe>
     private var addRecipesLoaded = false
     private val addRecipesListeners = mutableListOf<AddRecipesListener>()
 
-    override fun loadAddRecipes(selectedDate: Date, mealType: MealTypes): Task<List<Recipe>> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadAddRecipes(selectedDate: Date, mealType: MealTypes): List<Recipe> = withContext(ioDispatcher.value) {
+        delay(1000L)
         val mealPlanForDateRecipesList: MutableList<Recipe> = getMealPlanForDateRecipesList(selectedDate, mealType)
         addRecipes = getAddRecipes(mealPlanForDateRecipesList)
         addRecipesLoaded = true
         notifyAddRecipesChanges()
-        return@async addRecipes
+        return@withContext addRecipes
     }
 
     private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
-        Thread.sleep(2000L)
         val recipesList = recipesRepository.getRecipes().map { it }.toMutableList()
         list.forEach { mealPlanForDateRecipesListItem ->
             recipesList.removeIf { it == mealPlanForDateRecipesListItem }
@@ -73,8 +70,8 @@ class InMemoryAddRecipesRepository(
         addRecipesListeners.remove(listener)
     }
 
-    override fun addRecipesDeleteRecipe(recipe: Recipe): Task<Unit> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun addRecipesDeleteRecipe(recipe: Recipe) = withContext(ioDispatcher.value) {
+        delay(1000L)
         val indexToDelete = addRecipes.indexOfFirst { it == recipe }
         if (indexToDelete != -1) {
             addRecipes.removeAt(indexToDelete)

@@ -1,8 +1,8 @@
 package ksu.katara.healthymealplanner.mvvm.model.recipecategories
 
-import ksu.katara.healthymealplanner.foundation.tasks.Task
-import ksu.katara.healthymealplanner.foundation.tasks.ThreadUtils
-import ksu.katara.healthymealplanner.foundation.tasks.factories.TasksFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.RecipeCategoryNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
 
@@ -10,19 +10,19 @@ import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Catego
  * Simple in-memory implementation of [CategoriesRepository]
  */
 class InMemoryCategoriesRepository(
-    private val tasksFactory: TasksFactory,
+    private val ioDispatcher: IoDispatcher
 ) : CategoriesRepository {
 
     private var recipeCategories = listOf<Category>()
     private var loaded = false
     private val listeners = mutableSetOf<RecipeCategoriesListener>()
 
-    override fun loadRecipeCategories(): Task<List<Category>> = tasksFactory.async {
-        Thread.sleep(2000L)
+    override suspend fun loadRecipeCategories(): List<Category> = withContext(ioDispatcher.value) {
+        delay(1000L)
         recipeCategories = getRecipeCategories()
         loaded = true
         notifyChanges()
-        return@async recipeCategories
+        return@withContext recipeCategories
     }
 
     private fun getRecipeCategories(): List<Category> {
@@ -39,9 +39,9 @@ class InMemoryCategoriesRepository(
         return recipeCategories
     }
 
-    override fun getCategoryById(id: Long): Task<Category> = tasksFactory.async {
-        Thread.sleep(2000L)
-        return@async recipeCategories.firstOrNull { it.id == id }
+    override suspend fun getCategoryById(id: Long): Category = withContext(ioDispatcher.value) {
+        delay(1000L)
+        return@withContext recipeCategories.firstOrNull { it.id == id }
             ?: throw RecipeCategoryNotFoundException()
     }
 
