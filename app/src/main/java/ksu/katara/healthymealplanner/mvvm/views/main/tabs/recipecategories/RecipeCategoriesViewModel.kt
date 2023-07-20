@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipes
+package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,8 @@ import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.CategoriesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipes.RecipeCategoriesFragment.Screen
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.RecipeCategoriesFragment.Screen
 
 class RecipeCategoriesViewModel(
     screen: Screen,

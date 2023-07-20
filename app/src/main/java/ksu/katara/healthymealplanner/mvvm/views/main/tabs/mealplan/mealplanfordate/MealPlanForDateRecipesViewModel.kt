@@ -21,7 +21,7 @@ import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesR
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.recipedetails.RecipeDetailsFragment
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.sdf
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.addrecipes.AddRecipesFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment.Screen

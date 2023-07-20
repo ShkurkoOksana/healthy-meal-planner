@@ -68,7 +68,7 @@
         android:label="@string/diet_tips_details_title" />
     <fragment
         android:id="@+id/recipesInCategoryFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipes.RecipesInCategoryFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment"
         android:label="Recipes in category"
         tools:layout="@layout/fragment_recipes_in_category" >
         <action
@@ -87,7 +87,7 @@
         tools:layout="@layout/fragment_shopping_list" />
     <fragment
         android:id="@+id/recipeDetailsFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.recipedetails.RecipeDetailsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment"
         android:label="fragment_recipe_details"
         tools:layout="@layout/fragment_recipe_details" />
     <fragment

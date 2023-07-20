@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipes
+package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory
 
 import android.view.LayoutInflater
 import android.view.View

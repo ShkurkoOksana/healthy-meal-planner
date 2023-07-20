@@ -21,7 +21,7 @@ import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListListene
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.recipedetails.RecipeDetailsFragment
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist.ShoppingListFragment.Screen
 
 data class ShoppingListRecipeItem(

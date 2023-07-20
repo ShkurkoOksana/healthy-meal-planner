@@ -1,4 +1,4 @@
-package ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.recipedetails
+package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,7 +22,7 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparationStep
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.recipedetails.RecipeDetailsFragment.Screen
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment.Screen
 
 data class IngredientsItem(
     val ingredient: RecipeIngredient,
