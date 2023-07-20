@@ -176,13 +176,26 @@ class RecipeDetailsViewModel(
                 if (e !is CancellationException) removeProgressFrom(ingredient)
             }
         }
-        viewModelScope.launch {
-            try {
-                shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
-            } catch (e: Exception) {
-                if (e !is CancellationException) {
-                    val message = uiActions.getString(R.string.cant_add_ingredient_to_shopping_list)
-                    uiActions.toast(message)
+        if (isSelected) {
+            viewModelScope.launch {
+                try {
+                    shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
+                } catch (e: Exception) {
+                    if (e !is CancellationException) {
+                        val message = uiActions.getString(R.string.cant_add_ingredient_to_shopping_list)
+                        uiActions.toast(message)
+                    }
+                }
+            }
+        } else {
+            viewModelScope.launch {
+                try {
+                    shoppingListRepository.shoppingListIngredientsDeleteIngredient(recipeId, ingredient)
+                } catch (e: Exception) {
+                    if (e !is CancellationException) {
+                        val message = uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)
+                        uiActions.toast(message)
+                    }
                 }
             }
         }
