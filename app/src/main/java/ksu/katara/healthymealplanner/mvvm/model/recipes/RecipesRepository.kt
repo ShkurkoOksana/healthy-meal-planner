@@ -28,11 +28,6 @@ interface RecipesRepository : Repository {
     suspend fun loadRecipesInCategory(recipeCategoryId: Long): List<Recipe>
 
     /**
-     * Get the list of all available recipes in category with id.
-     */
-    suspend fun getRecipeInCategoryById(id: Long): RecipeDetails
-
-    /**
      * Listen for the current recipes in category changes.
      * The listener is triggered immediately with the current value when calling this method.
      */

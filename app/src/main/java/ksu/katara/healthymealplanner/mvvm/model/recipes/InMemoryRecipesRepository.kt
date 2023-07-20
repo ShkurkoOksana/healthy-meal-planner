@@ -120,13 +120,6 @@ class InMemoryRecipesRepository(
         return@withContext recipesInCategory
     }
 
-    override suspend fun getRecipeInCategoryById(id: Long): RecipeDetails = withContext(ioDispatcher.value) {
-        delay(1000L)
-        val recipeInCategory = recipesInCategory.firstOrNull { it.id == id }
-        return@withContext recipesDetails.firstOrNull<RecipeDetails> { it.recipe == recipeInCategory }
-            ?: throw RecipeNotFoundException()
-    }
-
     override fun addRecipeInCategoryListener(listener: RecipesInCategoryListener) {
         recipesInCategoryListeners.add(listener)
         if (recipeInCategoryLoaded) {
