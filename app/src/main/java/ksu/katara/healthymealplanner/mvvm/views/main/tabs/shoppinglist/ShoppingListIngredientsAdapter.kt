@@ -104,6 +104,7 @@ class ShoppingListIngredientsAdapter(
                 }
             }
             if (shoppingListIngredientsItem.isDeleteInProgress.isInProgress()) {
+                shoppingListIngredientsItemCrossView.visibility = View.INVISIBLE
                 componentWithoutDeleteGroup.visibility = View.INVISIBLE
                 deleteProgressGroup.visibility = View.VISIBLE
                 shoppingListIngredientsItemDeleteProgressBar.progress = shoppingListIngredientsItem.isDeleteInProgress.getPercentage()
