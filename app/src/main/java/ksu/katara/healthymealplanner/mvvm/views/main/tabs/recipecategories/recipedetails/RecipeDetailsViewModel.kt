@@ -1,9 +1,11 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
@@ -190,7 +192,7 @@ class RecipeDetailsViewModel(
         } else {
             viewModelScope.launch {
                 try {
-                    shoppingListRepository.deleteIngredient(recipeId, ingredient)
+                    shoppingListRepository.deleteIngredient(recipeId, ingredient).collect()
                 } catch (e: Exception) {
                     if (e !is CancellationException) {
                         val message = uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)

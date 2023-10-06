@@ -1,5 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
+import android.util.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
@@ -49,7 +50,8 @@ class InMemoryShoppingListRepository(
         listeners.forEach { it.invoke(shoppingList) }
     }
 
-    override suspend fun addIngredient(recipeId: Long, ingredient: RecipeIngredient) = withContext(ioDispatcher.value) {
+    override suspend fun addIngredient(recipeId: Long, ingredient: RecipeIngredient) =
+        withContext(ioDispatcher.value) {
             delay(1000L)
             addIngredientToShoppingListRecipe(recipeId, ingredient)
             notifyChanges()
@@ -57,7 +59,8 @@ class InMemoryShoppingListRepository(
 
     private fun addIngredientToShoppingListRecipe(recipeId: Long, ingredient: RecipeIngredient) {
         val recipeDetails =
-            recipesRepository.getRecipesDetails().firstOrNull { it.recipe.id == recipeId } ?: throw RecipeDetailsNotFoundException()
+            recipesRepository.getRecipesDetails().firstOrNull { it.recipe.id == recipeId }
+                ?: throw RecipeDetailsNotFoundException()
         val recipe = shoppingList.firstOrNull { it.recipe.id == recipeId }
         if (recipe == null) {
             val ingredients = mutableListOf(
@@ -86,16 +89,19 @@ class InMemoryShoppingListRepository(
         }
     }
 
-    override suspend fun addAllIngredients(recipeId: Long, isSelected: Boolean) = withContext(ioDispatcher.value) {
-        delay(1000L)
-        addAllIngredientsToShoppingListRecipe(recipeId, isSelected)
-        notifyChanges()
-    }
+    override suspend fun addAllIngredients(recipeId: Long, isSelected: Boolean) =
+        withContext(ioDispatcher.value) {
+            delay(1000L)
+            addAllIngredientsToShoppingListRecipe(recipeId, isSelected)
+            notifyChanges()
+        }
 
     private fun addAllIngredientsToShoppingListRecipe(recipeId: Long, isSelected: Boolean) {
-        val recipe = recipesRepository.getRecipes().firstOrNull { it.id == recipeId } ?: throw RecipeNotFoundException()
+        val recipe = recipesRepository.getRecipes().firstOrNull { it.id == recipeId }
+            ?: throw RecipeNotFoundException()
         val allIngredients = recipesRepository.getRecipesDetails()
-            .firstOrNull { it.recipe.id == recipeId }?.ingredients ?: throw RecipeDetailsNotFoundException()
+            .firstOrNull { it.recipe.id == recipeId }?.ingredients
+            ?: throw RecipeDetailsNotFoundException()
         val shoppingListRecipe = shoppingList.firstOrNull { it.recipe.id == recipeId }
         val allShoppingListRecipeIngredients = allIngredients.map {
             ShoppingListRecipeIngredient(
@@ -130,28 +136,36 @@ class InMemoryShoppingListRepository(
         isChecked: Boolean,
     ) = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipe = shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
-        val ingredient = recipe.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
+        val recipe =
+            shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
+        val ingredient = recipe.ingredients.firstOrNull { it == ingredient }
+            ?: throw IngredientsNotFoundException()
         ingredient.isSelectAndCross = isChecked
         notifyChanges()
     }
 
-    override fun deleteIngredient(recipeId: Long, ingredient: RecipeIngredient, ): Flow<Int> = flow {
-        var progress = 0
-        while (progress < 100) {
-            progress += 2
-            delay(30)
-            emit(progress)
-        }
-        deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
-        notifyChanges()
-    }.flowOn(ioDispatcher.value)
+    override fun deleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Flow<Int> =
+        flow {
+            var progress = 0
+            while (progress < 100) {
+                progress += 2
+                delay(30)
+                emit(progress)
+            }
+            deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
+            notifyChanges()
+        }.flowOn(ioDispatcher.value)
 
-    private fun deleteIngredientFromShoppingListIngredients(recipeId: Long, ingredient: RecipeIngredient) {
-        val recipe = shoppingList.firstOrNull { it.recipe.id == recipeId } ?: throw ShoppingListRecipeNotFoundException()
+    private fun deleteIngredientFromShoppingListIngredients(
+        recipeId: Long,
+        ingredient: RecipeIngredient
+    ) {
+        val recipe = shoppingList.firstOrNull { it.recipe.id == recipeId }
+            ?: throw ShoppingListRecipeNotFoundException()
         val ingredients = recipe.ingredients
         val ingredient = ingredients.firstOrNull { it.ingredient == ingredient }
-        val shoppingListItem = shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
+        val shoppingListItem =
+            shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
         val indexToDelete = shoppingListItem.ingredients.indexOfFirst { it == ingredient }
         if (indexToDelete != -1) {
             shoppingListItem.ingredients.removeAt(indexToDelete)
