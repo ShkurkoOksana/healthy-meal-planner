@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.databinding.ItemDietTipsChapterBinding
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 
 class DietTipsChaptersDiffCallback(
-    private val oldList: List<DietTipsChapter>,
-    private val newList: List<DietTipsChapter>,
+    private val oldList: List<DietTipChapter>,
+    private val newList: List<DietTipChapter>,
 ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
     override fun getNewListSize(): Int = newList.size
@@ -32,7 +32,7 @@ class DietTipsChaptersAdapter(
     private val dietTipsChaptersViewModel: DietTipsChaptersViewModel,
 ) : RecyclerView.Adapter<DietTipsChaptersAdapter.DietTipsChaptersViewHolder>() {
 
-    var dietTipsChapters: List<DietTipsChapter> = emptyList()
+    var dietTipsChapters: List<DietTipChapter> = emptyList()
         set(newValue) {
             val diffCallback = DietTipsChaptersDiffCallback(field, newValue)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -53,7 +53,7 @@ class DietTipsChaptersAdapter(
 
         with(holder.binding) {
             holder.itemView.tag = dietTipsChapter
-            dietTipsChaptersTitleTextView.text = dietTipsChapter.name
+            dietTipChapterTitleTextView.text = dietTipsChapter.name
             val dietTipsAdapter = DietTipsAdapter(dietTipsChaptersViewModel)
             dietTipsAdapter.dietTips = dietTipsChapter.dietTipsList
             dietTipsRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

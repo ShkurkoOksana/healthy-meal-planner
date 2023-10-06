@@ -8,7 +8,7 @@
     tools:context=".mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dietTipsChaptersRecyclerView"
+        android:id="@+id/dietTipChaptersRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

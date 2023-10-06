@@ -53,7 +53,7 @@ class MealPlanForDateRecipesAdapter(
         val recipe = v.tag as Recipe
 
         when (v.id) {
-            R.id.mealPlanForDateRecipesItemDeleteViewButton -> {
+            R.id.mealPlanForDateRecipeDeleteViewButton -> {
                 mealPlanDateRecipeActionListener.onMealPlanForDateRecipesItemDelete(recipe)
             }
 
@@ -69,7 +69,7 @@ class MealPlanForDateRecipesAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMealPlanForDateRecipeBinding.inflate(inflater, parent, false)
         binding.root.setOnClickListener(this)
-        binding.mealPlanForDateRecipesItemDeleteViewButton.setOnClickListener(this)
+        binding.mealPlanForDateRecipeDeleteViewButton.setOnClickListener(this)
         return MealPlanForDateRecipesViewHolder(binding)
     }
 
@@ -78,27 +78,27 @@ class MealPlanForDateRecipesAdapter(
         val recipe = mealPlanForDateRecipesItem.recipe
         with(holder.binding) {
             holder.itemView.tag = recipe
-            mealPlanForDateRecipesItemDeleteViewButton.tag = recipe
+            mealPlanForDateRecipeDeleteViewButton.tag = recipe
             if (mealPlanForDateRecipesItem.isInProgress) {
-                mealPlanForDateRecipesItemDeleteViewButton.visibility = View.INVISIBLE
-                itemMealPlanForDateRecipesItemProgressBar.visibility = View.VISIBLE
+                mealPlanForDateRecipeDeleteViewButton.visibility = View.INVISIBLE
+                mealPlanForDateRecipeProgressBar.visibility = View.VISIBLE
                 holder.binding.root.setOnClickListener(null)
             } else {
-                mealPlanForDateRecipesItemDeleteViewButton.visibility = View.VISIBLE
-                itemMealPlanForDateRecipesItemProgressBar.visibility = View.GONE
+                mealPlanForDateRecipeDeleteViewButton.visibility = View.VISIBLE
+                mealPlanForDateRecipeProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@MealPlanForDateRecipesAdapter)
             }
-            mealPlanForDateRecipesItemNameTextView.text = recipe.name
+            mealPlanForDateRecipeNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
-                Glide.with(mealPlanForDateRecipesItemPhotoImageView.context)
+                Glide.with(mealPlanForDateRecipePhotoImageView.context)
                     .load(recipe.photo)
                     .circleCrop()
                     .placeholder(R.drawable.ic_recipe)
                     .error(R.drawable.ic_recipe)
-                    .into(mealPlanForDateRecipesItemPhotoImageView)
+                    .into(mealPlanForDateRecipePhotoImageView)
             } else {
-                Glide.with(mealPlanForDateRecipesItemPhotoImageView.context).clear(mealPlanForDateRecipesItemPhotoImageView)
-                mealPlanForDateRecipesItemPhotoImageView.setImageResource(R.drawable.ic_diet_tip)
+                Glide.with(mealPlanForDateRecipePhotoImageView.context).clear(mealPlanForDateRecipePhotoImageView)
+                mealPlanForDateRecipePhotoImageView.setImageResource(R.drawable.ic_diet_tip)
             }
         }
     }

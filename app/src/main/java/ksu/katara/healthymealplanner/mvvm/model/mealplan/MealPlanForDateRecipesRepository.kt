@@ -23,27 +23,27 @@ interface MealPlanForDateRecipesRepository : Repository {
     /**
      * Load the list of all available meal plan recipes that may be chosen by the user.
      */
-    suspend fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes?
+    suspend fun load(selectedDate: Date, mealType: MealTypes): MealPlanRecipes?
 
     /**
      * Listen for the current meal plan recipes changes.
      * The listener is triggered immediately with the current value when calling this method.
      */
-    fun addMealPlanForDateRecipesItemListener(listener: MealPlanForDateRecipesListener)
+    fun addListener(listener: MealPlanForDateRecipesListener)
 
     /**
      * Stop listening for the current meal plan recipes.
      */
-    fun removeMealPlanForDateRecipesItemListener(listener: MealPlanForDateRecipesListener)
+    fun removeListener(listener: MealPlanForDateRecipesListener)
 
     /**
      * Add recipe to meal plan for selected date and meal type.
      */
-    suspend fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe)
+    suspend fun addRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe)
 
     /**
      * Delete recipe from meal plan for selected date and meal type.
      */
-    suspend fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes?
+    suspend fun deleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes?
 
 }

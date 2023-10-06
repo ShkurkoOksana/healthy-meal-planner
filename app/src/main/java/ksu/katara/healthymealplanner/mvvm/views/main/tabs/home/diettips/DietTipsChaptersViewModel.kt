@@ -10,7 +10,7 @@ import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment.Screen
 
 class DietTipsChaptersViewModel(
@@ -21,8 +21,8 @@ class DietTipsChaptersViewModel(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), DietTipActionListener {
 
-    private val _dietTipsChapters = MutableLiveResult<List<DietTipsChapter>>()
-    val dietTipsChapters: LiveResult<List<DietTipsChapter>> = _dietTipsChapters
+    private val _dietTipsChapters = MutableLiveResult<List<DietTipChapter>>()
+    val dietTipsChapters: LiveResult<List<DietTipChapter>> = _dietTipsChapters
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
@@ -33,7 +33,7 @@ class DietTipsChaptersViewModel(
     }
 
     private fun loadDietTipsChapters() = into(_dietTipsChapters){
-        dietTipsRepository.loadDietTipsChapters()
+        dietTipsRepository.loadChapters()
     }
 
     override fun onDietTipPressed(dietTipId: Long) {

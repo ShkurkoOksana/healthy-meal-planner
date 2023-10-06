@@ -13,28 +13,28 @@ class InMemoryCalendarRepository : CalendarRepository {
     private val listeners = mutableSetOf<CalendarListener>()
 
     override fun getCalendar(): MutableList<Date> {
-        val minDayOfCalendar = Calendar.getInstance(Locale.ENGLISH)
-        val maxDayOfCalendar = getCalendarMinMaxDate(MAX_COUNT_MONTH)
-        calendar = getDaysList(minDayOfCalendar, maxDayOfCalendar)
+        val minDay = Calendar.getInstance(Locale.ENGLISH)
+        val maxDay = getMaxDay(MAX_COUNT_MONTH)
+        calendar = getCalendar(minDay, maxDay)
         notifyChanges()
         return calendar
     }
 
-    private fun getDaysList(minDayOfCalendar: Calendar, maxDayOfCalendar: Calendar): MutableList<Date> {
-        val daysList = mutableListOf<Date>()
-        var data = minDayOfCalendar.time
-        while (data < maxDayOfCalendar.time) {
-            daysList.add(data)
-            minDayOfCalendar.add(Calendar.DAY_OF_MONTH, 1)
-            data = minDayOfCalendar.time
+    private fun getCalendar(minDay: Calendar, maxDay: Calendar): MutableList<Date> {
+        val days = mutableListOf<Date>()
+        var data = minDay.time
+        while (data < maxDay.time) {
+            days.add(data)
+            minDay.add(Calendar.DAY_OF_MONTH, 1)
+            data = minDay.time
         }
-        return daysList
+        return days
     }
 
-    private fun getCalendarMinMaxDate(month: Int): Calendar {
-        val currentDate = Calendar.getInstance(Locale.ENGLISH)
-        currentDate.add(Calendar.MONTH, month)
-        return currentDate
+    private fun getMaxDay(month: Int): Calendar {
+        val date = Calendar.getInstance(Locale.ENGLISH)
+        date.add(Calendar.MONTH, month)
+        return date
     }
 
     override fun addListener(listener: CalendarListener) {

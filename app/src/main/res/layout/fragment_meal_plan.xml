@@ -20,7 +20,7 @@
         tools:visibility="visible" />
 
     <Button
-        android:id="@+id/breakfast_for_date_details_button"
+        android:id="@+id/breakfastForDateDetailsButton"
         style="@style/GlobalTextInputStyle.Big"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -29,7 +29,7 @@
         android:text="@string/action_go_to_breakfast_for_date_details" />
 
     <Button
-        android:id="@+id/lunch_for_date_details_button"
+        android:id="@+id/lunchForDateDetailsButton"
         style="@style/GlobalTextInputStyle.Big"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -38,7 +38,7 @@
         android:text="@string/action_go_to_lunch_for_date_details" />
 
     <Button
-        android:id="@+id/dinner_for_date_details_button"
+        android:id="@+id/dinnerForDateDetailsButton"
         style="@style/GlobalTextInputStyle.Big"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -47,7 +47,7 @@
         android:text="@string/action_go_to_dinner_for_date_details" />
 
     <Button
-        android:id="@+id/snack_for_date_details_button"
+        android:id="@+id/snackForDateDetailsButton"
         style="@style/GlobalTextInputStyle.Big"
         android:layout_width="match_parent"
         android:layout_height="100dp"

@@ -14,6 +14,6 @@ interface ProductsRepository : Repository {
     /**
      * Get available product by id.
      */
-    fun getProductById(id: Long): Product
+    fun getById(id: Long): Product
 
 }

@@ -8,5 +8,5 @@ import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
  */
 data class MealPlanRecipes(
     val mealType: MealTypes,
-    var recipesList: MutableList<Recipe>
+    var recipes: MutableList<Recipe>
 )

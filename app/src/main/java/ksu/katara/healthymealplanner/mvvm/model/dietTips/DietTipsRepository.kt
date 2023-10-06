@@ -3,9 +3,9 @@ package ksu.katara.healthymealplanner.mvvm.model.dietTips
 import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 
-typealias DietTipsChaptersListener = (dietTipsChapters: List<DietTipsChapter>) -> Unit
+typealias DietTipChaptersListener = (dietTipChapters: List<DietTipChapter>) -> Unit
 typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit
 
 /**
@@ -18,7 +18,7 @@ interface DietTipsRepository : Repository {
     /**
      * Load the list of all available diet tips chapters that may be chosen by the user.
      */
-    suspend fun loadDietTipsChapters(): List<DietTipsChapter>
+    suspend fun loadChapters(): List<DietTipChapter>
 
     /**
      * Load the list of all available diet tips that may be chosen by the user.
@@ -45,11 +45,11 @@ interface DietTipsRepository : Repository {
      * Listen for the current diet tips chapters changes.
      * The listener is triggered immediately with the current value when calling this method.
      */
-    fun addDietTipsChaptersListener(listener: DietTipsChaptersListener)
+    fun addChaptersListener(listener: DietTipChaptersListener)
 
     /**
      * Stop listening for the current diet tips chapters changes.
      */
-    fun removeDietTipsChaptersListener(listener: DietTipsChaptersListener)
+    fun removeChaptersListener(listener: DietTipChaptersListener)
 
 }

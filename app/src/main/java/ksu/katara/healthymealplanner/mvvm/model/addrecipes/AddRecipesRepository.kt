@@ -17,22 +17,22 @@ interface AddRecipesRepository : Repository {
     /**
      * Load the list of all added available recipes that may be chosen by the user.
      */
-    suspend fun loadAddRecipes(selectedDate: Date, mealTypes: MealTypes): List<Recipe>
+    suspend fun load(selectedDate: Date, mealTypes: MealTypes): List<Recipe>
 
     /**
      * Listen for the current added recipes changes.
      * The listener is triggered immediately with the current value when calling this method.
      */
-    fun addAddRecipesListener(listener: AddRecipesListener)
+    fun addListener(listener: AddRecipesListener)
 
     /**
      * Stop listening for the current added recipe changes.
      */
-    fun removeAddRecipesListener(listener: AddRecipesListener)
+    fun removeListener(listener: AddRecipesListener)
 
     /**
      * Delete recipe from  available added recipes.
      */
-    suspend fun addRecipesDeleteRecipe(recipe: Recipe)
+    suspend fun deleteRecipe(recipe: Recipe)
 
 }

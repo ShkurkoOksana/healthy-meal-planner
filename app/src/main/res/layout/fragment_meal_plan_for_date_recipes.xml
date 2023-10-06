@@ -9,7 +9,7 @@
     tools:context=".mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mealPlanForDateRecipesRecyclerView"
+        android:id="@+id/mealPlanForDateRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -23,7 +23,7 @@
     <include layout="@layout/part_result"/>
 
     <ImageView
-        android:id="@+id/mealPlanForDateRecipesAddRecipeButton"
+        android:id="@+id/mealPlanForDateAddRecipeButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_add_recipe_in_meal_plan_for_date"

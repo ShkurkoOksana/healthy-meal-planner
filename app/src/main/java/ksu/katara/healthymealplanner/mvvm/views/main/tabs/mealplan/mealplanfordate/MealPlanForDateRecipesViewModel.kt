@@ -66,7 +66,7 @@ class MealPlanForDateRecipesViewModel(
 
     init {
         _screenTitle.value = uiActions.getString(R.string.meal_plan_for_date_title, mealType.mealName , sdf.format(selectedDate))
-        mealPlanForDateRecipesRepository.addMealPlanForDateRecipesItemListener(mealPlanForDateRecipesListener)
+        mealPlanForDateRecipesRepository.addListener(mealPlanForDateRecipesListener)
         loadMealPlanForDateRecipes(selectedDate, mealType)
     }
 
@@ -74,7 +74,7 @@ class MealPlanForDateRecipesViewModel(
         mealPlanRecipesResult = PendingResult()
         viewModelScope.launch {
             try {
-                mealPlanForDateRecipesRepository.loadMealPlanForDateRecipes(selectedDate, mealType)
+                mealPlanForDateRecipesRepository.load(selectedDate, mealType)
             } catch (e: Exception) {
                 if (e !is CancellationException) mealPlanRecipesResult = ErrorResult(IllegalArgumentException())
             }
@@ -88,14 +88,14 @@ class MealPlanForDateRecipesViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        mealPlanForDateRecipesRepository.removeMealPlanForDateRecipesItemListener(mealPlanForDateRecipesListener)
+        mealPlanForDateRecipesRepository.removeListener(mealPlanForDateRecipesListener)
     }
 override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
     if (isDeleteInProgress(recipe)) return
     addDeleteProgressTo(recipe)
     viewModelScope.launch {
         try {
-            val result = mealPlanForDateRecipesRepository.mealPlanForDateRecipesDeleteRecipe(selectedDate, mealType, recipe)
+            val result = mealPlanForDateRecipesRepository.deleteRecipe(selectedDate, mealType, recipe)
             removeDeleteProgressFrom(recipe)
             if (result == null) {
                 mealPlanRecipesResult = EmptyResult()
@@ -125,7 +125,7 @@ override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
 
     private fun notifyUpdates() {
         _mealPlanForDateRecipes.postValue(mealPlanRecipesResult.resultMap { mealPlanForDateRecipes ->
-            mealPlanForDateRecipes.recipesList.map { recipe -> MealPlanForDateRecipesItem(recipe, isDeleteInProgress(recipe)) }
+            mealPlanForDateRecipes.recipes.map { recipe -> MealPlanForDateRecipesItem(recipe, isDeleteInProgress(recipe)) }
         })
     }
 

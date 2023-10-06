@@ -82,15 +82,15 @@ class ShoppingListAdapter(
             holder.binding.root.setOnClickListener(this@ShoppingListAdapter)
             shoppingListRecipeNameTextView.text = recipe.name
             if (recipe.photo.isNotBlank()) {
-                Glide.with(shoppingListRecipePhotoImageView.context)
+                Glide.with(shoppingListRecipeImageView.context)
                     .load(recipe.photo)
                     .circleCrop()
                     .placeholder(R.drawable.ic_recipe)
                     .error(R.drawable.ic_recipe)
-                    .into(shoppingListRecipePhotoImageView)
+                    .into(shoppingListRecipeImageView)
             } else {
-                Glide.with(shoppingListRecipePhotoImageView.context).clear(shoppingListRecipePhotoImageView)
-                shoppingListRecipePhotoImageView.setImageResource(R.drawable.ic_recipe)
+                Glide.with(shoppingListRecipeImageView.context).clear(shoppingListRecipeImageView)
+                shoppingListRecipeImageView.setImageResource(R.drawable.ic_recipe)
             }
         }
         initShoppingListIngredients(shoppingListRecipe, shoppingListIngredientsItem, holder)

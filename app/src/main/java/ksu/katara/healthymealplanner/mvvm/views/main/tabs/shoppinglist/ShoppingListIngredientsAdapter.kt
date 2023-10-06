@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +25,7 @@ class ShoppingListIngredientsDiffCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldShoppingListIngredientsItem = oldList[oldItemPosition]
         val newShoppingListIngredientsItem = newList[newItemPosition]
-        return oldShoppingListIngredientsItem.shoppingListRecipeIngredient.recipeIngredient.id == newShoppingListIngredientsItem.shoppingListRecipeIngredient.recipeIngredient.id
+        return oldShoppingListIngredientsItem.shoppingListRecipeIngredient.ingredient.id == newShoppingListIngredientsItem.shoppingListRecipeIngredient.ingredient.id
     }
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldShoppingListIngredientsItem = oldList[oldItemPosition]
@@ -115,13 +114,13 @@ class ShoppingListIngredientsAdapter(
                 deleteProgressGroup.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
             }
-            shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.recipeIngredient.product.name
-            if (shoppingListRecipeIngredient.recipeIngredient.amount == 0.0) {
+            shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.ingredient.product.name
+            if (shoppingListRecipeIngredient.ingredient.amount == 0.0) {
                 shoppingListIngredientsItemAmountTextView.text = ""
             } else {
-                shoppingListIngredientsItemAmountTextView.text = shoppingListRecipeIngredient.recipeIngredient.amount.toString()
+                shoppingListIngredientsItemAmountTextView.text = shoppingListRecipeIngredient.ingredient.amount.toString()
             }
-            shoppingListIngredientsItemMeasureTextView.text = shoppingListRecipeIngredient.recipeIngredient.measure
+            shoppingListIngredientsItemMeasureTextView.text = shoppingListRecipeIngredient.ingredient.measure
         }
     }
 

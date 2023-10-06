@@ -24,61 +24,61 @@ class InMemoryShoppingListRepository(
 ) : ShoppingListRepository {
 
     private var shoppingList: MutableList<ShoppingListRecipe> = mutableListOf()
-    private var shoppingListLoaded = false
-    private val shoppingListListeners = mutableSetOf<ShoppingListListener>()
+    private var loaded = false
+    private val listeners = mutableSetOf<ShoppingListListener>()
 
-    override suspend fun loadShoppingList(): MutableList<ShoppingListRecipe> = withContext(ioDispatcher.value) {
+    override suspend fun load(): MutableList<ShoppingListRecipe> = withContext(ioDispatcher.value) {
         delay(1000L)
-        shoppingListLoaded = true
-        notifyShoppingListChanges()
+        loaded = true
+        notifyChanges()
         return@withContext shoppingList
     }
 
-    override fun listenShoppingListIngredients(): Flow<MutableList<ShoppingListRecipe>> = callbackFlow {
+    override fun listener(): Flow<MutableList<ShoppingListRecipe>> = callbackFlow {
         val listener: ShoppingListListener = {
             trySend(it)
         }
-        shoppingListListeners.add(listener)
+        listeners.add(listener)
         awaitClose {
-            shoppingListListeners.remove(listener)
+            listeners.remove(listener)
         }
     }.buffer(Channel.CONFLATED)
 
-    private fun notifyShoppingListChanges() {
-        if (!shoppingListLoaded) return
-        shoppingListListeners.forEach { it.invoke(shoppingList) }
+    private fun notifyChanges() {
+        if (!loaded) return
+        listeners.forEach { it.invoke(shoppingList) }
     }
 
-    override suspend fun shoppingListIngredientsAddIngredient(recipeId: Long, recipeIngredient: RecipeIngredient) = withContext(ioDispatcher.value) {
+    override suspend fun addIngredient(recipeId: Long, ingredient: RecipeIngredient) = withContext(ioDispatcher.value) {
             delay(1000L)
-            addIngredientToShoppingListIngredients(recipeId, recipeIngredient)
-            notifyShoppingListChanges()
+            addIngredientToShoppingListRecipe(recipeId, ingredient)
+            notifyChanges()
         }
 
-    private fun addIngredientToShoppingListIngredients(recipeId: Long, recipeIngredient: RecipeIngredient) {
+    private fun addIngredientToShoppingListRecipe(recipeId: Long, ingredient: RecipeIngredient) {
         val recipeDetails =
             recipesRepository.getRecipesDetails().firstOrNull { it.recipe.id == recipeId } ?: throw RecipeDetailsNotFoundException()
-        val shoppingListRecipe = shoppingList.firstOrNull { shoppingListRecipe -> shoppingListRecipe.recipe.id == recipeId }
-        if (shoppingListRecipe == null) {
-            val shoppingListItemIngredients = mutableListOf(
+        val recipe = shoppingList.firstOrNull { it.recipe.id == recipeId }
+        if (recipe == null) {
+            val ingredients = mutableListOf(
                 ShoppingListRecipeIngredient(
-                    recipeIngredient = recipeIngredient,
+                    ingredient = ingredient,
                     isSelectAndCross = false,
                 )
             )
             shoppingList.add(
                 ShoppingListRecipe(
                     recipe = recipeDetails.recipe,
-                    shoppingListIngredients = shoppingListItemIngredients
+                    ingredients = ingredients
                 )
             )
         } else {
-            val shoppingListRecipeIngredients = shoppingListRecipe.shoppingListIngredients
-            val shoppingListRecipeIngredient = shoppingListRecipeIngredients.firstOrNull { it.recipeIngredient == recipeIngredient }
-            if (shoppingListRecipeIngredient == null) {
-                shoppingListRecipeIngredients.add(
+            val ingredients = recipe.ingredients
+            val recipeIngredient = ingredients.firstOrNull { it.ingredient == ingredient }
+            if (recipeIngredient == null) {
+                ingredients.add(
                     ShoppingListRecipeIngredient(
-                        recipeIngredient = recipeIngredient,
+                        ingredient = ingredient,
                         isSelectAndCross = false,
                     )
                 )
@@ -86,16 +86,16 @@ class InMemoryShoppingListRepository(
         }
     }
 
-    override suspend fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean) = withContext(ioDispatcher.value) {
+    override suspend fun addAllIngredients(recipeId: Long, isSelected: Boolean) = withContext(ioDispatcher.value) {
         delay(1000L)
-        addAllIngredientsToShoppingListIngredients(recipeId, isSelected)
-        notifyShoppingListChanges()
+        addAllIngredientsToShoppingListRecipe(recipeId, isSelected)
+        notifyChanges()
     }
 
-    private fun addAllIngredientsToShoppingListIngredients(recipeId: Long, isSelected: Boolean) {
+    private fun addAllIngredientsToShoppingListRecipe(recipeId: Long, isSelected: Boolean) {
         val recipe = recipesRepository.getRecipes().firstOrNull { it.id == recipeId } ?: throw RecipeNotFoundException()
-        val allIngredients = recipesRepository.getRecipesDetails().firstOrNull { it.recipe.id == recipeId }?.ingredients
-            ?: throw RecipeDetailsNotFoundException()
+        val allIngredients = recipesRepository.getRecipesDetails()
+            .firstOrNull { it.recipe.id == recipeId }?.ingredients ?: throw RecipeDetailsNotFoundException()
         val shoppingListRecipe = shoppingList.firstOrNull { it.recipe.id == recipeId }
         val allShoppingListRecipeIngredients = allIngredients.map {
             ShoppingListRecipeIngredient(
@@ -111,8 +111,8 @@ class InMemoryShoppingListRepository(
             if (shoppingListRecipe == null) {
                 shoppingList.add(shoppingListRecipeWithAllIngredients)
             } else {
-                shoppingListRecipe.shoppingListIngredients.clear()
-                shoppingListRecipe.shoppingListIngredients.addAll(allShoppingListRecipeIngredients)
+                shoppingListRecipe.ingredients.clear()
+                shoppingListRecipe.ingredients.addAll(allShoppingListRecipeIngredients)
             }
         } else {
             if (shoppingListRecipe != null) {
@@ -124,23 +124,19 @@ class InMemoryShoppingListRepository(
         }
     }
 
-    override suspend fun shoppingListIngredientsSelectIngredient(
-        shoppingListRecipe: ShoppingListRecipe,
-        shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
+    override suspend fun selectIngredient(
+        recipe: ShoppingListRecipe,
+        ingredient: ShoppingListRecipeIngredient,
         isChecked: Boolean,
     ) = withContext(ioDispatcher.value) {
         delay(1000L)
-        val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
-        val shoppingListRecipeIngredientsItem =
-            shoppingListItem.shoppingListIngredients.firstOrNull { it == shoppingListRecipeIngredient } ?: throw IngredientsNotFoundException()
-        shoppingListRecipeIngredientsItem.isSelectAndCross = isChecked
-        notifyShoppingListChanges()
+        val recipe = shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
+        val ingredient = recipe.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
+        ingredient.isSelectAndCross = isChecked
+        notifyChanges()
     }
 
-    override fun shoppingListIngredientsDeleteIngredient(
-        recipeId: Long,
-        ingredient: RecipeIngredient,
-    ): Flow<Int> = flow {
+    override fun deleteIngredient(recipeId: Long, ingredient: RecipeIngredient, ): Flow<Int> = flow {
         var progress = 0
         while (progress < 100) {
             progress += 2
@@ -148,21 +144,20 @@ class InMemoryShoppingListRepository(
             emit(progress)
         }
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
-        notifyShoppingListChanges()
+        notifyChanges()
     }.flowOn(ioDispatcher.value)
 
     private fun deleteIngredientFromShoppingListIngredients(recipeId: Long, ingredient: RecipeIngredient) {
-        val shoppingListRecipe = shoppingList.firstOrNull { it.recipe.id == recipeId } ?: throw ShoppingListRecipeNotFoundException()
-        val shoppingListIngredients = shoppingListRecipe.shoppingListIngredients
-        val shoppingListRecipeIngredient = shoppingListIngredients.firstOrNull { it.recipeIngredient == ingredient }
-        val shoppingListItem = shoppingList.firstOrNull { it == shoppingListRecipe } ?: throw ShoppingListRecipeNotFoundException()
-        val indexToDelete = shoppingListItem.shoppingListIngredients.indexOfFirst { it == shoppingListRecipeIngredient }
+        val recipe = shoppingList.firstOrNull { it.recipe.id == recipeId } ?: throw ShoppingListRecipeNotFoundException()
+        val ingredients = recipe.ingredients
+        val ingredient = ingredients.firstOrNull { it.ingredient == ingredient }
+        val shoppingListItem = shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
+        val indexToDelete = shoppingListItem.ingredients.indexOfFirst { it == ingredient }
         if (indexToDelete != -1) {
-            shoppingListItem.shoppingListIngredients.removeAt(indexToDelete)
+            shoppingListItem.ingredients.removeAt(indexToDelete)
         }
-
-        if (shoppingListItem.shoppingListIngredients.isEmpty()) {
-            val indexToDelete = shoppingList.indexOfFirst { it == shoppingListRecipe }
+        if (shoppingListItem.ingredients.isEmpty()) {
+            val indexToDelete = shoppingList.indexOfFirst { it == recipe }
             if (indexToDelete != -1) {
                 shoppingList.removeAt(indexToDelete)
             }

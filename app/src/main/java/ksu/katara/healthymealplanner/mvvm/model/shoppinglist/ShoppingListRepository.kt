@@ -6,44 +6,43 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredien
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
 
-typealias ShoppingListListener = (shoppingListItemList: MutableList<ShoppingListRecipe>) -> Unit
+typealias ShoppingListListener = (shoppingList: MutableList<ShoppingListRecipe>) -> Unit
 
 interface ShoppingListRepository : Repository {
 
     /**
      * Load the list of all available shopping list recipes that may be chosen by the user.
      */
-    suspend fun loadShoppingList(): MutableList<ShoppingListRecipe>
+    suspend fun load(): MutableList<ShoppingListRecipe>
 
     /**
      * Listen for for the current shopping list recipes changes.
-     * @return [Flow] which emits a new item whenever [shoppingListIngredientsDeleteIngredient] call
+     * @return [Flow] which emits a new item whenever [deleteIngredient] call
      * changes the current color.
      */
-    fun listenShoppingListIngredients(): Flow<MutableList<ShoppingListRecipe>>
+    fun listener(): Flow<MutableList<ShoppingListRecipe>>
 
     /**
      * Add ingredient to shopping list for recipe with id.
      */
-    suspend fun shoppingListIngredientsAddIngredient(recipeId: Long, ingredient: RecipeIngredient)
+    suspend fun addIngredient(recipeId: Long, ingredient: RecipeIngredient)
 
     /**
      * Add all ingredients to shopping list for recipe with id.
      */
-    suspend fun shoppingListIngredientsAddAllIngredients(recipeId: Long, isSelected: Boolean)
+    suspend fun addAllIngredients(recipeId: Long, isSelected: Boolean)
 
     /**
      * Set for ingredient property isInShoppingList equals isChecked for recipe in shopping list.
      */
-    suspend fun shoppingListIngredientsSelectIngredient(
-        shoppingListRecipe: ShoppingListRecipe,
-        shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
+    suspend fun selectIngredient(recipe: ShoppingListRecipe,
+        ingredient: ShoppingListRecipeIngredient,
         isChecked: Boolean
     )
 
     /**
      * Delete ingredient to shopping list for recipe with id.
      */
-    fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Flow<Int>
+    fun deleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Flow<Int>
 
 }

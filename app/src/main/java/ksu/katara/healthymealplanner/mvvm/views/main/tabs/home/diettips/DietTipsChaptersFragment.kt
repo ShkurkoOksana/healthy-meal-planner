@@ -61,8 +61,8 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
         }
         val dietTipsChaptersLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.dietTipsChaptersRecyclerView.layoutManager = dietTipsChaptersLayoutManager
-        binding.dietTipsChaptersRecyclerView.adapter = dietTipsChaptersAdapter
+        binding.dietTipChaptersRecyclerView.layoutManager = dietTipsChaptersLayoutManager
+        binding.dietTipChaptersRecyclerView.adapter = dietTipsChaptersAdapter
     }
 
     companion object {

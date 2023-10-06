@@ -138,7 +138,7 @@ class RecipeDetailsViewModel(
         }
         viewModelScope.launch {
             try {
-                shoppingListRepository.shoppingListIngredientsAddAllIngredients(recipeId, isSelected)
+                shoppingListRepository.addAllIngredients(recipeId, isSelected)
             } catch (e: Exception) {
                 if (e !is CancellationException) {
                     val message = uiActions.getString(R.string.cant_add_all_ingredient_to_shopping_list)
@@ -179,7 +179,7 @@ class RecipeDetailsViewModel(
         if (isSelected) {
             viewModelScope.launch {
                 try {
-                    shoppingListRepository.shoppingListIngredientsAddIngredient(recipeId, ingredient)
+                    shoppingListRepository.addIngredient(recipeId, ingredient)
                 } catch (e: Exception) {
                     if (e !is CancellationException) {
                         val message = uiActions.getString(R.string.cant_add_ingredient_to_shopping_list)
@@ -190,7 +190,7 @@ class RecipeDetailsViewModel(
         } else {
             viewModelScope.launch {
                 try {
-                    shoppingListRepository.shoppingListIngredientsDeleteIngredient(recipeId, ingredient)
+                    shoppingListRepository.deleteIngredient(recipeId, ingredient)
                 } catch (e: Exception) {
                     if (e !is CancellationException) {
                         val message = uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)

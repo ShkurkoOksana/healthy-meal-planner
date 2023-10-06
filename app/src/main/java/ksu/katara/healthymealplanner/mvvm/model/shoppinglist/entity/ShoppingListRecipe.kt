@@ -8,13 +8,13 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredien
  */
 data class ShoppingListRecipe(
     val recipe: Recipe,
-    var shoppingListIngredients: MutableList<ShoppingListRecipeIngredient>,
+    var ingredients: MutableList<ShoppingListRecipeIngredient>,
 )
 
 /**
  * Represents shopping list recipe ingredient data
  */
 data class ShoppingListRecipeIngredient(
-    val recipeIngredient: RecipeIngredient,
+    val ingredient: RecipeIngredient,
     var isSelectAndCross: Boolean
 )

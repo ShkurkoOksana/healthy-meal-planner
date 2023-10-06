@@ -19,68 +19,64 @@ class InMemoryAddRecipesRepository(
     private val ioDispatcher: IoDispatcher
 ) : AddRecipesRepository {
     private lateinit var addRecipes: MutableList<Recipe>
-    private var addRecipesLoaded = false
-    private val addRecipesListeners = mutableListOf<AddRecipesListener>()
+    private var loaded = false
+    private val listeners = mutableListOf<AddRecipesListener>()
 
-    override suspend fun loadAddRecipes(selectedDate: Date, mealType: MealTypes): List<Recipe> = withContext(ioDispatcher.value) {
+    override suspend fun load(selectedDate: Date, mealType: MealTypes): List<Recipe> = withContext(ioDispatcher.value) {
         delay(1000L)
-        val mealPlanForDateRecipesList: MutableList<Recipe> = getMealPlanForDateRecipesList(selectedDate, mealType)
-        addRecipes = getAddRecipes(mealPlanForDateRecipesList)
-        addRecipesLoaded = true
-        notifyAddRecipesChanges()
+        val mealPlanForDateRecipes: MutableList<Recipe> = getMealPlanForDateRecipes(selectedDate, mealType)
+        addRecipes = getAddRecipes(mealPlanForDateRecipes)
+        loaded = true
+        notifyChanges()
         return@withContext addRecipes
     }
 
     private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
-        val recipesList = recipesRepository.getRecipes().map { it }.toMutableList()
-        list.forEach { mealPlanForDateRecipesListItem ->
-            recipesList.removeIf { it == mealPlanForDateRecipesListItem }
+        val recipes = recipesRepository.getRecipes().map { it }.toMutableList()
+        list.forEach { recipe ->
+            recipes.removeIf { it == recipe }
         }
-        return recipesList
-    }
-
-    private fun getMealPlanForDateRecipesList(selectedDate: Date, mealType: MealTypes): MutableList<Recipe> {
-        return getMealPlanForDateRecipes(selectedDate, mealType)
+        return recipes
     }
 
     private fun getMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MutableList<Recipe> {
-        var mealPlanForDateRecipesList: MutableList<Recipe> = mutableListOf()
+        var mealPlanForDateRecipes: MutableList<Recipe> = mutableListOf()
         val mealPlanForDate = mealPlanForDateRecipesRepository.getMealPlan()
         val date = sdf.format(selectedDate)
         if (mealPlanForDate.containsKey(date)) {
-            mealPlanForDate.getValue(date).forEach { mealPlanForDateRecipes ->
-                if (mealPlanForDateRecipes?.mealType == mealType) {
-                    mealPlanForDateRecipesList = mealPlanForDateRecipes.recipesList
+            mealPlanForDate.getValue(date).forEach { mealPlanRecipes ->
+                if (mealPlanRecipes?.mealType == mealType) {
+                    mealPlanForDateRecipes = mealPlanRecipes.recipes
                 }
             }
         } else {
-            mealPlanForDateRecipesList = mutableListOf()
+            mealPlanForDateRecipes = mutableListOf()
         }
-        return mealPlanForDateRecipesList
+        return mealPlanForDateRecipes
     }
 
-    override fun addAddRecipesListener(listener: AddRecipesListener) {
-        addRecipesListeners.add(listener)
-        if (addRecipesLoaded) {
+    override fun addListener(listener: AddRecipesListener) {
+        listeners.add(listener)
+        if (loaded) {
             listener.invoke(addRecipes)
         }
     }
 
-    override fun removeAddRecipesListener(listener: AddRecipesListener) {
-        addRecipesListeners.remove(listener)
+    override fun removeListener(listener: AddRecipesListener) {
+        listeners.remove(listener)
     }
 
-    override suspend fun addRecipesDeleteRecipe(recipe: Recipe) = withContext(ioDispatcher.value) {
+    override suspend fun deleteRecipe(recipe: Recipe) = withContext(ioDispatcher.value) {
         delay(1000L)
         val indexToDelete = addRecipes.indexOfFirst { it == recipe }
         if (indexToDelete != -1) {
             addRecipes.removeAt(indexToDelete)
         }
-        notifyAddRecipesChanges()
+        notifyChanges()
     }
 
-    private fun notifyAddRecipesChanges() {
-        if (!addRecipesLoaded) return
-        addRecipesListeners.forEach { it.invoke(addRecipes) }
+    private fun notifyChanges() {
+        if (!loaded) return
+        listeners.forEach { it.invoke(addRecipes) }
     }
 }

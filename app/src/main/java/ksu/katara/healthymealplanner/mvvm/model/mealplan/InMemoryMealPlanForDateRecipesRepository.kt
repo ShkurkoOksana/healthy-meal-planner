@@ -18,93 +18,92 @@ class InMemoryMealPlanForDateRecipesRepository(
 
     private var mealPlanForDate: MutableMap<String, MutableList<MealPlanRecipes?>> = mutableMapOf()
 
-    private var mealPlanForDateRecipes: MealPlanRecipes? = null
-    private var mealPlanForDateRecipesLoaded = false
-    private val mealPlanForDateRecipesListeners = mutableSetOf<MealPlanForDateRecipesListener>()
+    private var recipes: MealPlanRecipes? = null
+    private var loaded = false
+    private val listeners = mutableSetOf<MealPlanForDateRecipesListener>()
 
     override fun getMealPlan() = mealPlanForDate
 
-    override suspend fun loadMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? = withContext(ioDispatcher.value) {
+    override suspend fun load(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? = withContext(ioDispatcher.value) {
         delay(1000L)
-        mealPlanForDateRecipes = getMealPlanForDateRecipes(selectedDate, mealType)
-        mealPlanForDateRecipesLoaded = true
-        notifyMealPlanForDateChanges()
-        return@withContext mealPlanForDateRecipes
+        recipes = getRecipes(selectedDate, mealType)
+        loaded = true
+        notifyChanges()
+        return@withContext recipes
     }
 
-    private fun getMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? {
+    private fun getRecipes(selectedDate: Date, mealType: MealTypes): MealPlanRecipes? {
         val date = sdf.format(selectedDate)
-        val mealPlanForDateRecipes: MealPlanRecipes? = if (mealPlanForDate.containsKey(date)) {
+        val recipes: MealPlanRecipes? = if (mealPlanForDate.containsKey(date)) {
             mealPlanForDate
                 .getValue(date)
                 .firstOrNull { it?.mealType == mealType }
         } else {
             null
         }
-        return mealPlanForDateRecipes
+        return recipes
     }
 
-    override fun addMealPlanForDateRecipesItemListener(listener: MealPlanForDateRecipesListener) {
-        mealPlanForDateRecipesListeners.add(listener)
-        if (mealPlanForDateRecipesLoaded) {
-            listener.invoke(mealPlanForDateRecipes)
+    override fun addListener(listener: MealPlanForDateRecipesListener) {
+        listeners.add(listener)
+        if (loaded) {
+            listener.invoke(recipes)
         }
     }
 
-    override fun removeMealPlanForDateRecipesItemListener(listener: MealPlanForDateRecipesListener) {
-        mealPlanForDateRecipesListeners.remove(listener)
+    override fun removeListener(listener: MealPlanForDateRecipesListener) {
+        listeners.remove(listener)
     }
 
-    override suspend fun mealPlanForDateRecipesAddRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe) = withContext(ioDispatcher.value) {
+    override suspend fun addRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe) = withContext(ioDispatcher.value) {
         delay(1000L)
         addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
-        notifyMealPlanForDateChanges()
+        notifyChanges()
     }
 
     private fun addRecipeToMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
-        val newMealPlanForTodayRecipesItem = MealPlanRecipes(mealType, mutableListOf(recipe))
-        val mealPlanForDateRecipesListItem: MealPlanRecipes?
+        val addRecipe = MealPlanRecipes(mealType, mutableListOf(recipe))
         val date = sdf.format(selectedDate)
         if (mealPlanForDate.containsKey(date)) {
-            mealPlanForDateRecipesListItem = mealPlanForDate
+            val mealPlan: MealPlanRecipes? = mealPlanForDate
                 .getValue(date)
                 .firstOrNull { it?.mealType == mealType }
-            if (mealPlanForDateRecipesListItem == null) {
-                mealPlanForDateRecipes = newMealPlanForTodayRecipesItem
-                mealPlanForDate[date]?.add(newMealPlanForTodayRecipesItem)
+            if (mealPlan == null) {
+                recipes = addRecipe
+                mealPlanForDate[date]?.add(addRecipe)
             } else {
-                val index = mealPlanForDate[date]?.indexOfFirst { it == mealPlanForDateRecipesListItem }
-                mealPlanForDateRecipesListItem.recipesList.add(recipe)
-                mealPlanForDateRecipes = mealPlanForDateRecipesListItem
-                mealPlanForDate[date]?.set(index!!, mealPlanForDateRecipesListItem)
+                val index = mealPlanForDate[date]?.indexOfFirst { it == mealPlan }
+                mealPlan.recipes.add(recipe)
+                recipes = mealPlan
+                mealPlanForDate[date]?.set(index!!, mealPlan)
             }
         } else {
-            mealPlanForDateRecipes = newMealPlanForTodayRecipesItem
-            mealPlanForDate[date] = mutableListOf(newMealPlanForTodayRecipesItem)
+            recipes = addRecipe
+            mealPlanForDate[date] = mutableListOf(addRecipe)
         }
     }
 
-    override suspend fun mealPlanForDateRecipesDeleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes? = withContext(ioDispatcher.value) {
+    override suspend fun deleteRecipe(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes? = withContext(ioDispatcher.value) {
         delay(1000L)
         deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
-        notifyMealPlanForDateChanges()
-        return@withContext mealPlanForDateRecipes
+        notifyChanges()
+        return@withContext recipes
     }
 
     private fun deleteRecipeFromMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
         var recipeList: MutableList<Recipe>
         val date = sdf.format(selectedDate)
         if (mealPlanForDate.containsKey(date)) {
-            val mealPlanForDateRecipesList = mealPlanForDate.getValue(date)
-            mealPlanForDateRecipesList.forEach { mealPlanForDateRecipesListItem ->
-                if (mealPlanForDateRecipesListItem?.mealType == mealType) {
-                    recipeList = mealPlanForDateRecipesListItem.recipesList
+            val mealPlan = mealPlanForDate.getValue(date)
+            mealPlan.forEach { mealPlanRecipes ->
+                if (mealPlanRecipes?.mealType == mealType) {
+                    recipeList = mealPlanRecipes.recipes
                     val indexToDelete = recipeList.indexOfFirst { it == recipe }
                     if (indexToDelete != -1) {
                         recipeList.removeAt(indexToDelete)
                     }
-                    mealPlanForDateRecipes = if (recipeList.isNotEmpty()) {
-                        mealPlanForDateRecipesListItem
+                    recipes = if (recipeList.isNotEmpty()) {
+                        mealPlanRecipes
                     } else {
                         mealPlanForDate.remove(date)
                         null
@@ -114,8 +113,8 @@ class InMemoryMealPlanForDateRecipesRepository(
         }
     }
 
-    private fun notifyMealPlanForDateChanges() {
-        if (!mealPlanForDateRecipesLoaded) return
-        mealPlanForDateRecipesListeners.forEach { it.invoke(mealPlanForDateRecipes) }
+    private fun notifyChanges() {
+        if (!loaded) return
+        listeners.forEach { it.invoke(recipes) }
     }
 }

@@ -15,12 +15,12 @@ interface CategoriesRepository : Repository {
     /**
      * Load the list of all available recipe categories that may be chosen by the user.
      */
-    suspend fun loadRecipeCategories(): List<Category>
+    suspend fun load(): List<Category>
 
     /**
      * Get available recipe categories by id.
      */
-    suspend fun getCategoryById(id: Long): Category
+    suspend fun getById(id: Long): Category
 
     /**
      * Listen for the current recipe categories changes.

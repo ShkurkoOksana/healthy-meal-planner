@@ -65,7 +65,7 @@ class AddRecipesListViewModel(
 
     init {
         _screenTitle.value = uiActions.getString(R.string.add_recipe_title)
-        addRecipesRepository.addAddRecipesListener(addRecipesListener)
+        addRecipesRepository.addListener(addRecipesListener)
         loadAddRecipes(selectedDate, mealType)
     }
 
@@ -73,7 +73,7 @@ class AddRecipesListViewModel(
         addRecipesResult = PendingResult()
         viewModelScope.launch {
             try {
-                addRecipesRepository.loadAddRecipes(selectedDate, mealType)
+                addRecipesRepository.load(selectedDate, mealType)
             } catch (e: Exception) {
                 if (e !is CancellationException) addRecipesResult = ErrorResult(e)
             }
@@ -82,7 +82,7 @@ class AddRecipesListViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        addRecipesRepository.removeAddRecipesListener(addRecipesListener)
+        addRecipesRepository.removeListener(addRecipesListener)
     }
 
     override fun onAddRecipePressed(recipe: Recipe) {
@@ -90,10 +90,10 @@ class AddRecipesListViewModel(
         addDeleteProgressTo(recipe)
         viewModelScope.launch {
             try {
-                mealPlanForDateRecipesRepository.mealPlanForDateRecipesAddRecipe(selectedDate, mealType, recipe)
+                mealPlanForDateRecipesRepository.addRecipe(selectedDate, mealType, recipe)
                 viewModelScope.launch {
                     try {
-                        addRecipesRepository.addRecipesDeleteRecipe(recipe)
+                        addRecipesRepository.deleteRecipe(recipe)
                         removeDeleteProgressFrom(recipe)
                     } catch (e: Exception) {
                         if (e !is CancellationException) {

@@ -8,7 +8,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
-        android:id="@+id/mealPlanForDateRecipesItemPhotoImageView"
+        android:id="@+id/mealPlanForDateRecipePhotoImageView"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/mealPlanForDateRecipesItemNameTextView"
+        android:id="@+id/mealPlanForDateRecipeNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -27,12 +27,12 @@
         android:lines="1"
         android:ellipsize="end"
         tools:text="John Smith"
-        app:layout_constraintTop_toTopOf="@id/mealPlanForDateRecipesItemPhotoImageView"
-        app:layout_constraintStart_toEndOf="@id/mealPlanForDateRecipesItemPhotoImageView"
-        app:layout_constraintEnd_toStartOf="@id/mealPlanForDateRecipesItemDeleteViewButton"/>
+        app:layout_constraintTop_toTopOf="@id/mealPlanForDateRecipePhotoImageView"
+        app:layout_constraintStart_toEndOf="@id/mealPlanForDateRecipePhotoImageView"
+        app:layout_constraintEnd_toStartOf="@id/mealPlanForDateRecipeDeleteViewButton"/>
 
     <ImageView
-        android:id="@+id/mealPlanForDateRecipesItemDeleteViewButton"
+        android:id="@+id/mealPlanForDateRecipeDeleteViewButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_delete"
@@ -44,22 +44,22 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
-        android:id="@+id/itemMealPlanForDateRecipesItemProgressBar"
+        android:id="@+id/mealPlanForDateRecipeProgressBar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="4dp"
         android:visibility="gone"
         android:indeterminateTint="@color/green"
-        app:layout_constraintTop_toTopOf="@id/mealPlanForDateRecipesItemDeleteViewButton"
-        app:layout_constraintEnd_toEndOf="@id/mealPlanForDateRecipesItemDeleteViewButton"
-        app:layout_constraintBottom_toBottomOf="@id/mealPlanForDateRecipesItemDeleteViewButton"
-        app:layout_constraintStart_toStartOf="@id/mealPlanForDateRecipesItemDeleteViewButton"/>
+        app:layout_constraintTop_toTopOf="@id/mealPlanForDateRecipeDeleteViewButton"
+        app:layout_constraintEnd_toEndOf="@id/mealPlanForDateRecipeDeleteViewButton"
+        app:layout_constraintBottom_toBottomOf="@id/mealPlanForDateRecipeDeleteViewButton"
+        app:layout_constraintStart_toStartOf="@id/mealPlanForDateRecipeDeleteViewButton"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/mealPlanForDateRecipesItemBarrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="mealPlanForDateRecipesItemPhotoImageView,mealPlanForDateRecipesItemNameTextView"
+        app:constraint_referenced_ids="mealPlanForDateRecipePhotoImageView,mealPlanForDateRecipeNameTextView"
         app:barrierDirection="bottom"/>
 
     <Space

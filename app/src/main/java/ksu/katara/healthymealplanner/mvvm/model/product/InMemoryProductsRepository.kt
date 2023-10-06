@@ -21,7 +21,7 @@ class InMemoryProductsRepository : ProductsRepository {
         }
     }
 
-    override fun getProductById(id: Long): Product {
+    override fun getById(id: Long): Product {
         return products.firstOrNull { it.id == id } ?: throw ProductNotFoundException()
     }
 

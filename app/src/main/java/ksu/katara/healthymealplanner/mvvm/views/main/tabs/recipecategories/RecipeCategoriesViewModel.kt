@@ -34,7 +34,7 @@ class RecipeCategoriesViewModel(
     }
 
     private fun loadRecipeCategories() = into(_recipeCategories) {
-        recipeCategoriesRepository.loadRecipeCategories()
+        recipeCategoriesRepository.load()
     }
 
     override fun onRecipeCategoryPressed(recipeCategory: Category) {

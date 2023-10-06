@@ -6,7 +6,7 @@ import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.DietTipsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipsChapter
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 import kotlin.properties.Delegates
 
 /**
@@ -16,49 +16,48 @@ class InMemoryDietTipsRepository(
     private val ioDispatcher: IoDispatcher
 ) : DietTipsRepository {
 
-    private lateinit var dietTipsChapters: MutableList<DietTipsChapter>
-    private var dietTipsChaptersLoaded = false
-    private val dietTipsChaptersListeners = mutableSetOf<DietTipsChaptersListener>()
+    private lateinit var chapters: MutableList<DietTipChapter>
+    private var chaptersLoaded = false
+    private val chapterListeners = mutableSetOf<DietTipChaptersListener>()
 
     private lateinit var dietTips: MutableList<DietTip>
     private var dietTipsLoaded = false
-    private val dietTipsListeners = mutableSetOf<DietTipsListener>()
-
+    private val dietTipListeners = mutableSetOf<DietTipsListener>()
     private var dietTipsSize by Delegates.notNull<Int>()
 
-    override suspend fun loadDietTipsChapters(): List<DietTipsChapter> = withContext(ioDispatcher.value) {
+    override suspend fun loadChapters(): List<DietTipChapter> = withContext(ioDispatcher.value) {
         delay(1000L)
-        dietTipsChapters = getDietTipsChapters()
-        dietTipsChaptersLoaded = true
-        notifyDietTipsChaptersChanges()
-        return@withContext dietTipsChapters
+        chapters = getChapters()
+        chaptersLoaded = true
+        notifyChaptersChanges()
+        return@withContext chapters
     }
 
-    private fun getDietTipsChapters(): MutableList<DietTipsChapter> {
-        dietTipsChapters = mutableListOf()
+    private fun getChapters(): MutableList<DietTipChapter> {
+        chapters = mutableListOf()
         var dietTipId = 0
-        for ((dietTipChapterId, dietTipChapterName) in DIET_TIPS_CHAPTER_NAME.withIndex()) {
-            val dietTipsList = mutableListOf<DietTip>()
-            dietTipsSize = DIET_TIPS_IMAGES.getValue(dietTipChapterName).size
-            val dietTipsPhotos = DIET_TIPS_IMAGES.getValue(dietTipChapterName)
-            val dietTipsNames = DIET_TIPS_NAMES.getValue(dietTipChapterName)
+        for ((chapterId, chapterName) in CHAPTER_NAME.withIndex()) {
+            val dietTips = mutableListOf<DietTip>()
+            dietTipsSize = IMAGES.getValue(chapterName).size
+            val dietTipPhotos = IMAGES.getValue(chapterName)
+            val dietTipNames = NAMES.getValue(chapterName)
             (0 until dietTipsSize).map { dietTipIndex ->
                 val dietTip = DietTip(
                     id = dietTipId.toLong(),
-                    photo = dietTipsPhotos[dietTipIndex],
-                    name = dietTipsNames[dietTipIndex],
+                    photo = dietTipPhotos[dietTipIndex],
+                    name = dietTipNames[dietTipIndex],
                 )
-                dietTipsList.add(dietTip)
+                dietTips.add(dietTip)
                 dietTipId++
             }
-            val dietTipsChapter = DietTipsChapter(
-                id = dietTipChapterId.toLong(),
-                name = dietTipChapterName,
-                dietTipsList = dietTipsList
+            val chapter = DietTipChapter(
+                id = chapterId.toLong(),
+                name = chapterName,
+                dietTipsList = dietTips
             )
-            dietTipsChapters.add(dietTipsChapter)
+            chapters.add(chapter)
         }
-        return dietTipsChapters
+        return chapters
     }
 
     override suspend fun loadDietTips(): List<DietTip> = withContext(ioDispatcher.value) {
@@ -72,12 +71,12 @@ class InMemoryDietTipsRepository(
     private fun getDietTips(): MutableList<DietTip> {
         dietTips = mutableListOf()
         var dietTipId = 0
-        for (key in DIET_TIPS_IMAGES.keys) {
-            for (dietTipIndex in DIET_TIPS_IMAGES.getValue(key).indices) {
+        for (key in IMAGES.keys) {
+            for (dietTipIndex in IMAGES.getValue(key).indices) {
                 val dietTip = DietTip(
                     id = dietTipId.toLong(),
-                    name = DIET_TIPS_NAMES.getValue(key)[dietTipIndex],
-                    photo = DIET_TIPS_IMAGES.getValue(key)[dietTipIndex],
+                    name = NAMES.getValue(key)[dietTipIndex],
+                    photo = IMAGES.getValue(key)[dietTipIndex],
                 )
                 dietTips.add(dietTip)
                 dietTipId++
@@ -87,19 +86,19 @@ class InMemoryDietTipsRepository(
     }
 
     override fun addDietTipsListener(listener: DietTipsListener) {
-        dietTipsListeners.add(listener)
+        dietTipListeners.add(listener)
         if (dietTipsLoaded) {
             listener.invoke(dietTips)
         }
     }
 
     override fun removeDietTipsListener(listener: DietTipsListener) {
-        dietTipsListeners.remove(listener)
+        dietTipListeners.remove(listener)
     }
 
     private fun notifyDietTipsChanges() {
         if (!dietTipsLoaded) return
-        dietTipsListeners.forEach { it.invoke(dietTips) }
+        dietTipListeners.forEach { it.invoke(dietTips) }
     }
 
     override suspend fun loadDietTipDetails(id: Long): DietTipDetails  = withContext(ioDispatcher.value) {
@@ -107,80 +106,80 @@ class InMemoryDietTipsRepository(
         val dietTip = dietTips.firstOrNull { it.id == id } ?: throw DietTipsNotFoundException()
         return@withContext DietTipDetails(
             dietTip = dietTip,
-            background = DIET_TIPS_DETAILS_BACKGROUND.getValue(dietTip.name),
-            titlesList = DIET_TIPS_DETAILS_TITLES.getValue(dietTip.name),
-            descriptionsList = DIET_TIPS_DETAILS_DESCRIPTIONS.getValue(dietTip.name),
+            background = DETAILS_BACKGROUNDS.getValue(dietTip.name),
+            titlesList = DETAILS_TITLES.getValue(dietTip.name),
+            descriptionsList = DETAILS_DESCRIPTIONS.getValue(dietTip.name),
         )
     }
 
-    override fun addDietTipsChaptersListener(listener: DietTipsChaptersListener) {
-        dietTipsChaptersListeners.add(listener)
-        if (dietTipsChaptersLoaded) {
-            listener.invoke(dietTipsChapters)
+    override fun addChaptersListener(listener: DietTipChaptersListener) {
+        chapterListeners.add(listener)
+        if (chaptersLoaded) {
+            listener.invoke(chapters)
         }
     }
 
-    override fun removeDietTipsChaptersListener(listener: DietTipsChaptersListener) {
-        dietTipsChaptersListeners.remove(listener)
+    override fun removeChaptersListener(listener: DietTipChaptersListener) {
+        chapterListeners.remove(listener)
     }
 
-    private fun notifyDietTipsChaptersChanges() {
-        if (!dietTipsChaptersLoaded) return
-        dietTipsChaptersListeners.forEach { it.invoke(dietTipsChapters) }
+    private fun notifyChaptersChanges() {
+        if (!chaptersLoaded) return
+        chapterListeners.forEach { it.invoke(chapters) }
     }
 
     companion object {
-        private val DIET_TIPS_CHAPTER_NAME = mutableListOf(
+        private val CHAPTER_NAME = mutableListOf(
             "Фундамент здорового образа жизни",
             "Питание как фактор риска в развитии заболеваний",
             "Восстановление работы ЖКТ",
         )
 
-        private val DIET_TIPS_IMAGES = mutableMapOf(
-            DIET_TIPS_CHAPTER_NAME[0] to mutableListOf(
+        private val IMAGES = mutableMapOf(
+            CHAPTER_NAME[0] to mutableListOf(
                 "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2353&q=80",
                 "https://images.unsplash.com/photo-1614887065001-06c958a7cddd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
                 "https://images.unsplash.com/photo-1656218257936-8384471a0258?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2274&q=80",
                 "https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
                 "https://images.unsplash.com/photo-1545389336-cf090694435e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1364&q=80",
             ),
-            DIET_TIPS_CHAPTER_NAME[1] to mutableListOf(
+            CHAPTER_NAME[1] to mutableListOf(
                 "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3431&q=80",
                 "https://plus.unsplash.com/premium_photo-1671718110418-d25ac8e87627?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
                 "https://images.unsplash.com/photo-1649073586104-2ac3fab175ea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2074&q=80",
                 "https://plus.unsplash.com/premium_photo-1661780215564-b3a919366e6b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
                 "https://images.unsplash.com/photo-1559757175-053139280de2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3431&q=80",
             ),
-            DIET_TIPS_CHAPTER_NAME[2] to mutableListOf(
+            CHAPTER_NAME[2] to mutableListOf(
                 "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
                 "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
                 "https://images.unsplash.com/photo-1543362906-acfc16c67564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1365&q=80",
             ),
         )
 
-        private val DIET_TIPS_NAMES = mutableMapOf(
-            DIET_TIPS_CHAPTER_NAME[0] to mutableListOf(
+        private val NAMES = mutableMapOf(
+            CHAPTER_NAME[0] to mutableListOf(
                 "Режим питания",
                 "Вода",
                 "Сон",
                 "Спорт",
                 "Медитация",
             ),
-            DIET_TIPS_CHAPTER_NAME[1] to mutableListOf(
+            CHAPTER_NAME[1] to mutableListOf(
                 "Мозг",
                 "Желудок",
                 "Печень и желчный пузырь",
                 "Поджелудочная железа и кишечник",
                 "Почки",
             ),
-            DIET_TIPS_CHAPTER_NAME[2] to mutableListOf(
+            CHAPTER_NAME[2] to mutableListOf(
                 "Система пищеварения: ротовая полость, пищевод и желудок",
                 "Система пищеварения: печень и желчный пузырь",
                 "Система пищеварения: поджелудочная железа и кишечник",
             ),
         )
 
-        private val DIET_TIPS_DETAILS_BACKGROUND = mutableMapOf(
+        private val DETAILS_BACKGROUNDS = mutableMapOf(
             "Режим питания" to mutableListOf(
                 "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
                 "https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
@@ -290,7 +289,7 @@ class InMemoryDietTipsRepository(
             )
         )
 
-        private val DIET_TIPS_DETAILS_TITLES = mutableMapOf(
+        private val DETAILS_TITLES = mutableMapOf(
             "Режим питания" to mutableListOf(
                 "Подготовка к приему пищи",
                 "Приемущества тщательного пережевывания",
@@ -400,7 +399,7 @@ class InMemoryDietTipsRepository(
             ),
         )
 
-        private val DIET_TIPS_DETAILS_DESCRIPTIONS = mutableMapOf(
+        private val DETAILS_DESCRIPTIONS = mutableMapOf(
             "Режим питания" to mutableListOf(
                 "- Пищеварение начинается с мысли о еде\n" +
                         "- Едим по голоду, не заедаем стресс\n" +

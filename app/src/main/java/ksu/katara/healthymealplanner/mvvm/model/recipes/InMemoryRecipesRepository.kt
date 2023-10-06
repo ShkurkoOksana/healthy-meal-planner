@@ -21,20 +21,20 @@ class InMemoryRecipesRepository(
 
     private var recipes = mutableListOf<Recipe>()
 
-    private var recipesDetails: MutableList<RecipeDetails>
-    private var recipesDetailsLoaded = false
-    private val recipesDetailsListeners = mutableSetOf<RecipeDetailsListener>()
+    private var details: MutableList<RecipeDetails>
+    private var detailsLoaded = false
+    private val detailsListeners = mutableSetOf<RecipeDetailsListener>()
 
-    private var recipeTypes = listOf<String>()
-    private var recipeTypesLoaded = false
+    private var types = listOf<String>()
+    private var typesLoaded = false
 
     private var recipesInCategory = mutableListOf<Recipe>()
-    private var recipeInCategoryLoaded = false
+    private var recipesInCategoryLoaded = false
     private val recipesInCategoryListeners = mutableSetOf<RecipesInCategoryListener>()
 
-    private var recipeIngredients = mutableListOf<RecipeIngredient>()
-    private var recipeIngredientsLoaded = false
-    private val recipeIngredientsListeners = mutableSetOf<RecipeIngredientsListener>()
+    private var ingredients = mutableListOf<RecipeIngredient>()
+    private var ingredientsLoaded = false
+    private val ingredientsListeners = mutableSetOf<RecipeIngredientsListener>()
 
     private var preparationSteps = mutableListOf<RecipePreparationStep>()
     private var preparationStepsLoaded = false
@@ -48,11 +48,11 @@ class InMemoryRecipesRepository(
                 id = it.toLong(),
                 name = recipeName,
                 photo = PHOTOES[it],
-                categoryId = CATEGORY.getValue(recipeName).toLong()
+                categoryId = CATEGORIES.getValue(recipeName).toLong()
             )
         }.toMutableList()
 
-        recipesDetails = getRecipeDetails()
+        details = getRecipeDetails()
     }
 
     private fun getRecipeDetails(): MutableList<RecipeDetails> {
@@ -60,10 +60,10 @@ class InMemoryRecipesRepository(
             val recipeName = recipes[it].name
             RecipeDetails(
                 recipe = recipes[it],
-                preparationTime = PREPARATION_TIME.getValue(recipeName),
+                preparationTime = PREPARATION_TIMES.getValue(recipeName),
                 cuisineType = CUISINE_TYPES.getValue(recipeName),
-                types = TYPES_LIST.getValue(recipeName),
-                energeticValue = ENERGETIC_VALUE.getValue(recipeName),
+                types = TYPES.getValue(recipeName),
+                energeticValue = ENERGETIC_VALUES.getValue(recipeName),
                 proteins = PROTEINS.getValue(recipeName),
                 fats = FATS.getValue(recipeName),
                 carbohydrates = CARBOHYDRATES.getValue(recipeName),
@@ -79,7 +79,7 @@ class InMemoryRecipesRepository(
         val recipeIngredients = mutableListOf<RecipeIngredient>()
         var ingredientsIndex = 0
         INGREDIENTS.getValue(recipeName).forEach { (id, measure) ->
-            val product = productRepository.getProductById(id.toLong())
+            val product = productRepository.getById(id.toLong())
             val recipeIngredient = RecipeIngredient(
                 id = ingredientsIndex.toLong(),
                 product = product,
@@ -115,14 +115,14 @@ class InMemoryRecipesRepository(
     override suspend fun loadRecipesInCategory(recipeCategoryId: Long): List<Recipe> = withContext(ioDispatcher.value) {
         delay(1000L)
         recipesInCategory = recipes.filter { it.categoryId == recipeCategoryId }.toMutableList()
-        recipeInCategoryLoaded = true
+        recipesInCategoryLoaded = true
         notifyRecipeInCategoryChanges()
         return@withContext recipesInCategory
     }
 
     override fun addRecipeInCategoryListener(listener: RecipesInCategoryListener) {
         recipesInCategoryListeners.add(listener)
-        if (recipeInCategoryLoaded) {
+        if (recipesInCategoryLoaded) {
             listener.invoke(recipesInCategory)
         }
     }
@@ -132,77 +132,77 @@ class InMemoryRecipesRepository(
     }
 
     private fun notifyRecipeInCategoryChanges() {
-        if (!recipeInCategoryLoaded) return
+        if (!recipesInCategoryLoaded) return
         recipesInCategoryListeners.forEach { it.invoke(recipesInCategory) }
     }
 
-    override fun getRecipesDetails(): MutableList<RecipeDetails> = recipesDetails
+    override fun getRecipesDetails(): MutableList<RecipeDetails> = details
 
     override suspend fun loadRecipeDetails(recipeId: Long): RecipeDetails = withContext(ioDispatcher.value) {
         delay(1000L)
         notifyRecipeDetailsChanges()
-        return@withContext recipesDetails.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        return@withContext details.firstOrNull<RecipeDetails> { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
     }
 
     override fun addRecipeDetailsListener(listener: RecipeDetailsListener) {
-        recipesDetailsListeners.add(listener)
-        if (recipesDetailsLoaded) {
-            listener.invoke(recipesDetails)
+        detailsListeners.add(listener)
+        if (detailsLoaded) {
+            listener.invoke(details)
         }
     }
 
     override fun removeRecipeDetailsListener(listener: RecipeDetailsListener) {
-        recipesDetailsListeners.remove(listener)
+        detailsListeners.remove(listener)
     }
 
     private fun notifyRecipeDetailsChanges() {
-        if (!recipesDetailsLoaded) return
-        recipesDetailsListeners.forEach { it.invoke(recipesDetails) }
+        if (!detailsLoaded) return
+        detailsListeners.forEach { it.invoke(details) }
     }
 
     override suspend fun loadRecipeTypes(recipeId: Long): List<String> = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
-        recipeTypes = recipeDetails.types
-        recipeTypesLoaded = true
-        return@withContext recipeTypes
+        val recipeDetails = details.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        types = recipeDetails.types
+        typesLoaded = true
+        return@withContext types
     }
 
     override suspend fun loadIngredients(recipeId: Long): List<RecipeIngredient> = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
-        recipeIngredients = recipeDetails.ingredients
-        recipeIngredientsLoaded = true
+        val recipeDetails = details.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        ingredients = recipeDetails.ingredients
+        ingredientsLoaded = true
         notifyIngredientsChanges()
-        return@withContext recipeIngredients
+        return@withContext ingredients
     }
 
     override fun addIngredientListener(listener: RecipeIngredientsListener) {
-        recipeIngredientsListeners.add(listener)
-        if (recipeIngredientsLoaded) {
-            listener.invoke(recipeIngredients)
+        ingredientsListeners.add(listener)
+        if (ingredientsLoaded) {
+            listener.invoke(ingredients)
         }
     }
 
     override fun removeIngredientsListener(listener: RecipeIngredientsListener) {
-        recipeIngredientsListeners.remove(listener)
+        ingredientsListeners.remove(listener)
     }
 
     private fun notifyIngredientsChanges() {
-        if (!recipeIngredientsLoaded) return
-        recipeIngredientsListeners.forEach { it.invoke(recipeIngredients) }
+        if (!ingredientsLoaded) return
+        ingredientsListeners.forEach { it.invoke(ingredients) }
     }
 
     override suspend fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean) = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
+        val recipeDetails = details.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         val recipeIngredient = recipeDetails.ingredients.firstOrNull { it == ingredient } ?: throw IngredientsNotFoundException()
         recipeIngredient.isInShoppingList = isSelected
     }
 
     override suspend fun setAllIngredientsSelected(recipeId: Long, isSelected: Boolean) = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
+        val recipeDetails = details.firstOrNull { it.recipe.id == recipeId } ?: throw RecipeNotFoundException()
         recipeDetails.ingredients.forEach { it.isInShoppingList = isSelected }
     }
 
@@ -212,7 +212,7 @@ class InMemoryRecipesRepository(
     }
 
     private fun isAllIngredientsSelectedResult(recipeId: Long): Boolean {
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        val recipeDetails = details.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
         var countRecipeIngredientsSelected = 0
         recipeDetails.ingredients.forEach { recipeIngredient ->
             if (recipeIngredient.isInShoppingList) {
@@ -224,7 +224,7 @@ class InMemoryRecipesRepository(
 
     override suspend fun loadPreparationSteps(recipeId: Long): List<RecipePreparationStep> = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipeDetails = recipesDetails.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
+        val recipeDetails = details.firstOrNull { it.recipe.id == recipeId } ?: throw IngredientsNotFoundException()
         preparationSteps = recipeDetails.preparationSteps
         preparationStepsLoaded = true
         return@withContext preparationSteps
@@ -247,7 +247,7 @@ class InMemoryRecipesRepository(
             "Минтай тушенный",
         )
 
-        private val CATEGORY = mapOf(
+        private val CATEGORIES = mapOf(
             "Глазунья" to 1,
             "Греческий салат" to 2,
             "Борщ" to 0,
@@ -255,7 +255,7 @@ class InMemoryRecipesRepository(
             "Минтай тушенный" to 1,
         )
 
-        private val PREPARATION_TIME = mapOf(
+        private val PREPARATION_TIMES = mapOf(
             "Глазунья" to 15,
             "Греческий салат" to 15,
             "Борщ" to 120,
@@ -271,7 +271,7 @@ class InMemoryRecipesRepository(
             "Минтай тушенный" to "Русская кухня",
         )
 
-        private val ENERGETIC_VALUE = mapOf(
+        private val ENERGETIC_VALUES = mapOf(
             "Глазунья" to 199,
             "Греческий салат" to 117,
             "Борщ" to 51,
@@ -303,7 +303,7 @@ class InMemoryRecipesRepository(
             "Минтай тушенный" to 2,
         )
 
-        private val TYPES_LIST = mapOf(
+        private val TYPES = mapOf(
             "Глазунья" to listOf(
                 "Диетический",
                 "Для детей",

@@ -102,7 +102,7 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
         dietTipsAdapter = DietTipsAdapter(viewModel)
         viewModel.dietTips.observe(viewLifecycleOwner) { result ->
             renderSimpleResult(
-                root = binding.dietTipsContentContainer,
+                root = binding.dietTipsContainer,
                 result = result,
                 onSuccess = {
                     dietTipsAdapter.dietTips = it.slice(0..AMOUNT_OF_DIET_TIPS)

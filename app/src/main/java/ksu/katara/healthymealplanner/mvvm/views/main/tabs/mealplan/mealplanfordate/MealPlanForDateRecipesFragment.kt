@@ -41,9 +41,9 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMealPlanForDateRecipesBinding.inflate(layoutInflater, container, false)
-        binding.mealPlanForDateRecipesAddRecipeButton.setOnClickListener {
+        binding.mealPlanForDateAddRecipeButton.setOnClickListener {
             viewModel.onMealPlanForDateAddButtonPressed()
-            binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.INVISIBLE
+            binding.mealPlanForDateAddRecipeButton.visibility = View.INVISIBLE
         }
         initView()
         return binding.root
@@ -57,7 +57,7 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
                 root = binding.root,
                 result = result,
                 onEmpty = {
-                    binding.mealPlanForDateRecipesAddRecipeButton.visibility = View.VISIBLE
+                    binding.mealPlanForDateAddRecipeButton.visibility = View.VISIBLE
                 },
                 onSuccess = {
                     mealPlanForDateRecipesAdapter.mealPlanForDateRecipes = it
@@ -69,11 +69,11 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
         }
         val mealPlanForDateRecipesLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.mealPlanForDateRecipesRecyclerView.layoutManager =
+        binding.mealPlanForDateRecyclerView.layoutManager =
             mealPlanForDateRecipesLayoutManager
-        binding.mealPlanForDateRecipesRecyclerView.adapter =
+        binding.mealPlanForDateRecyclerView.adapter =
             mealPlanForDateRecipesAdapter
-        val mealPlanForDateRecipesViewModelAnimator = binding.mealPlanForDateRecipesRecyclerView.itemAnimator
+        val mealPlanForDateRecipesViewModelAnimator = binding.mealPlanForDateRecyclerView.itemAnimator
         if (mealPlanForDateRecipesViewModelAnimator is DefaultItemAnimator) {
             mealPlanForDateRecipesViewModelAnimator.supportsChangeAnimations = false
         }

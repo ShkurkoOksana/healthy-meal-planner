@@ -95,11 +95,11 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
         }
         val recipesListLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.addRecipesListRecyclerView.layoutManager =
+        binding.addRecipesRecyclerView.layoutManager =
             recipesListLayoutManager
-        binding.addRecipesListRecyclerView.adapter =
+        binding.addRecipesRecyclerView.adapter =
             addRecipesAdapter
-        val addRecipesListAnimator = binding.addRecipesListRecyclerView.itemAnimator
+        val addRecipesListAnimator = binding.addRecipesRecyclerView.itemAnimator
         if (addRecipesListAnimator is DefaultItemAnimator) {
             addRecipesListAnimator.supportsChangeAnimations = false
         }

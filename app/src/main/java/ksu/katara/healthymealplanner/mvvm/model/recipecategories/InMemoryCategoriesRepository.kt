@@ -13,42 +13,42 @@ class InMemoryCategoriesRepository(
     private val ioDispatcher: IoDispatcher
 ) : CategoriesRepository {
 
-    private var recipeCategories = listOf<Category>()
+    private var categories = listOf<Category>()
     private var loaded = false
     private val listeners = mutableSetOf<RecipeCategoriesListener>()
 
-    override suspend fun loadRecipeCategories(): List<Category> = withContext(ioDispatcher.value) {
+    override suspend fun load(): List<Category> = withContext(ioDispatcher.value) {
         delay(1000L)
-        recipeCategories = getRecipeCategories()
+        categories = getCategories()
         loaded = true
         notifyChanges()
-        return@withContext recipeCategories
+        return@withContext categories
     }
 
-    private fun getRecipeCategories(): List<Category> {
-        val recipeCategories = mutableListOf<Category>()
-        RECIPE_CATEGORIES.forEach { (id, categoriesList) ->
-            recipeCategories.add(
+    private fun getCategories(): List<Category> {
+        val categories = mutableListOf<Category>()
+        CATEGORIES.forEach { (id, list) ->
+            categories.add(
                 Category(
                     id = id.toLong(),
-                    photo = categoriesList[0],
-                    name = categoriesList[1],
+                    photo = list[0],
+                    name = list[1],
                 )
             )
         }
-        return recipeCategories
+        return categories
     }
 
-    override suspend fun getCategoryById(id: Long): Category = withContext(ioDispatcher.value) {
+    override suspend fun getById(id: Long): Category = withContext(ioDispatcher.value) {
         delay(1000L)
-        return@withContext recipeCategories.firstOrNull { it.id == id }
+        return@withContext categories.firstOrNull { it.id == id }
             ?: throw RecipeCategoryNotFoundException()
     }
 
     override fun addListener(listener: RecipeCategoriesListener) {
         listeners.add(listener)
         if (loaded) {
-            listener.invoke(recipeCategories)
+            listener.invoke(categories)
         }
     }
 
@@ -58,11 +58,11 @@ class InMemoryCategoriesRepository(
 
     private fun notifyChanges() {
         if (!loaded) return
-        listeners.forEach { it.invoke(recipeCategories) }
+        listeners.forEach { it.invoke(categories) }
     }
 
     companion object {
-        private val RECIPE_CATEGORIES = mapOf(
+        private val CATEGORIES = mapOf(
             0 to listOf(
                 "https://images.unsplash.com/photo-1611068120813-eca5a8cbf793?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
                 "Первые блюда",

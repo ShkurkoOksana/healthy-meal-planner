@@ -3,7 +3,7 @@ package ksu.katara.healthymealplanner.mvvm.model.dietTips.entities
 /**
  * Represents diet tip chapter data
  */
-data class DietTipsChapter(
+data class DietTipChapter(
     val id: Long,
     val name: String,
     val dietTipsList: List<DietTip>
