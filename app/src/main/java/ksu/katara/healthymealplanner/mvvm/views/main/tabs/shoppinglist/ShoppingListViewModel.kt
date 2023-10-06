@@ -1,16 +1,14 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import android.util.Log
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
-import ksu.katara.healthymealplanner.foundation.model.EmptyResult
-import ksu.katara.healthymealplanner.foundation.model.ErrorResult
-import ksu.katara.healthymealplanner.foundation.model.PendingResult
-import ksu.katara.healthymealplanner.foundation.model.StatusResult
-import ksu.katara.healthymealplanner.foundation.model.SuccessResult
+import ksu.katara.healthymealplanner.foundation.model.*
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
@@ -32,7 +30,13 @@ data class ShoppingListRecipeItem(
 data class ShoppingListIngredientsItem(
     val shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
     val isSelectInProgress: Boolean,
-    val isDeleteInProgress: Boolean,
+    val isDeleteInProgress: Progress,
+)
+
+data class ShoppingListIngredientsDeleteItem(
+    val shoppingListRecipeId: Long,
+    val shoppingListRecipeIngredientId: Long,
+    var percentage: Int
 )
 
 class ShoppingListViewModel(
@@ -44,14 +48,18 @@ class ShoppingListViewModel(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), ShoppingListRecipeActionListener {
 
-    private val _shoppingList = MutableLiveResult<MutableList<ShoppingListRecipeItem>>()
-    val shoppingList: LiveResult<MutableList<ShoppingListRecipeItem>> = _shoppingList
+    private val _shoppingList =
+        MutableStateFlow<StatusResult<MutableList<ShoppingListRecipeItem>>>(EmptyResult())
+    val shoppingList: MutableStateFlow<StatusResult<MutableList<ShoppingListRecipeItem>>> =
+        _shoppingList
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
 
-    private val shoppingListIngredientsSelectItemIdsInProgress = mutableMapOf<Long, MutableList<Long>>()
-    private val shoppingListIngredientsDeleteItemIdsInProgress = mutableMapOf<Long, MutableList<Long>>()
+    private val shoppingListIngredientsSelectItemIdsInProgress =
+        mutableMapOf<Long, MutableList<Long>>()
+    private val shoppingListIngredientsDeleteItemIdsInProgress =
+        mutableListOf<ShoppingListIngredientsDeleteItem>()
 
     private var shoppingListResult: StatusResult<MutableList<ShoppingListRecipe>> = EmptyResult()
         set(value) {
@@ -59,17 +67,18 @@ class ShoppingListViewModel(
             notifyUpdates()
         }
 
-    private val listener: ShoppingListListener = {
-        shoppingListResult = if (it.isEmpty()) {
-            EmptyResult()
-        } else {
-            SuccessResult(it)
-        }
-    }
-
     init {
         _screenTitle.value = uiActions.getString(R.string.shopping_list_title)
-        shoppingListRepository.addShoppingListListener(listener)
+        viewModelScope.launch {
+            shoppingListRepository.listenShoppingListIngredients()
+                .collect {
+                    shoppingListResult = if (it.isEmpty()) {
+                        EmptyResult()
+                    } else {
+                        SuccessResult(it)
+                    }
+                }
+        }
         loadShoppingList()
     }
 
@@ -84,26 +93,27 @@ class ShoppingListViewModel(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        shoppingListRepository.removeShoppingListListener(listener)
-    }
-
     private fun notifyUpdates() {
-        _shoppingList.postValue(shoppingListResult.resultMap { shoppingListRecipes ->
+        _shoppingList.value = shoppingListResult.resultMap { shoppingListRecipes ->
             shoppingListRecipes.map { shoppingListRecipe ->
                 ShoppingListRecipeItem(
                     shoppingListRecipe,
                     shoppingListRecipe.shoppingListIngredients.map { shoppingListRecipeIngredient ->
                         ShoppingListIngredientsItem(
                             shoppingListRecipeIngredient,
-                            isSelectInProgress(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id),
-                            isDeleteInProgress(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id),
+                            isSelectInProgress(
+                                shoppingListRecipe.recipe.id,
+                                shoppingListRecipeIngredient.recipeIngredient.id
+                            ),
+                            isDeleteInProgress(
+                                shoppingListRecipe.recipe.id,
+                                shoppingListRecipeIngredient.recipeIngredient.id
+                            ),
                         )
                     }.toMutableList()
                 )
             }.toMutableList()
-        })
+        }
     }
 
     override fun onShoppingListRecipeDetails(shoppingListRecipe: ShoppingListRecipe) {
@@ -116,14 +126,31 @@ class ShoppingListViewModel(
         shoppingListRecipeIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean
     ) {
-        if (isSelectInProgress(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)) return
-        addSelectProgressTo(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
+        if (isSelectInProgress(
+                shoppingListRecipe.recipe.id,
+                shoppingListRecipeIngredient.recipeIngredient.id
+            )
+        ) return
+        addSelectProgressTo(
+            shoppingListRecipe.recipe.id,
+            shoppingListRecipeIngredient.recipeIngredient.id
+        )
         viewModelScope.launch {
             try {
-                shoppingListRepository.shoppingListIngredientsSelectIngredient(shoppingListRecipe, shoppingListRecipeIngredient, isChecked)
-                removeSelectProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
+                shoppingListRepository.shoppingListIngredientsSelectIngredient(
+                    shoppingListRecipe,
+                    shoppingListRecipeIngredient,
+                    isChecked
+                )
+                removeSelectProgressFrom(
+                    shoppingListRecipe.recipe.id,
+                    shoppingListRecipeIngredient.recipeIngredient.id
+                )
             } catch (e: Exception) {
-                if (e !is CancellationException) removeSelectProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
+                if (e !is CancellationException) removeSelectProgressFrom(
+                    shoppingListRecipe.recipe.id,
+                    shoppingListRecipeIngredient.recipeIngredient.id
+                )
             }
         }
     }
@@ -132,23 +159,52 @@ class ShoppingListViewModel(
         shoppingListRecipe: ShoppingListRecipe,
         shoppingListRecipeIngredient: ShoppingListRecipeIngredient
     ) {
-        if (isDeleteInProgress(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)) return
-        addDeleteProgressTo(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
+        if (isDeleteInProgress(
+                shoppingListRecipe.recipe.id,
+                shoppingListRecipeIngredient.recipeIngredient.id
+            ).isInProgress()
+        ) return
+        addDeleteProgressTo(
+            shoppingListRecipe.recipe.id,
+            shoppingListRecipeIngredient.recipeIngredient.id
+        )
         viewModelScope.launch {
             try {
-                shoppingListRepository.shoppingListIngredientsDeleteIngredient(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient)
-                removeDeleteProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
+                var element: ShoppingListIngredientsDeleteItem? = null
+                shoppingListRepository.shoppingListIngredientsDeleteIngredient(
+                    shoppingListRecipe.recipe.id,
+                    shoppingListRecipeIngredient.recipeIngredient
+                ).collect { percentage ->
+                    element = shoppingListIngredientsDeleteItemIdsInProgress.first {
+                        it.shoppingListRecipeId == shoppingListRecipe.recipe.id &&
+                                it.shoppingListRecipeIngredientId == shoppingListRecipeIngredient.recipeIngredient.id
+                    }
+                    element?.percentage = percentage
+                    notifyUpdates()
+                }
+                removeDeleteProgressFrom(
+                    shoppingListRecipe.recipe.id,
+                    shoppingListRecipeIngredient.recipeIngredient.id
+                )
             } catch (e: Exception) {
                 if (e !is CancellationException) {
-                    removeDeleteProgressFrom(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient.id)
-                    val message = uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)
+                    removeDeleteProgressFrom(
+                        shoppingListRecipe.recipe.id,
+                        shoppingListRecipeIngredient.recipeIngredient.id
+                    )
+                    val message =
+                        uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)
                     uiActions.toast(message)
                 }
             }
         }
         viewModelScope.launch {
             try {
-                recipesRepository.setIngredientSelected(shoppingListRecipe.recipe.id, shoppingListRecipeIngredient.recipeIngredient, false)
+                recipesRepository.setIngredientSelected(
+                    shoppingListRecipe.recipe.id,
+                    shoppingListRecipeIngredient.recipeIngredient,
+                    false
+                )
             } catch (e: Exception) {
                 if (e !is CancellationException) {
                     val message = uiActions.getString(R.string.cant_set_ingredient_selected)
@@ -158,17 +214,25 @@ class ShoppingListViewModel(
         }
     }
 
-    private fun addSelectProgressTo(shoppingListRecipeId: Long, shoppingListRecipeIngredientId: Long) {
+    private fun addSelectProgressTo(
+        shoppingListRecipeId: Long,
+        shoppingListRecipeIngredientId: Long
+    ) {
         if (shoppingListIngredientsSelectItemIdsInProgress.containsKey(shoppingListRecipeId)) {
-            val list = shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId] ?: mutableListOf()
+            val list = shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId]
+                ?: mutableListOf()
             list.add(shoppingListRecipeIngredientId)
         } else {
-            shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId] = mutableListOf(shoppingListRecipeIngredientId)
+            shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId] =
+                mutableListOf(shoppingListRecipeIngredientId)
         }
         notifyUpdates()
     }
 
-    private fun removeSelectProgressFrom(shoppingListRecipeId: Long, shoppingListRecipeIngredientId: Long) {
+    private fun removeSelectProgressFrom(
+        shoppingListRecipeId: Long,
+        shoppingListRecipeIngredientId: Long
+    ) {
         if (shoppingListIngredientsSelectItemIdsInProgress.contains(shoppingListRecipeId)) {
             val list = shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId]
             val indexToDelete = list?.indexOfFirst { it == shoppingListRecipeIngredientId } ?: -1
@@ -179,41 +243,57 @@ class ShoppingListViewModel(
         notifyUpdates()
     }
 
-    private fun isSelectInProgress(shoppingListRecipeId: Long, shoppingListRecipeIngredientId: Long): Boolean {
-        return if (shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId]?.contains(shoppingListRecipeIngredientId) == null) {
+    private fun isSelectInProgress(
+        shoppingListRecipeId: Long,
+        shoppingListRecipeIngredientId: Long
+    ): Boolean {
+        return if (shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId]?.contains(
+                shoppingListRecipeIngredientId
+            ) == null
+        ) {
             false
         } else {
-            shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId]!!.contains(shoppingListRecipeIngredientId)
+            shoppingListIngredientsSelectItemIdsInProgress[shoppingListRecipeId]!!.contains(
+                shoppingListRecipeIngredientId
+            )
         }
     }
 
-    private fun addDeleteProgressTo(shoppingListRecipeId: Long, shoppingListRecipeIngredientId: Long) {
-        if (shoppingListIngredientsDeleteItemIdsInProgress.containsKey(shoppingListRecipeId)) {
-            val list = shoppingListIngredientsDeleteItemIdsInProgress[shoppingListRecipeId] ?: mutableListOf()
-            list.add(shoppingListRecipeIngredientId)
-        } else {
-            shoppingListIngredientsDeleteItemIdsInProgress[shoppingListRecipeId] = mutableListOf(shoppingListRecipeIngredientId)
+    private fun addDeleteProgressTo(
+        shoppingListRecipeId: Long,
+        shoppingListRecipeIngredientId: Long
+    ) {
+        shoppingListIngredientsDeleteItemIdsInProgress.add(
+            ShoppingListIngredientsDeleteItem(
+                shoppingListRecipeId,
+                shoppingListRecipeIngredientId,
+                0
+            )
+        )
+        notifyUpdates()
+    }
+
+    private fun removeDeleteProgressFrom(
+        shoppingListRecipeId: Long,
+        shoppingListRecipeIngredientId: Long
+    ) {
+        val indexToDelete =
+            shoppingListIngredientsDeleteItemIdsInProgress.indexOfFirst { it.shoppingListRecipeId == shoppingListRecipeId && it.shoppingListRecipeIngredientId == shoppingListRecipeIngredientId }
+        if (indexToDelete != -1) {
+            shoppingListIngredientsDeleteItemIdsInProgress.removeAt(indexToDelete)
         }
         notifyUpdates()
     }
 
-    private fun removeDeleteProgressFrom(shoppingListRecipeId: Long, shoppingListRecipeIngredientId: Long) {
-        if (shoppingListIngredientsDeleteItemIdsInProgress.contains(shoppingListRecipeId)) {
-            val list = shoppingListIngredientsDeleteItemIdsInProgress[shoppingListRecipeId]
-            val indexToDelete = list?.indexOfFirst { it == shoppingListRecipeIngredientId } ?: -1
-            if (indexToDelete != -1) {
-                list!!.removeAt(indexToDelete)
-            }
+    private fun isDeleteInProgress(
+        shoppingListRecipeId: Long,
+        shoppingListRecipeIngredientId: Long
+    ): Progress {
+        val element = shoppingListIngredientsDeleteItemIdsInProgress.firstOrNull() {
+            it.shoppingListRecipeId == shoppingListRecipeId &&
+                    it.shoppingListRecipeIngredientId == shoppingListRecipeIngredientId
         }
-        notifyUpdates()
-    }
-
-    private fun isDeleteInProgress(shoppingListRecipeId: Long, shoppingListRecipeIngredientId: Long): Boolean {
-        return if (shoppingListIngredientsDeleteItemIdsInProgress[shoppingListRecipeId]?.contains(shoppingListRecipeIngredientId) == null) {
-            false
-        } else {
-            shoppingListIngredientsDeleteItemIdsInProgress[shoppingListRecipeId]!!.contains(shoppingListRecipeIngredientId)
-        }
+        return if (element != null) PercentageProgress(element.percentage) else EmptyProgress
     }
 
     fun tryAgain() {

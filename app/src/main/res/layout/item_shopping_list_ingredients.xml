@@ -7,6 +7,12 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/componentWithoutDeleteGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="isShoppingListIngredientsItemSelectedCheckBox,shoppingListIngredientsItemNameTextView,shoppingListIngredientsItemAmountTextView,shoppingListIngredientsItemMeasureTextView,shoppingListIngredientsItemDeleteViewButton"/>
+
     <CheckBox
         android:id="@+id/isShoppingListIngredientsItemSelectedCheckBox"
         android:layout_width="wrap_content"
@@ -20,7 +26,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="4dp"
-        android:indeterminateTint="@color/green"
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
         app:layout_constraintEnd_toEndOf="@id/isShoppingListIngredientsItemSelectedCheckBox"
@@ -33,7 +38,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lines="1"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/isShoppingListIngredientsItemSelectedCheckBox"
@@ -76,17 +80,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/deleteProgressGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="deletingHintTextView,deletingPercentageTextView,shoppingListIngredientsItemDeleteProgressBar"/>
+
+    <TextView
+        android:id="@+id/deletingHintTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/please_wait"
+        app:layout_constraintStart_toStartOf="@id/shoppingListIngredientsItemDeleteProgressBar"
+        app:layout_constraintBottom_toTopOf="@id/shoppingListIngredientsItemDeleteProgressBar"/>
+
+    <TextView
+        android:id="@+id/deletingPercentageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="100%"
+        app:layout_constraintStart_toEndOf="@+id/shoppingListIngredientsItemDeleteProgressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/shoppingListIngredientsItemDeleteProgressBar"
+        app:layout_constraintBottom_toBottomOf="@id/shoppingListIngredientsItemDeleteProgressBar"/>
+
     <ProgressBar
         android:id="@+id/shoppingListIngredientsItemDeleteProgressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="4dp"
-        android:indeterminateTint="@color/green"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@id/shoppingListIngredientsItemDeleteViewButton"
-        app:layout_constraintEnd_toEndOf="@id/shoppingListIngredientsItemDeleteViewButton"
-        app:layout_constraintBottom_toBottomOf="@id/shoppingListIngredientsItemDeleteViewButton"
-        app:layout_constraintStart_toStartOf="@id/shoppingListIngredientsItemDeleteViewButton" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        tools:progress="33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deletingPercentageTextView"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/shoppingListIngredientsItemCrossView"

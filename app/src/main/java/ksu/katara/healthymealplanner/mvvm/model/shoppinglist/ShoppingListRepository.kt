@@ -1,5 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
+import kotlinx.coroutines.flow.Flow
 import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
@@ -15,15 +16,11 @@ interface ShoppingListRepository : Repository {
     suspend fun loadShoppingList(): MutableList<ShoppingListRecipe>
 
     /**
-     * Listen for the current shopping list recipes changes.
-     * The listener is triggered immediately with the current value when calling this method.
+     * Listen for for the current shopping list recipes changes.
+     * @return [Flow] which emits a new item whenever [shoppingListIngredientsDeleteIngredient] call
+     * changes the current color.
      */
-    fun addShoppingListListener(listener: ShoppingListListener)
-
-    /**
-     * Stop listening for the current shopping list recipes.
-     */
-    fun removeShoppingListListener(listener: ShoppingListListener)
+    fun listenShoppingListIngredients(): Flow<MutableList<ShoppingListRecipe>>
 
     /**
      * Add ingredient to shopping list for recipe with id.
@@ -47,6 +44,6 @@ interface ShoppingListRepository : Repository {
     /**
      * Delete ingredient to shopping list for recipe with id.
      */
-    suspend fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient)
+    fun shoppingListIngredientsDeleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Flow<Int>
 
 }

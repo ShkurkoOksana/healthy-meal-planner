@@ -1,6 +1,7 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentShoppingListBinding
-import ksu.katara.healthymealplanner.foundation.views.BaseFragment
-import ksu.katara.healthymealplanner.foundation.views.BaseScreen
-import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
-import ksu.katara.healthymealplanner.foundation.views.onTryAgain
-import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
+import ksu.katara.healthymealplanner.foundation.views.*
 
 class ShoppingListFragment : BaseFragment(), HasScreenTitle {
 
@@ -43,7 +39,7 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
 
     private fun initView() {
         shoppingListAdapter = ShoppingListAdapter(requireContext(), viewModel)
-        viewModel.shoppingList.observe(viewLifecycleOwner) { result ->
+        collectFlow(viewModel.shoppingList) { result ->
             renderSimpleResult(
                 root = binding.root,
                 result = result,
@@ -51,16 +47,17 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
                     shoppingListAdapter.shoppingList = it
                 }
             )
-        }
-        onTryAgain(binding.root) {
-            viewModel.tryAgain()
-        }
-        val shoppingListLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.shoppingListRecyclerView.layoutManager = shoppingListLayoutManager
-        binding.shoppingListRecyclerView.adapter = shoppingListAdapter
-        val shoppingListAnimator = binding.shoppingListRecyclerView.itemAnimator
-        if (shoppingListAnimator is DefaultItemAnimator) {
-            shoppingListAnimator.supportsChangeAnimations = false
+            onTryAgain(binding.root) {
+                viewModel.tryAgain()
+            }
+            val shoppingListLayoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            binding.shoppingListRecyclerView.layoutManager = shoppingListLayoutManager
+            binding.shoppingListRecyclerView.adapter = shoppingListAdapter
+            val shoppingListAnimator = binding.shoppingListRecyclerView.itemAnimator
+            if (shoppingListAnimator is DefaultItemAnimator) {
+                shoppingListAnimator.supportsChangeAnimations = false
+            }
         }
     }
 

@@ -1,6 +1,9 @@
 package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
@@ -31,16 +34,15 @@ class InMemoryShoppingListRepository(
         return@withContext shoppingList
     }
 
-    override fun addShoppingListListener(listener: ShoppingListListener) {
-        shoppingListListeners.add(listener)
-        if (shoppingListLoaded) {
-            listener.invoke(shoppingList)
+    override fun listenShoppingListIngredients(): Flow<MutableList<ShoppingListRecipe>> = callbackFlow {
+        val listener: ShoppingListListener = {
+            trySend(it)
         }
-    }
-
-    override fun removeShoppingListListener(listener: ShoppingListListener) {
-        shoppingListListeners.remove(listener)
-    }
+        shoppingListListeners.add(listener)
+        awaitClose {
+            shoppingListListeners.remove(listener)
+        }
+    }.buffer(Channel.CONFLATED)
 
     private fun notifyShoppingListChanges() {
         if (!shoppingListLoaded) return
@@ -135,14 +137,19 @@ class InMemoryShoppingListRepository(
         notifyShoppingListChanges()
     }
 
-    override suspend fun shoppingListIngredientsDeleteIngredient(
+    override fun shoppingListIngredientsDeleteIngredient(
         recipeId: Long,
         ingredient: RecipeIngredient,
-    ) = withContext(ioDispatcher.value) {
-        delay(1000L)
+    ): Flow<Int> = flow {
+        var progress = 0
+        while (progress < 100) {
+            progress += 2
+            delay(30)
+            emit(progress)
+        }
         deleteIngredientFromShoppingListIngredients(recipeId, ingredient)
         notifyShoppingListChanges()
-    }
+    }.flowOn(ioDispatcher.value)
 
     private fun deleteIngredientFromShoppingListIngredients(recipeId: Long, ingredient: RecipeIngredient) {
         val shoppingListRecipe = shoppingList.firstOrNull { it.recipe.id == recipeId } ?: throw ShoppingListRecipeNotFoundException()

@@ -4,6 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.children
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.PartResultBinding
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
@@ -44,8 +49,21 @@ fun <T> BaseFragment.renderSimpleResult(root: ViewGroup, result: StatusResult<T>
 }
 
 /**
+ * Collect items from the specified [Flow] only when fragment is at least in STARTED state.
+ */
+fun <T> BaseFragment.collectFlow(flow: Flow<T>, onCollect: (T) -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
+            flow.collect {
+                onCollect(it)
+            }
+        }
+    }
+}
+
+/**
  * Assign onClick listener for default try-again button.
  */
-fun BaseFragment.onTryAgain(root: View, onTryAgainPressed: () -> Unit) {
+fun onTryAgain(root: View, onTryAgainPressed: () -> Unit) {
     root.findViewById<Button>(R.id.tryAgainButton).setOnClickListener { onTryAgainPressed() }
 }

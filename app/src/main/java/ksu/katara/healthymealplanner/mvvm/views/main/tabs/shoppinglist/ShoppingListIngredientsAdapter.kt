@@ -1,15 +1,19 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ItemShoppingListIngredientsBinding
+import ksu.katara.healthymealplanner.foundation.model.getPercentage
+import ksu.katara.healthymealplanner.foundation.model.isInProgress
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
 
@@ -71,6 +75,8 @@ class ShoppingListIngredientsAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemShoppingListIngredientsBinding.inflate(inflater, parent, false)
         binding.root.setOnClickListener(this)
+        binding.shoppingListIngredientsItemDeleteProgressBar.progressDrawable.setColorFilter(
+            Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN)
         binding.isShoppingListIngredientsItemSelectedCheckBox.setOnClickListener(this)
         binding.shoppingListIngredientsItemDeleteViewButton.setOnClickListener(this)
         return ShoppingListIngredientsViewHolder(binding)
@@ -98,13 +104,15 @@ class ShoppingListIngredientsAdapter(
                     shoppingListIngredientsItemCrossView.visibility = View.INVISIBLE
                 }
             }
-            if (shoppingListIngredientsItem.isDeleteInProgress) {
-                shoppingListIngredientsItemDeleteViewButton.visibility = View.INVISIBLE
-                shoppingListIngredientsItemDeleteProgressBar.visibility = View.VISIBLE
+            if (shoppingListIngredientsItem.isDeleteInProgress.isInProgress()) {
+                componentWithoutDeleteGroup.visibility = View.INVISIBLE
+                deleteProgressGroup.visibility = View.VISIBLE
+                shoppingListIngredientsItemDeleteProgressBar.progress = shoppingListIngredientsItem.isDeleteInProgress.getPercentage()
+                deletingPercentageTextView.text = shoppingListIngredientsItem.isDeleteInProgress.getPercentage().toString()
                 holder.binding.root.setOnClickListener(null)
             } else {
-                shoppingListIngredientsItemDeleteViewButton.visibility = View.VISIBLE
-                shoppingListIngredientsItemDeleteProgressBar.visibility = View.GONE
+                componentWithoutDeleteGroup.visibility = View.VISIBLE
+                deleteProgressGroup.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
             }
             shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.recipeIngredient.product.name
