@@ -55,7 +55,7 @@ class DietTipsChaptersAdapter(
             holder.itemView.tag = dietTipsChapter
             dietTipChapterTitleTextView.text = dietTipsChapter.name
             val dietTipsAdapter = DietTipsAdapter(dietTipsChaptersViewModel)
-            dietTipsAdapter.dietTips = dietTipsChapter.dietTipsList
+            dietTipsAdapter.dietTips = dietTipsChaptersViewModel.getDietTipsByChapterId(position.toLong() + 1)
             dietTipsRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             dietTipsRecyclerView.adapter = dietTipsAdapter
         }

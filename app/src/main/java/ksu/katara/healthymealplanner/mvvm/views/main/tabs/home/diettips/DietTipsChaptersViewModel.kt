@@ -10,6 +10,7 @@ import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment.Screen
 
@@ -34,6 +35,10 @@ class DietTipsChaptersViewModel(
 
     private fun loadDietTipsChapters() = into(_dietTipsChapters){
         dietTipsRepository.loadChapters()
+    }
+
+    fun getDietTipsByChapterId(id: Long): List<DietTip> {
+        return dietTipsRepository.getDietTipsByChapterId(id)
     }
 
     override fun onDietTipPressed(dietTipId: Long) {

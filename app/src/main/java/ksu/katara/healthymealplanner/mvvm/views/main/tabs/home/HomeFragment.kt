@@ -105,7 +105,7 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
                 root = binding.dietTipsContainer,
                 result = result,
                 onSuccess = {
-                    dietTipsAdapter.dietTips = it.slice(0..AMOUNT_OF_DIET_TIPS)
+                    dietTipsAdapter.dietTips = it
                 }
             )
         }
@@ -113,10 +113,6 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.dietTipsRecyclerView.layoutManager = dietTipsLayoutManager
         binding.dietTipsRecyclerView.adapter = dietTipsAdapter
-    }
-
-    companion object {
-        private const val AMOUNT_OF_DIET_TIPS = 4
     }
 }
 

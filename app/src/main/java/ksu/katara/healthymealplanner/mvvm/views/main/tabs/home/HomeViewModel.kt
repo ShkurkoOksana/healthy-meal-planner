@@ -36,7 +36,10 @@ class HomeViewModel(
         loadDietTips()
     }
 
-    private fun loadDietTips() = into(_dietTips) { dietTipsRepository.loadDietTips() }
+    private fun loadDietTips() = into(_dietTips) {
+        dietTipsRepository.loadChapters()
+        dietTipsRepository.loadDietTipsByChapterId(CHAPTER_ID_FOR_HOME_FRAGMENT)
+    }
 
     fun onMorePressed(destinationId: Int, args: Bundle?) {
         navigator.launch(destinationId, args)
@@ -54,5 +57,9 @@ class HomeViewModel(
 
     fun tryAgain() {
         loadDietTips()
+    }
+
+    companion object {
+        const val CHAPTER_ID_FOR_HOME_FRAGMENT = 1L
     }
 }

@@ -39,12 +39,12 @@ class DietTipDetailsFragment : BaseFragment(), HasScreenTitle {
     }
 
     private fun initView() {
-        viewModel.dietTipDetails.observe(viewLifecycleOwner) { result ->
+        viewModel.dietTipDetailSteps.observe(viewLifecycleOwner) { result ->
             renderSimpleResult(
                 root = binding.root,
                 result = result,
                 onSuccess = {
-                    val dietTipDetailsViewPagerAdapter = DietTipDetailsViewPagerAdapter(it)
+                    val dietTipDetailsViewPagerAdapter = DietTipDetailsViewPagerAdapter(viewModel, it)
                     binding.dietTipDetailsViewPager.adapter = dietTipDetailsViewPagerAdapter
                 }
             )

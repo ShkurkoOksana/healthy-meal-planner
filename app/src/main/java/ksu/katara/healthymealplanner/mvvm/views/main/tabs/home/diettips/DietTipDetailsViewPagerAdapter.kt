@@ -4,19 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ItemDietTipDetailsBinding
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
 
 class DietTipDetailsViewPagerAdapter(
-    private val dietTipDetails: DietTipDetails,
+    private val dietTipsViewModel: DietTipDetailsViewModel,
+    private val dietTipDetailSteps: List<DietTipDetailSteps>,
 ) : RecyclerView.Adapter<DietTipDetailsViewPagerAdapter.DietTipDetailsViewPagerViewHolder>() {
 
-    private val dietTipDetailsTitles = dietTipDetails.titlesList
+    override fun getItemCount() = dietTipDetailSteps.size
 
-    override fun getItemCount() = dietTipDetailsTitles.size
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DietTipDetailsViewPagerViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DietTipDetailsViewPagerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemDietTipDetailsBinding.inflate(inflater, parent, false)
 
@@ -24,17 +25,14 @@ class DietTipDetailsViewPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: DietTipDetailsViewPagerViewHolder, position: Int) {
-        holder.binding.dietTipDetailsTitleTextView.text = dietTipDetails.titlesList[position]
-        holder.binding.dietTipDetailsDescriptionTextView.text = dietTipDetails.descriptionsList[position]
-        if (dietTipDetails.background[position].isNotBlank()) {
-            Glide.with(holder.binding.dietTipDetailsBackgroundImageView.context)
-                .load(dietTipDetails.background[position])
-                .into(holder.binding.dietTipDetailsBackgroundImageView)
-        } else {
-            Glide.with(holder.binding.dietTipDetailsBackgroundImageView.context)
-                .load(R.drawable.ic_diet_tip_details)
-                .into(holder.binding.dietTipDetailsBackgroundImageView)
-        }
+        val dietTipDetailsId = dietTipDetailSteps[position].dietTipDetailId
+        val background = dietTipsViewModel.getDietTipDetailsById(dietTipDetailsId).background
+        holder.binding.dietTipDetailsTitleTextView.text = dietTipDetailSteps[position].title
+        holder.binding.dietTipDetailsDescriptionTextView.text =
+            dietTipDetailSteps[position].description
+        Glide.with(holder.binding.dietTipDetailsBackgroundImageView.context)
+            .load(background)
+            .into(holder.binding.dietTipDetailsBackgroundImageView)
     }
 
     class DietTipDetailsViewPagerViewHolder(

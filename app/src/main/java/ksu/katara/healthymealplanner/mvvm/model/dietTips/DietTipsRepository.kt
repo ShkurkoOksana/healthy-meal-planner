@@ -4,6 +4,7 @@ import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
 
 typealias DietTipChaptersListener = (dietTipChapters: List<DietTipChapter>) -> Unit
 typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit
@@ -23,7 +24,11 @@ interface DietTipsRepository : Repository {
     /**
      * Load the list of all available diet tips that may be chosen by the user.
      */
-    suspend fun loadDietTips(): List<DietTip>
+    suspend fun loadDietTipsByChapterId(id: Long): List<DietTip>
+
+    fun getDietTipsByChapterId(id: Long): List<DietTip>
+
+    fun loadDietTipDetailsById(id: Long): DietTipDetails
 
     /**
      * Listen for the current diet tips changes.
@@ -39,7 +44,7 @@ interface DietTipsRepository : Repository {
     /**
      * Load the list of all available diet tips details that may be chosen by the user.
      */
-    suspend fun loadDietTipDetails(id: Long): DietTipDetails
+    suspend fun loadDietTipDetailStepsById(id: Long): List<DietTipDetailSteps>
 
     /**
      * Listen for the current diet tips chapters changes.
