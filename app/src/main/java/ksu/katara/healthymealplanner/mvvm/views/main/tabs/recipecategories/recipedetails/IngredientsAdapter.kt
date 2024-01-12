@@ -83,7 +83,7 @@ class IngredientsAdapter(
                 isIngredientSelectedProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@IngredientsAdapter)
             }
-            ingredientNameTextView.text = ingredient.product.name
+            ingredientNameTextView.text = ingredient.product
             if (ingredient.amount == 0.0) {
                 ingredientAmountTextView.text = ""
             } else {

@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.RecipeNotFoundException
-import ksu.katara.healthymealplanner.mvvm.model.product.ProductsRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
@@ -15,7 +14,6 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparati
  * Simple in-memory implementation of [RecipesRepository]
  */
 class InMemoryRecipesRepository(
-    private val productRepository: ProductsRepository,
     private val ioDispatcher: IoDispatcher
 ) : RecipesRepository {
 
@@ -79,10 +77,10 @@ class InMemoryRecipesRepository(
         val recipeIngredients = mutableListOf<RecipeIngredient>()
         var ingredientsIndex = 0
         INGREDIENTS.getValue(recipeName).forEach { (id, measure) ->
-            val product = productRepository.getById(id.toLong())
+            //val product = productRepository.getById(id.toLong())
             val recipeIngredient = RecipeIngredient(
                 id = ingredientsIndex.toLong(),
-                product = product,
+                product = PRODUCT_NAME[id],
                 amount = measure[0] as Double,
                 measure = measure[1] as String,
                 isInShoppingList = false,
@@ -331,6 +329,42 @@ class InMemoryRecipesRepository(
                 "Ужин",
                 "Диетический",
             ),
+        )
+
+        private val PRODUCT_NAME = listOf(
+            "Яйцо",
+            "Топленное масло",
+            "Сыр Фета",
+            "Болгарский перец",
+            "Помидор",
+            "Огурец",
+            "Салат-латук",
+            "Репчатый лук",
+            "Маслины",
+            "Лимон",
+            "Оливковое масло",
+            "Смесь трав",
+            "Соль",
+            "Черный перец молотый",
+            "Креветки",
+            "Листья салата",
+            "Помидоры черри",
+            "Чеснок",
+            "Белый хлеб",
+            "Бальзамический уксус",
+            "Горчица",
+            "Вода",
+            "Говядина",
+            "Свекла",
+            "Морковь",
+            "Томатная паста",
+            "Белокачанная капуста",
+            "Картофель",
+            "Лавровый лист",
+            "Петрушка",
+            "Укроп",
+            "Минтай",
+            "Мука",
         )
 
         private val INGREDIENTS = mapOf(

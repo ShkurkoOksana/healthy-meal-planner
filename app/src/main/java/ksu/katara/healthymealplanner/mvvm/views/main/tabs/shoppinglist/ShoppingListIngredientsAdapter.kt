@@ -115,7 +115,7 @@ class ShoppingListIngredientsAdapter(
                 deleteProgressGroup.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
             }
-            shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.ingredient.product.name
+            shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.ingredient.product
             if (shoppingListRecipeIngredient.ingredient.amount == 0.0) {
                 shoppingListIngredientsItemAmountTextView.text = ""
             } else {

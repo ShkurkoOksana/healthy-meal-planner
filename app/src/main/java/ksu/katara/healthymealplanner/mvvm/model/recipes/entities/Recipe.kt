@@ -2,7 +2,6 @@ package ksu.katara.healthymealplanner.mvvm.model.recipes.entities
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import ksu.katara.healthymealplanner.mvvm.model.product.entities.Product
 
 /**
  * Represents recipe data
@@ -37,7 +36,7 @@ data class RecipeDetails(
  */
 data class RecipeIngredient(
     val id: Long,
-    val product: Product,
+    val product: String,
     val amount: Double,
     val measure: String,
     var isInShoppingList: Boolean,

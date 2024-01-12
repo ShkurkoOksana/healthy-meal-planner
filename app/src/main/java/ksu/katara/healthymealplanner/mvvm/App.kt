@@ -10,7 +10,6 @@ import ksu.katara.healthymealplanner.mvvm.model.addrecipes.InMemoryAddRecipesRep
 import ksu.katara.healthymealplanner.mvvm.model.calendar.InMemoryCalendarRepository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.SQLiteDietTipsRepository
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.InMemoryMealPlanForDateRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.product.InMemoryProductsRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.InMemoryCategoriesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.InMemoryRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.InMemoryShoppingListRepository
@@ -27,9 +26,8 @@ class App : Application(), BaseApplication {
     private val workerDispatcher = IoDispatcher(Dispatchers.Default)
 
     private lateinit var dietTipsRepository : Repository
-    private val productsRepository = InMemoryProductsRepository()
     private val recipeCategoriesRepository = InMemoryCategoriesRepository(ioDispatcher)
-    private val recipesRepository = InMemoryRecipesRepository(productsRepository, ioDispatcher)
+    private val recipesRepository = InMemoryRecipesRepository(ioDispatcher)
     private val mealPlanForDateRecipesRepository =
         InMemoryMealPlanForDateRecipesRepository(ioDispatcher)
     private val addRecipesRepository = InMemoryAddRecipesRepository(
@@ -47,7 +45,6 @@ class App : Application(), BaseApplication {
     override val singletonScopeDependencies: List<Any> by lazy {
         listOf(
             dietTipsRepository,
-            productsRepository,
             recipeCategoriesRepository,
             recipesRepository,
             mealPlanForDateRecipesRepository,
