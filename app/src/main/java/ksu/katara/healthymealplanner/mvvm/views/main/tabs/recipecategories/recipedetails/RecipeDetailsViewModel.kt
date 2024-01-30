@@ -1,11 +1,9 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.EmptyResult
@@ -85,6 +83,7 @@ class RecipeDetailsViewModel(
         loadRecipeDetails(recipeId)
         loadRecipeTypes(recipeId)
         loadIngredients(recipeId)
+        isAllIngredientsSelected(recipeId)
         loadPreparationSteps(recipeId)
     }
 
@@ -106,14 +105,13 @@ class RecipeDetailsViewModel(
                 if (e !is CancellationException) ingredientsResult = ErrorResult(e)
             }
         }
+    }
+
+    private fun isAllIngredientsSelected(recipeId: Long) {
         viewModelScope.launch {
             try {
-                val result = recipesRepository.isAllIngredientsSelected(recipeId)
-                if (result) {
-                    _isAllIngredientsSelected.value = SuccessResult(true)
-                } else {
-                    _isAllIngredientsSelected.value = SuccessResult(false)
-                }
+                val isSelected = recipesRepository.isAllIngredientsSelected(recipeId)
+                _isAllIngredientsSelected.value = SuccessResult(isSelected)
             } catch (e: Exception) {
                 if (e !is CancellationException) {
                     val message = uiActions.getString(R.string.cant_make_all_ingredients_selected)
@@ -138,16 +136,6 @@ class RecipeDetailsViewModel(
                 }
             }
         }
-        viewModelScope.launch {
-            try {
-                shoppingListRepository.addAllIngredients(recipeId, isSelected)
-            } catch (e: Exception) {
-                if (e !is CancellationException) {
-                    val message = uiActions.getString(R.string.cant_add_all_ingredient_to_shopping_list)
-                    uiActions.toast(message)
-                }
-            }
-        }
     }
 
     override fun onCleared() {
@@ -160,47 +148,13 @@ class RecipeDetailsViewModel(
         addProgressTo(ingredient)
         viewModelScope.launch {
             try {
-                recipesRepository.setIngredientSelected(recipeId, ingredient, isSelected)
+                recipesRepository.setIngredientSelected(recipeId, ingredient.id, isSelected)
                 removeProgressFrom(ingredient)
             } catch (e: Exception) {
                 if (e !is CancellationException) removeProgressFrom(ingredient)
             }
         }
-        viewModelScope.launch {
-            try {
-                val result = recipesRepository.isAllIngredientsSelected(recipeId)
-                if (result) {
-                    _isAllIngredientsSelected.value = SuccessResult(true)
-                } else {
-                    _isAllIngredientsSelected.value = SuccessResult(false)
-                }
-            } catch (e: Exception) {
-                if (e !is CancellationException) removeProgressFrom(ingredient)
-            }
-        }
-        if (isSelected) {
-            viewModelScope.launch {
-                try {
-                    shoppingListRepository.addIngredient(recipeId, ingredient)
-                } catch (e: Exception) {
-                    if (e !is CancellationException) {
-                        val message = uiActions.getString(R.string.cant_add_ingredient_to_shopping_list)
-                        uiActions.toast(message)
-                    }
-                }
-            }
-        } else {
-            viewModelScope.launch {
-                try {
-                    shoppingListRepository.deleteIngredient(recipeId, ingredient).collect()
-                } catch (e: Exception) {
-                    if (e !is CancellationException) {
-                        val message = uiActions.getString(R.string.cant_delete_ingredient_from_shopping_list)
-                        uiActions.toast(message)
-                    }
-                }
-            }
-        }
+        isAllIngredientsSelected(recipeId)
     }
 
     private fun addProgressTo(ingredient: RecipeIngredient) {
@@ -219,7 +173,12 @@ class RecipeDetailsViewModel(
 
     private fun notifyIngredientsUpdates() {
         _ingredients.postValue(ingredientsResult.resultMap { ingredientsItemList ->
-            ingredientsItemList.map { ingredient -> IngredientsItem(ingredient, isInProgress(ingredient)) }
+            ingredientsItemList.map { ingredient ->
+                IngredientsItem(
+                    ingredient,
+                    isInProgress(ingredient)
+                )
+            }
         })
     }
 
@@ -246,4 +205,3 @@ class RecipeDetailsViewModel(
         loadPreparationSteps(recipeId)
     }
 }
-

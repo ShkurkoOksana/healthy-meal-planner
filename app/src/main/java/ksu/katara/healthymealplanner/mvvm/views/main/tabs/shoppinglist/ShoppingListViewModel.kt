@@ -1,11 +1,21 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
-import ksu.katara.healthymealplanner.foundation.model.*
+import ksu.katara.healthymealplanner.foundation.model.EmptyProgress
+import ksu.katara.healthymealplanner.foundation.model.EmptyResult
+import ksu.katara.healthymealplanner.foundation.model.ErrorResult
+import ksu.katara.healthymealplanner.foundation.model.PendingResult
+import ksu.katara.healthymealplanner.foundation.model.PercentageProgress
+import ksu.katara.healthymealplanner.foundation.model.Progress
+import ksu.katara.healthymealplanner.foundation.model.StatusResult
+import ksu.katara.healthymealplanner.foundation.model.SuccessResult
+import ksu.katara.healthymealplanner.foundation.model.isInProgress
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
@@ -15,6 +25,7 @@ import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingList
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist.ShoppingListFragment.Screen
+import kotlin.collections.set
 
 data class ShoppingListRecipeItem(
     val recipe: ShoppingListRecipe,
@@ -63,8 +74,9 @@ class ShoppingListViewModel(
 
     init {
         _screenTitle.value = uiActions.getString(R.string.shopping_list_title)
+        loadShoppingList()
         viewModelScope.launch {
-            shoppingListRepository.listener()
+            shoppingListRepository.shoppingListListener()
                 .collect {
                     shoppingListResult = if (it.isEmpty()) {
                         EmptyResult()
@@ -73,14 +85,13 @@ class ShoppingListViewModel(
                     }
                 }
         }
-        loadShoppingList()
     }
 
     private fun loadShoppingList() {
         shoppingListResult = PendingResult()
         viewModelScope.launch {
             try {
-                shoppingListRepository.load()
+                shoppingListRepository.loadShoppingList()
             } catch (e: Exception) {
                 if (e !is CancellationException) shoppingListResult = ErrorResult(e)
             }
@@ -164,7 +175,7 @@ class ShoppingListViewModel(
         )
         viewModelScope.launch {
             try {
-                var element: ShoppingListIngredientsDeleteItem? = null
+                var element: ShoppingListIngredientsDeleteItem
                 shoppingListRepository.deleteIngredient(
                     shoppingListRecipe.recipe.id,
                     shoppingListRecipeIngredient.ingredient
@@ -173,8 +184,7 @@ class ShoppingListViewModel(
                         it.shoppingListRecipeId == shoppingListRecipe.recipe.id &&
                                 it.shoppingListRecipeIngredientId == shoppingListRecipeIngredient.ingredient.id
                     }
-                    element?.percentage = percentage
-                    notifyUpdates()
+                    element.percentage = percentage
                 }
                 removeDeleteProgressFrom(
                     shoppingListRecipe.recipe.id,
@@ -192,20 +202,7 @@ class ShoppingListViewModel(
                 }
             }
         }
-        viewModelScope.launch {
-            try {
-                recipesRepository.setIngredientSelected(
-                    shoppingListRecipe.recipe.id,
-                    shoppingListRecipeIngredient.ingredient,
-                    false
-                )
-            } catch (e: Exception) {
-                if (e !is CancellationException) {
-                    val message = uiActions.getString(R.string.cant_set_ingredient_selected)
-                    uiActions.toast(message)
-                }
-            }
-        }
+        notifyUpdates()
     }
 
     private fun addSelectProgressTo(
@@ -290,7 +287,7 @@ class ShoppingListViewModel(
         return if (element != null) PercentageProgress(element.percentage) else EmptyProgress
     }
 
-    fun tryAgain() {
+    fun loadAgain() {
         loadShoppingList()
     }
 }

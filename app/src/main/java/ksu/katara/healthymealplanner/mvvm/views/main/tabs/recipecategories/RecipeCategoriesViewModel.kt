@@ -11,8 +11,8 @@ import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.CategoriesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.RecipeCategoriesFragment.Screen
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment
 
 class RecipeCategoriesViewModel(
     screen: Screen,

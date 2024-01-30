@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,13 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ksu.katara.healthymealplanner.databinding.FragmentShoppingListBinding
-import ksu.katara.healthymealplanner.foundation.views.*
+import ksu.katara.healthymealplanner.foundation.views.BaseFragment
+import ksu.katara.healthymealplanner.foundation.views.BaseScreen
+import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
+import ksu.katara.healthymealplanner.foundation.views.collectFlow
+import ksu.katara.healthymealplanner.foundation.views.onTryAgain
+import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
+import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
 class ShoppingListFragment : BaseFragment(), HasScreenTitle {
 
@@ -48,7 +53,7 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
                 }
             )
             onTryAgain(binding.root) {
-                viewModel.tryAgain()
+                viewModel.loadAgain()
             }
             val shoppingListLayoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -59,6 +64,11 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
                 shoppingListAnimator.supportsChangeAnimations = false
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.loadAgain()
     }
 
     companion object {

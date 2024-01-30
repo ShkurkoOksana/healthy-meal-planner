@@ -2,9 +2,9 @@ package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
 import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 
 typealias DietTipChaptersListener = (dietTipChapters: List<DietTipChapter>) -> Unit
 typealias DietTipsListener = (dietTips: List<DietTip>) -> Unit

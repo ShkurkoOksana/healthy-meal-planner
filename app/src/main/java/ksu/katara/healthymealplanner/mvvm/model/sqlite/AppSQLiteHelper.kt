@@ -6,9 +6,22 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class AppSQLiteHelper(
     private val applicationContext: Context
-) : SQLiteOpenHelper(applicationContext, "healthy_meal_planner.db", null, 1) {
+) : SQLiteOpenHelper(applicationContext, "healthy_meal_planner.db", null, 2) {
     override fun onCreate(db: SQLiteDatabase) {
-        val sql = applicationContext.assets.open("db_init.sql").bufferedReader().use {
+        executeSQLFromAsserts(db, "db_init.sql")
+        executeSQLFromAsserts(db, "db_update_to_version_2.sql")
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        when {
+            oldVersion == 1 && newVersion == 2 -> {
+                executeSQLFromAsserts(db, "db_update_to_version_2.sql")
+            }
+        }
+    }
+
+    private fun executeSQLFromAsserts(db: SQLiteDatabase, fileName: String) {
+        val sql = applicationContext.assets.open(fileName).bufferedReader().use {
             it.readText()
         }
         sql.split(';')
@@ -16,10 +29,6 @@ class AppSQLiteHelper(
             .forEach {
                 db.execSQL(it)
             }
-    }
-
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-        TODO("Not yet implemented")
     }
 
 }

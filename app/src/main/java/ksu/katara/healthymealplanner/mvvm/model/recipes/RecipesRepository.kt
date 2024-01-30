@@ -6,7 +6,7 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparationStep
 
-typealias RecipeDetailsListener = (recipeDetails: List<RecipeDetails>) -> Unit
+typealias RecipeDetailsListener = (recipeDetails: RecipeDetails) -> Unit
 typealias RecipeIngredientsListener = (recipeIngredients: List<RecipeIngredient>) -> Unit
 typealias RecipesInCategoryListener = (recipes: List<Recipe>) -> Unit
 
@@ -16,11 +16,6 @@ typealias RecipesInCategoryListener = (recipes: List<Recipe>) -> Unit
  * Provides access to the available recipes.
  */
 interface RecipesRepository : Repository {
-
-    /**
-     * Get available recipes.
-     */
-    fun getRecipes(): MutableList<Recipe>
 
     /**
      * Load the list of all available recipes in category with id that may be chosen by the user.
@@ -41,11 +36,7 @@ interface RecipesRepository : Repository {
     /**
      * Get available recipes details.
      */
-    fun getRecipesDetails(): MutableList<RecipeDetails>
 
-    /**
-     * Load the list of all available recipe details for recipe with id.
-     */
     suspend fun loadRecipeDetails(recipeId: Long): RecipeDetails
 
     /**
@@ -83,7 +74,7 @@ interface RecipesRepository : Repository {
     /**
      * Set for recipe ingredient property isInShoppingList equals isSelected
      */
-    suspend fun setIngredientSelected(recipeId: Long, ingredient: RecipeIngredient, isSelected: Boolean)
+    suspend fun setIngredientSelected(recipeId: Long, ingredientId: Long, isSelected: Boolean)
 
     /**
      * Set for all ingredients for recipe with id property isInShoppingList equals isSelected

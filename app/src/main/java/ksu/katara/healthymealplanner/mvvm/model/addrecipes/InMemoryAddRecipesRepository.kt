@@ -25,19 +25,19 @@ class InMemoryAddRecipesRepository(
     override suspend fun load(selectedDate: Date, mealType: MealTypes): List<Recipe> = withContext(ioDispatcher.value) {
         delay(1000L)
         val mealPlanForDateRecipes: MutableList<Recipe> = getMealPlanForDateRecipes(selectedDate, mealType)
-        addRecipes = getAddRecipes(mealPlanForDateRecipes)
+        addRecipes = mutableListOf()//getAddRecipes(mealPlanForDateRecipes)
         loaded = true
         notifyChanges()
         return@withContext addRecipes
     }
 
-    private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
+/*    private fun getAddRecipes(list: MutableList<Recipe>): MutableList<Recipe> {
         val recipes = recipesRepository.getRecipes().map { it }.toMutableList()
         list.forEach { recipe ->
             recipes.removeIf { it == recipe }
         }
         return recipes
-    }
+    }*/
 
     private fun getMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes): MutableList<Recipe> {
         var mealPlanForDateRecipes: MutableList<Recipe> = mutableListOf()
