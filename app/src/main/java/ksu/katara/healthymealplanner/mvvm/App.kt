@@ -6,8 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import ksu.katara.healthymealplanner.foundation.BaseApplication
 import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
-import ksu.katara.healthymealplanner.mvvm.model.addrecipes.AddRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.addrecipes.InMemoryAddRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.calendar.InMemoryCalendarRepository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.SQLiteDietTipsRepository
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.InMemoryMealPlanForDateRecipesRepository
@@ -29,7 +27,6 @@ class App : Application(), BaseApplication {
     private lateinit var recipeCategoriesRepository: Repository
     private lateinit var recipesRepository: SQLiteRecipesRepository
     private lateinit var mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository
-    private lateinit var addRecipesRepository: AddRecipesRepository
     private lateinit var shoppingListRepository: ShoppingListRepository
 
     private val calendarRepository = InMemoryCalendarRepository()
@@ -46,7 +43,6 @@ class App : Application(), BaseApplication {
             recipeCategoriesRepository,
             recipesRepository,
             mealPlanForDateRecipesRepository,
-            addRecipesRepository,
             shoppingListRepository,
             calendarRepository,
         )
@@ -57,12 +53,7 @@ class App : Application(), BaseApplication {
         dietTipsRepository = SQLiteDietTipsRepository(database, ioDispatcher)
         recipeCategoriesRepository = SQLiteRecipeCategoriesRepository(database, ioDispatcher)
         recipesRepository = SQLiteRecipesRepository(database, ioDispatcher)
-        mealPlanForDateRecipesRepository = InMemoryMealPlanForDateRecipesRepository(ioDispatcher)
-        addRecipesRepository = InMemoryAddRecipesRepository(
-            recipesRepository,
-            mealPlanForDateRecipesRepository,
-            ioDispatcher
-        )
+        mealPlanForDateRecipesRepository = InMemoryMealPlanForDateRecipesRepository(database, ioDispatcher)
         shoppingListRepository =
             SQLiteShoppingListRepository(database, ioDispatcher)
     }

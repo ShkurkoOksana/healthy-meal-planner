@@ -2,7 +2,6 @@ package ksu.katara.healthymealplanner.mvvm.model.shoppinglist
 
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
@@ -173,10 +172,8 @@ class SQLiteShoppingListRepository(
                 delay(30)
                 emit(progress)
             }
-            Log.d("MyLog", shoppingList[0].ingredients[0].ingredient.isInShoppingList.toString())
             deleteShoppingListIngredient(recipeId, ingredient.id)
             shoppingList = findShoppingList()
-            Log.d("MyLog", shoppingList[0].ingredients[0].ingredient.isInShoppingList.toString())
             shoppingListLoaded = true
             shoppingListNotifyChanges()
         }.flowOn(ioDispatcher.value)

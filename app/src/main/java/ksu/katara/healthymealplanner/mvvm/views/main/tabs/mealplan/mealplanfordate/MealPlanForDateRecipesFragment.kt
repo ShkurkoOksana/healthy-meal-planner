@@ -65,7 +65,7 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
             )
         }
         onTryAgain(binding.root) {
-            viewModel.tryAgain()
+            viewModel.loadAgain()
         }
         val mealPlanForDateRecipesLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -77,6 +77,11 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
         if (mealPlanForDateRecipesViewModelAnimator is DefaultItemAnimator) {
             mealPlanForDateRecipesViewModelAnimator.supportsChangeAnimations = false
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.loadAgain()
     }
 
     companion object {

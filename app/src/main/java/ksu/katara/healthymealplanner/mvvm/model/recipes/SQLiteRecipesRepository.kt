@@ -113,51 +113,61 @@ class SQLiteRecipesRepository(
     }
     private fun findIsRecipeFavorite(recipeId: Long): Boolean {
         val cursor = queryRecipe(recipeId)
-        return parseIsRecipeFavorite(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseIsRecipeFavorite(cursor)
+        }
     }
 
     private fun parseIsRecipeFavorite(cursor: Cursor): Boolean {
-        cursor.moveToFirst()
         return cursor.getInt(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_IS_FAVORITE)) == 1
     }
 
     private fun findRecipeCarbohydrates(recipeId: Long): Int {
         val cursor = queryRecipe(recipeId)
-        return parseRecipeCarbohydrates(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseRecipeCarbohydrates(cursor)
+        }
     }
 
     private fun parseRecipeCarbohydrates(cursor: Cursor): Int {
-        cursor.moveToFirst()
         return cursor.getInt(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_CARBOHYDRATES))
     }
 
     private fun findRecipeFats(recipeId: Long): Int {
         val cursor = queryRecipe(recipeId)
-        return parseRecipeFats(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseRecipeFats(cursor)
+        }
     }
 
     private fun parseRecipeFats(cursor: Cursor): Int {
-        cursor.moveToFirst()
         return cursor.getInt(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_FATS))
     }
 
     private fun findRecipeProteins(recipeId: Long): Int {
         val cursor = queryRecipe(recipeId)
-        return parseRecipeProteins(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseRecipeProteins(cursor)
+        }
     }
 
     private fun parseRecipeProteins(cursor: Cursor): Int {
-        cursor.moveToFirst()
         return cursor.getInt(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_PROTEINS))
     }
 
     private fun findRecipeEnergeticValueByRecipeId(recipeId: Long): Int {
         val cursor = queryRecipe(recipeId)
-        return parseRecipeEnergeticValue(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseRecipeEnergeticValue(cursor)
+        }
     }
 
     private fun parseRecipeEnergeticValue(cursor: Cursor): Int {
-        cursor.moveToFirst()
         return cursor.getInt(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_ENERGETIC_VALUE))
     }
 
@@ -173,11 +183,13 @@ class SQLiteRecipesRepository(
 
     private fun findRecipeCuisineTypeByRecipeId(recipeId: Long): String {
         val cursor = queryRecipeCuisineType(recipeId)
-        return parseRecipeCuisineType(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseRecipeCuisineType(cursor)
+        }
     }
 
     private fun parseRecipeCuisineType(cursor: Cursor): String {
-        cursor.moveToFirst()
         return cursor.getString(cursor.getColumnIndexOrThrow("${RecipeCuisineTypesTable.TABLE_NAME}_${RecipeCuisineTypesTable.COLUMN_NAME}"))
     }
 

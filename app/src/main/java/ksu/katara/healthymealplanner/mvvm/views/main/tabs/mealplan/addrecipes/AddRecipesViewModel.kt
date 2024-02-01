@@ -16,8 +16,7 @@ import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
-import ksu.katara.healthymealplanner.mvvm.model.addrecipes.AddRecipesListener
-import ksu.katara.healthymealplanner.mvvm.model.addrecipes.AddRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.model.mealplan.AddRecipesListener
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
@@ -33,7 +32,6 @@ class AddRecipesListViewModel(
     screen: Screen,
     private val navigator: Navigator,
     private val uiActions: UiActions,
-    private val addRecipesRepository: AddRecipesRepository,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), AddRecipesActionListener {
@@ -65,7 +63,7 @@ class AddRecipesListViewModel(
 
     init {
         _screenTitle.value = uiActions.getString(R.string.add_recipe_title)
-        addRecipesRepository.addListener(addRecipesListener)
+        mealPlanForDateRecipesRepository.addAddRecipesListener(addRecipesListener)
         loadAddRecipes(selectedDate, mealType)
     }
 
@@ -73,7 +71,7 @@ class AddRecipesListViewModel(
         addRecipesResult = PendingResult()
         viewModelScope.launch {
             try {
-                addRecipesRepository.load(selectedDate, mealType)
+                mealPlanForDateRecipesRepository.loadAddRecipes(selectedDate, mealType)
             } catch (e: Exception) {
                 if (e !is CancellationException) addRecipesResult = ErrorResult(e)
             }
@@ -82,7 +80,7 @@ class AddRecipesListViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        addRecipesRepository.removeListener(addRecipesListener)
+        mealPlanForDateRecipesRepository.removeAddRecipesListener(addRecipesListener)
     }
 
     override fun onAddRecipePressed(recipe: Recipe) {
@@ -90,10 +88,10 @@ class AddRecipesListViewModel(
         addDeleteProgressTo(recipe)
         viewModelScope.launch {
             try {
-                mealPlanForDateRecipesRepository.addRecipe(selectedDate, mealType, recipe)
+                mealPlanForDateRecipesRepository.addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
                 viewModelScope.launch {
                     try {
-                        addRecipesRepository.deleteRecipe(recipe)
+                        mealPlanForDateRecipesRepository.deleteRecipeFromAddRecipes(recipe)
                         removeDeleteProgressFrom(recipe)
                     } catch (e: Exception) {
                         if (e !is CancellationException) {

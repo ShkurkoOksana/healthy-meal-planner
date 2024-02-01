@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-val sdf = SimpleDateFormat("dd MMMM", Locale.getDefault())
+val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
 class HomeFragment : BaseFragment(), HasScreenTitle {
 

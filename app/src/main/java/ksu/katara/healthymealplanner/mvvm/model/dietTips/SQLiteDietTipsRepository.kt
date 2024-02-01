@@ -9,7 +9,10 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.*
+import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipChaptersTable
+import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipDetailStepsTable
+import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipDetailsTable
+import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipsTable
 
 class SQLiteDietTipsRepository(
     private val db: SQLiteDatabase,
@@ -103,8 +106,10 @@ class SQLiteDietTipsRepository(
 
     private fun getDietTipDetailsById(id: Long): DietTipDetails {
         val cursor = queryDietTipDetailsById(id)
-        cursor.moveToFirst()
-        return parseDietTipDetail(cursor)
+        cursor.use {
+            cursor.moveToFirst()
+            return parseDietTipDetail(cursor)
+        }
     }
 
     private fun queryDietTipDetailsById(id: Long): Cursor {

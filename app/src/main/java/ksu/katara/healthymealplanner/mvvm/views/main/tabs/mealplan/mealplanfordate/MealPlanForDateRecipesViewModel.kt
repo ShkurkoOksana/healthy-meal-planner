@@ -21,10 +21,10 @@ import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesR
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.sdf
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.addrecipes.AddRecipesFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment.Screen
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
 import java.util.Date
 
 data class MealPlanForDateRecipesItem(
@@ -66,7 +66,7 @@ class MealPlanForDateRecipesViewModel(
 
     init {
         _screenTitle.value = uiActions.getString(R.string.meal_plan_for_date_title, mealType.mealName , sdf.format(selectedDate))
-        mealPlanForDateRecipesRepository.addListener(mealPlanForDateRecipesListener)
+        mealPlanForDateRecipesRepository.addMealPlanForDateListener(mealPlanForDateRecipesListener)
         loadMealPlanForDateRecipes(selectedDate, mealType)
     }
 
@@ -74,7 +74,7 @@ class MealPlanForDateRecipesViewModel(
         mealPlanRecipesResult = PendingResult()
         viewModelScope.launch {
             try {
-                mealPlanForDateRecipesRepository.load(selectedDate, mealType)
+                mealPlanForDateRecipesRepository.loadMealPlanForDate(selectedDate, mealType)
             } catch (e: Exception) {
                 if (e !is CancellationException) mealPlanRecipesResult = ErrorResult(IllegalArgumentException())
             }
@@ -88,14 +88,14 @@ class MealPlanForDateRecipesViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        mealPlanForDateRecipesRepository.removeListener(mealPlanForDateRecipesListener)
+        mealPlanForDateRecipesRepository.removeMealPlanForDateListener(mealPlanForDateRecipesListener)
     }
 override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
     if (isDeleteInProgress(recipe)) return
     addDeleteProgressTo(recipe)
     viewModelScope.launch {
         try {
-            val result = mealPlanForDateRecipesRepository.deleteRecipe(selectedDate, mealType, recipe)
+            val result = mealPlanForDateRecipesRepository.deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
             removeDeleteProgressFrom(recipe)
             if (result == null) {
                 mealPlanRecipesResult = EmptyResult()
@@ -134,7 +134,7 @@ override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
         navigator.launch(R.id.recipeDetailsFragment, RecipeDetailsFragment.createArgs(screen))
     }
 
-    fun tryAgain() {
+    fun loadAgain() {
         loadMealPlanForDateRecipes(selectedDate, mealType)
     }
 }
