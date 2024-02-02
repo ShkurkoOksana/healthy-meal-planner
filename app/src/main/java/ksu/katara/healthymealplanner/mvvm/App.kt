@@ -8,8 +8,8 @@ import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.calendar.InMemoryCalendarRepository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.SQLiteDietTipsRepository
-import ksu.katara.healthymealplanner.mvvm.model.mealplan.InMemoryMealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.model.mealplan.SQLiteMealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.SQLiteRecipeCategoriesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.SQLiteRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.SQLiteShoppingListRepository
@@ -53,7 +53,7 @@ class App : Application(), BaseApplication {
         dietTipsRepository = SQLiteDietTipsRepository(database, ioDispatcher)
         recipeCategoriesRepository = SQLiteRecipeCategoriesRepository(database, ioDispatcher)
         recipesRepository = SQLiteRecipesRepository(database, ioDispatcher)
-        mealPlanForDateRecipesRepository = InMemoryMealPlanForDateRecipesRepository(database, ioDispatcher)
+        mealPlanForDateRecipesRepository = SQLiteMealPlanForDateRecipesRepository(database, ioDispatcher)
         shoppingListRepository =
             SQLiteShoppingListRepository(database, ioDispatcher)
     }

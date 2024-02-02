@@ -99,7 +99,7 @@ class SQLiteRecipesRepository(
     private fun findRecipeDetails(recipeId: Long): RecipeDetails {
         return RecipeDetails(
             recipe = findRecipeById(recipeId),
-            preparationTime = 30,
+            preparationTime = findPreparationTime(recipeId),
             cuisineType = findRecipeCuisineTypeByRecipeId(recipeId),
             types = mutableListOf(),
             energeticValue = findRecipeEnergeticValueByRecipeId(recipeId),
@@ -111,6 +111,7 @@ class SQLiteRecipesRepository(
             isFavorite = findIsRecipeFavorite(recipeId)
         )
     }
+
     private fun findIsRecipeFavorite(recipeId: Long): Boolean {
         val cursor = queryRecipe(recipeId)
         cursor.use {
@@ -203,6 +204,18 @@ class SQLiteRecipesRepository(
             append("WHERE ${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_ID} = $recipeId")
         }
         return db.rawQuery(sql, null)
+    }
+
+    private fun findPreparationTime(recipeId: Long): Int {
+        val cursor = queryRecipe(recipeId)
+        cursor.use {
+            cursor.moveToFirst()
+            return parsePreparationTime(cursor)
+        }
+    }
+
+    private fun parsePreparationTime(cursor: Cursor): Int {
+        return cursor.getInt(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_PREPARATION_TIME))
     }
 
     private fun findRecipeById(recipeId: Long): Recipe {
@@ -434,7 +447,7 @@ class SQLiteRecipesRepository(
     private fun parseRecipePreparationSteps(cursor: Cursor): RecipePreparationStep {
         return RecipePreparationStep(
             id = cursor.getLong(cursor.getColumnIndexOrThrow("${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_ID}")),
-            step = cursor.getInt(cursor.getColumnIndexOrThrow("${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_ID}")),
+            step = cursor.getInt(cursor.getColumnIndexOrThrow("${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_PREPARATION_STEP}")),
             photo = cursor.getString(cursor.getColumnIndexOrThrow("${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_PHOTO}")),
             description = cursor.getString(cursor.getColumnIndexOrThrow("${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_DESCRIPTION}"))
         )
@@ -444,6 +457,7 @@ class SQLiteRecipesRepository(
         val sql = buildString {
             append("SELECT ")
             append("${RecipePreparationStepsTable.TABLE_NAME}.${RecipePreparationStepsTable.COLUMN_ID} AS ${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_ID}, ")
+            append("${RecipePreparationStepsTable.TABLE_NAME}.${RecipePreparationStepsTable.COLUMN_PREPARATION_STEP} AS ${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_PREPARATION_STEP}, ")
             append("${RecipePreparationStepsTable.TABLE_NAME}.${RecipePreparationStepsTable.COLUMN_PHOTO} AS ${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_PHOTO}, ")
             append("${RecipePreparationStepsTable.TABLE_NAME}.${RecipePreparationStepsTable.COLUMN_DESCRIPTION} AS ${RecipePreparationStepsTable.TABLE_NAME}_${RecipePreparationStepsTable.COLUMN_DESCRIPTION} ")
             append("FROM ")

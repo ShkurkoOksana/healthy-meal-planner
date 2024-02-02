@@ -7,7 +7,6 @@ import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.entities.MealPlanRecipes
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealPlanMealTypesJoinTable
 import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealPlanRecipesJoinTable
 import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealPlanTable
 import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealTypesTable
@@ -20,7 +19,7 @@ import java.util.Locale
 /**
  * Simple in-memory implementation of [MealPlanForDateRecipesRepository]
  */
-class InMemoryMealPlanForDateRecipesRepository(
+class SQLiteMealPlanForDateRecipesRepository(
     private val db: SQLiteDatabase,
     private val ioDispatcher: IoDispatcher
 ) : MealPlanForDateRecipesRepository {
@@ -42,7 +41,7 @@ class InMemoryMealPlanForDateRecipesRepository(
         delay(1000L)
         mealPlanForDateRecipes = findMealPlanRecipes(selectedDate, mealType)
         mealPlanForDateRecipesLoaded = true
-        mealPlanForDateNotifyChanges()
+        notifyMealPlanForDateChanges()
         return@withContext mealPlanForDateRecipes
     }
 
@@ -62,13 +61,18 @@ class InMemoryMealPlanForDateRecipesRepository(
 
     private fun queryMealPlanRecipes(selectedDate: Date, mealType: MealTypes): Cursor {
         val sql = buildString {
-            append("SELECT ${RecipesTable.TABLE_NAME}.* ")
+            append("SELECT ")
+            append("${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_ID} AS ${MealPlanTable.TABLE_NAME}_${MealPlanTable.COLUMN_ID}, ")
+            append("${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_NAME} AS ${MealTypesTable.TABLE_NAME}_${MealTypesTable.COLUMN_NAME}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_ID} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_ID}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_PHOTO} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_PHOTO}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_NAME} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_NAME}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_CATEGORY_ID} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_CATEGORY_ID} ")
             append("FROM ${MealPlanTable.TABLE_NAME} ")
             append("INNER JOIN ${MealPlanRecipesJoinTable.TABLE_NAME} ON ${MealPlanRecipesJoinTable.TABLE_NAME}.${MealPlanRecipesJoinTable.COLUMN_MEAL_PLAN_ID} = ${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_ID} ")
             append("INNER JOIN ${RecipesTable.TABLE_NAME} ON ${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_ID} = ${MealPlanRecipesJoinTable.TABLE_NAME}.${MealPlanRecipesJoinTable.COLUMN_RECIPE_ID} ")
-            append("INNER JOIN ${MealPlanMealTypesJoinTable.TABLE_NAME} ON ${MealPlanMealTypesJoinTable.TABLE_NAME}.${MealPlanMealTypesJoinTable.COLUMN_MEAL_PLAN_ID} = ${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_ID} ")
-            append("INNER JOIN ${MealTypesTable.TABLE_NAME} ON ${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_ID} = ${MealPlanMealTypesJoinTable.TABLE_NAME}.${MealPlanMealTypesJoinTable.COLUMN_MEAL_TYPE_ID} ")
-            append("WHERE ${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_NAME} = \"${mealType.mealName}\" ")
+            append("INNER JOIN ${MealTypesTable.TABLE_NAME} ON ${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_ID} = ${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_MEAL_TYPE_ID} ")
+            append("WHERE ${MealTypesTable.TABLE_NAME}_${MealTypesTable.COLUMN_NAME} = \"${mealType.mealName}\" ")
             append("AND ")
             append(
                 "${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_DATE} = \"${
@@ -83,10 +87,10 @@ class InMemoryMealPlanForDateRecipesRepository(
 
     private fun parseRecipe(cursor: Cursor): Recipe {
         return Recipe(
-            id = cursor.getLong(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_ID)),
-            photo = cursor.getString(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_PHOTO)),
-            name = cursor.getString(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_NAME)),
-            categoryId = cursor.getLong(cursor.getColumnIndexOrThrow(RecipesTable.COLUMN_CATEGORY_ID))
+            id = cursor.getLong(cursor.getColumnIndexOrThrow("${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_ID}")),
+            photo = cursor.getString(cursor.getColumnIndexOrThrow("${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_PHOTO}")),
+            name = cursor.getString(cursor.getColumnIndexOrThrow("${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_NAME}")),
+            categoryId = cursor.getLong(cursor.getColumnIndexOrThrow("${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_CATEGORY_ID}"))
         )
     }
 
@@ -108,13 +112,14 @@ class InMemoryMealPlanForDateRecipesRepository(
     ) = withContext(ioDispatcher.value) {
         delay(1000L)
         addRecipeToMealPlanForDateRecipes(selectedDate, mealType, recipe)
-        mealPlanForDateNotifyChanges()
+        notifyMealPlanForDateChanges()
     }
 
     private fun addRecipeToMealPlanForDateRecipes(selectedDate: Date, mealType: MealTypes, recipe: Recipe) {
         insertRecipeToMealPlanForDateRecipes(selectedDate, mealType, recipe)
         mealPlanForDateRecipes = findMealPlanRecipes(selectedDate, mealType)
-        mealPlanForDateNotifyChanges()
+        mealPlanForDateRecipesLoaded = true
+        notifyMealPlanForDateChanges()
     }
 
     private fun insertRecipeToMealPlanForDateRecipes(
@@ -122,22 +127,40 @@ class InMemoryMealPlanForDateRecipesRepository(
         mealType: MealTypes,
         recipe: Recipe
     ) {
-        var mealPlanId = findMealPlanId(selectedDate)
+        val sql1 = buildString {
+            append("INSERT INTO ${MealPlanTable.TABLE_NAME} (")
+            append("${MealPlanTable.COLUMN_DATE}, ${MealPlanTable.COLUMN_MEAL_TYPE_ID}) ")
+            append("VALUES")
+            append("(\"${dataSDF.format(selectedDate)}\", ${mealType.ordinal + 1})")
+        }
+        db.execSQL(sql1)
+
+        val mealPlanId = findMealPlanId(selectedDate, mealType)
+        val sql2 = buildString {
+            append("INSERT INTO ${MealPlanRecipesJoinTable.TABLE_NAME} (")
+            append("${MealPlanRecipesJoinTable.COLUMN_MEAL_PLAN_ID}, ")
+            append("${MealPlanRecipesJoinTable.COLUMN_RECIPE_ID}) ")
+            append("VALUES")
+            append("($mealPlanId, ${recipe.id})")
+        }
+        db.execSQL(sql2)
+
+        /*var mealPlanId = findMealPlanId(selectedDate)
         if (mealPlanId != null) {
             insertDataIntoMealPlanRecipesJoinTable(mealPlanId, recipe.id)
             val mealTypeId = findMealTypeId(mealType.mealName)
-            insertDataIntoMealPlanMealTypesJoinTable(mealPlanId, mealTypeId)
+
         } else {
             insertDataIntoMealPlanTable(selectedDate)
             mealPlanId = findMealPlanId(selectedDate)
             if (mealPlanId != null ) {
                 insertDataIntoMealPlanRecipesJoinTable(mealPlanId, recipe.id)
                 val mealTypeId = findMealTypeId(mealType.mealName)
-                insertDataIntoMealPlanMealTypesJoinTable(mealPlanId, mealTypeId)
+                //insertDataIntoMealPlanMealTypesJoinTable(mealPlanId, mealTypeId)
             } else {
                 throw Exception("Can't insert data into MealPlanTable")
             }
-        }
+        }*/
     }
 
     private fun insertDataIntoMealPlanTable(selectedDate: Date) {
@@ -146,17 +169,6 @@ class InMemoryMealPlanForDateRecipesRepository(
             append("${MealPlanTable.COLUMN_DATE}) ")
             append("VALUES")
             append("(\"${dataSDF.format(selectedDate)}\")")
-        }
-        db.execSQL(sql)
-    }
-
-    private fun insertDataIntoMealPlanMealTypesJoinTable(mealPlanId: Long, mealTypeId: Long) {
-        val sql = buildString {
-            append("INSERT INTO ${MealPlanMealTypesJoinTable.TABLE_NAME} (")
-            append("${MealPlanMealTypesJoinTable.COLUMN_MEAL_PLAN_ID}, ")
-            append("${MealPlanMealTypesJoinTable.COLUMN_MEAL_TYPE_ID}) ")
-            append("VALUES ")
-            append("($mealPlanId, $mealTypeId)")
         }
         db.execSQL(sql)
     }
@@ -192,11 +204,11 @@ class InMemoryMealPlanForDateRecipesRepository(
         return db.rawQuery(sql, null)
     }
 
-    private fun findMealPlanId(selectedDate: Date): Long? {
-        val cursor = queryMealPlanId(selectedDate)
+    private fun findMealPlanId(selectedDate: Date, mealType: MealTypes): Long {
+        val cursor = queryMealPlanId(selectedDate, mealType)
         cursor.use {
             cursor.moveToFirst()
-            if (cursor.count == 0) return null
+            if (cursor.count == 0) return 0
             return parseMealPlanId(cursor)
         }
     }
@@ -205,10 +217,11 @@ class InMemoryMealPlanForDateRecipesRepository(
         return cursor.getLong(cursor.getColumnIndexOrThrow(MealPlanTable.COLUMN_ID))
     }
 
-    private fun queryMealPlanId(selectedDate: Date): Cursor {
+    private fun queryMealPlanId(selectedDate: Date, mealType: MealTypes): Cursor {
         val sql = buildString {
             append("SELECT * FROM ${MealPlanTable.TABLE_NAME} ")
-            append("WHERE ${MealPlanTable.COLUMN_DATE} = \"${dataSDF.format(selectedDate)}\"")
+            append("WHERE ${MealPlanTable.COLUMN_DATE} = \"${dataSDF.format(selectedDate)}\" ")
+            append("AND ${MealPlanTable.COLUMN_MEAL_TYPE_ID} = ${mealType.ordinal + 1}")
         }
         return db.rawQuery(sql, null)
     }
@@ -221,7 +234,8 @@ class InMemoryMealPlanForDateRecipesRepository(
         delay(1000L)
         deleteRecipeFromMealPlanForDateRecipes(selectedDate, mealType, recipe)
         mealPlanForDateRecipes = findMealPlanRecipes(selectedDate, mealType)
-        mealPlanForDateNotifyChanges()
+        mealPlanForDateRecipesLoaded = true
+        notifyMealPlanForDateChanges()
         return@withContext mealPlanForDateRecipes
     }
 
@@ -233,8 +247,7 @@ class InMemoryMealPlanForDateRecipesRepository(
             append("FROM ${MealPlanRecipesJoinTable.TABLE_NAME} ")
             append("INNER JOIN ${MealPlanTable.TABLE_NAME} ON ${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_ID} = ${MealPlanRecipesJoinTable.TABLE_NAME}.${MealPlanRecipesJoinTable.COLUMN_MEAL_PLAN_ID} ")
             append("INNER JOIN ${RecipesTable.TABLE_NAME} ON ${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_ID} = ${MealPlanRecipesJoinTable.TABLE_NAME}.${MealPlanRecipesJoinTable.COLUMN_RECIPE_ID} ")
-            append("INNER JOIN ${MealPlanMealTypesJoinTable.TABLE_NAME} ON ${MealPlanMealTypesJoinTable.TABLE_NAME}.${MealPlanMealTypesJoinTable.COLUMN_MEAL_PLAN_ID} = ${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_ID} ")
-            append("INNER JOIN ${MealTypesTable.TABLE_NAME} ON ${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_ID} = ${MealPlanMealTypesJoinTable.TABLE_NAME}.${MealPlanMealTypesJoinTable.COLUMN_MEAL_TYPE_ID} ")
+            append("INNER JOIN ${MealTypesTable.TABLE_NAME} ON ${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_ID} = ${MealPlanTable.TABLE_NAME}.${MealPlanTable.COLUMN_MEAL_TYPE_ID} ")
             append("WHERE ${MealTypesTable.TABLE_NAME}.${MealTypesTable.COLUMN_NAME} = \"${mealType.mealName}\" ")
             append("AND ")
             append(
@@ -249,7 +262,7 @@ class InMemoryMealPlanForDateRecipesRepository(
         db.execSQL(sql)
     }
 
-    private fun mealPlanForDateNotifyChanges() {
+    private fun notifyMealPlanForDateChanges() {
         if (!mealPlanForDateRecipesLoaded) return
         mealPlanForDateRecipesListeners.forEach { it.invoke(mealPlanForDateRecipes) }
     }
@@ -259,15 +272,15 @@ class InMemoryMealPlanForDateRecipesRepository(
             delay(1000L)
             addRecipes = findAddRecipes()
             loadedAddRecipes = true
-            notifyChanges()
+            notifyAddRecipeChanges()
             return@withContext addRecipes
         }
 
     private fun findAddRecipes(): MutableList<Recipe> {
-        val mealPlanForDateRecipes = mealPlanForDateRecipes?.recipes ?: mutableListOf<Recipe>()
+        val mealPlanRecipes = mealPlanForDateRecipes?.recipes ?: mutableListOf()
         val allRecipes = findAllRecipes()
-        allRecipes.removeAll(mealPlanForDateRecipes)
-        return if (mealPlanForDateRecipes.isEmpty()) allRecipes else allRecipes
+        allRecipes.removeAll(mealPlanRecipes)
+        return if (mealPlanRecipes.isEmpty()) allRecipes else allRecipes
     }
 
     private fun findAllRecipes(): MutableList<Recipe> {
@@ -275,7 +288,8 @@ class InMemoryMealPlanForDateRecipesRepository(
         return cursor.use {
             val list = mutableListOf<Recipe>()
             while (cursor.moveToNext()) {
-                list.add(parseRecipe(cursor))
+                val recipe = parseRecipe(cursor)
+                list.add(recipe)
             }
             return@use list
         }
@@ -283,8 +297,12 @@ class InMemoryMealPlanForDateRecipesRepository(
 
     private fun queryRecipes(): Cursor {
         val sql = buildString {
-            append("SELECT * FROM ")
-            append("${RecipesTable.TABLE_NAME} ")
+            append("SELECT ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_ID} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_ID}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_PHOTO} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_PHOTO}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_NAME} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_NAME}, ")
+            append("${RecipesTable.TABLE_NAME}.${RecipesTable.COLUMN_CATEGORY_ID} AS ${RecipesTable.TABLE_NAME}_${RecipesTable.COLUMN_CATEGORY_ID} ")
+            append("FROM ${RecipesTable.TABLE_NAME} ")
         }
         return db.rawQuery(sql, null)
     }
@@ -307,10 +325,10 @@ class InMemoryMealPlanForDateRecipesRepository(
             if (indexToDelete != -1) {
                 addRecipes.removeAt(indexToDelete)
             }
-            notifyChanges()
+            notifyAddRecipeChanges()
         }
 
-    private fun notifyChanges() {
+    private fun notifyAddRecipeChanges() {
         if (!loadedAddRecipes) return
         addRecipesListeners.forEach { it.invoke(addRecipes) }
     }

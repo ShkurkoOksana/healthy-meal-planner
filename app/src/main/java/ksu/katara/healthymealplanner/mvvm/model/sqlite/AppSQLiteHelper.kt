@@ -6,16 +6,24 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class AppSQLiteHelper(
     private val applicationContext: Context
-) : SQLiteOpenHelper(applicationContext, "healthy_meal_planner.db", null, 2) {
+) : SQLiteOpenHelper(applicationContext, "healthy_meal_planner.db", null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         executeSQLFromAsserts(db, "db_init.sql")
         executeSQLFromAsserts(db, "db_update_to_version_2.sql")
+        executeSQLFromAsserts(db, "db_update_to_version_3.sql")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         when {
             oldVersion == 1 && newVersion == 2 -> {
                 executeSQLFromAsserts(db, "db_update_to_version_2.sql")
+            }
+            oldVersion == 1 && newVersion == 3 -> {
+                executeSQLFromAsserts(db, "db_update_to_version_2.sql")
+                executeSQLFromAsserts(db, "db_update_to_version_3.sql")
+            }
+            oldVersion == 2 && newVersion == 3 -> {
+                executeSQLFromAsserts(db, "db_update_to_version_3.sql")
             }
         }
     }
@@ -29,6 +37,10 @@ class AppSQLiteHelper(
             .forEach {
                 db.execSQL(it)
             }
+    }
+
+    companion object {
+        const val DB_VERSION = 3
     }
 
 }

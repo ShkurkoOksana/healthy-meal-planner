@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
-import ksu.katara.healthymealplanner.mvvm.model.IngredientsNotFoundException
-import ksu.katara.healthymealplanner.mvvm.model.ShoppingListRecipeNotFoundException
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
@@ -81,7 +79,7 @@ class SQLiteShoppingListRepository(
                 measure = cursor.getString(cursor.getColumnIndexOrThrow("${IngredientMeasuresTable.TABLE_NAME}_${IngredientMeasuresTable.COLUMN_NAME}")),
                 isInShoppingList = cursor.getInt(cursor.getColumnIndexOrThrow("${RecipesIngredientsJoinTable.TABLE_NAME}_${RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST}")) == 1,
             ),
-            isSelectAndCross = false
+            isSelectAndCross = cursor.getString(cursor.getColumnIndexOrThrow("${RecipesIngredientsJoinTable.TABLE_NAME}_${RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST}")) == "1"
         )
     }
 
@@ -93,6 +91,7 @@ class SQLiteShoppingListRepository(
             append("${RecipeIngredientsTable.TABLE_NAME}.${RecipeIngredientsTable.COLUMN_NAME} AS ${RecipeIngredientsTable.TABLE_NAME}_${RecipeIngredientsTable.COLUMN_NAME}, ")
             append("${RecipesIngredientsJoinTable.TABLE_NAME}.${RecipesIngredientsJoinTable.COLUMN_AMOUNT} AS ${RecipesIngredientsJoinTable.TABLE_NAME}_${RecipesIngredientsJoinTable.COLUMN_AMOUNT}, ")
             append("${IngredientMeasuresTable.TABLE_NAME}.${IngredientMeasuresTable.COLUMN_NAME} AS ${IngredientMeasuresTable.TABLE_NAME}_${IngredientMeasuresTable.COLUMN_NAME}, ")
+            append("${RecipesIngredientsJoinTable.TABLE_NAME}.${RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} AS ${RecipesIngredientsJoinTable.TABLE_NAME}_${RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST}, ")
             append("${RecipesIngredientsJoinTable.TABLE_NAME}.${RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} AS ${RecipesIngredientsJoinTable.TABLE_NAME}_${RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} ")
             append("FROM ")
             append("${RecipeIngredientsTable.TABLE_NAME} ")
@@ -151,17 +150,27 @@ class SQLiteShoppingListRepository(
     }
 
     override suspend fun selectIngredient(
-        recipe: ShoppingListRecipe,
-        ingredient: ShoppingListRecipeIngredient,
+        shoppingListRecipe: ShoppingListRecipe,
+        shoppingListIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean,
     ) = withContext(ioDispatcher.value) {
         delay(1000L)
-        val recipe =
-            shoppingList.firstOrNull { it == recipe } ?: throw ShoppingListRecipeNotFoundException()
-        val ingredient = recipe.ingredients.firstOrNull { it == ingredient }
-            ?: throw IngredientsNotFoundException()
-        ingredient.isSelectAndCross = isChecked
+        selectShoppingListIngredient(shoppingListRecipe.recipe.id, shoppingListIngredient.ingredient.id, if (isChecked) "1" else "0")
+        shoppingList = findShoppingList()
+        shoppingListLoaded = true
         shoppingListNotifyChanges()
+    }
+
+    private fun selectShoppingListIngredient(recipeId: Long, ingredientId: Long, isChecked: String) {
+        val sql = buildString {
+            append("UPDATE ")
+            append("${RecipesIngredientsJoinTable.TABLE_NAME} ")
+            append("SET ${RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} = $isChecked ")
+            append("WHERE ${RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} = $recipeId ")
+            append("AND ")
+            append("${RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} = $ingredientId")
+        }
+        db.execSQL(sql)
     }
 
     override fun deleteIngredient(recipeId: Long, ingredient: RecipeIngredient): Flow<Int> =
@@ -182,11 +191,13 @@ class SQLiteShoppingListRepository(
         val sql = buildString {
             append("UPDATE ")
             append("${RecipesIngredientsJoinTable.TABLE_NAME} ")
-            append("SET ${RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} = 0 ")
+            append("SET ${RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} = 0, ")
+            append("${RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} = 0 ")
             append("WHERE ${RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} = $recipeId ")
             append("AND ")
             append("${RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} = $ingredientId")
         }
         db.execSQL(sql)
     }
+
 }

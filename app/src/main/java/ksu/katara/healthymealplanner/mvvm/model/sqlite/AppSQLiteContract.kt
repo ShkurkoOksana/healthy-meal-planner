@@ -66,6 +66,7 @@ class AppSQLiteContract {
     object RecipePreparationStepsTable {
         const val TABLE_NAME = "recipe_preparation_steps"
         const val COLUMN_ID = "id"
+        const val COLUMN_PREPARATION_STEP = "preparation_step"
         const val COLUMN_PHOTO = "photo"
         const val COLUMN_DESCRIPTION = "description"
     }
@@ -76,6 +77,7 @@ class AppSQLiteContract {
         const val COLUMN_CATEGORY_ID = "category_id"
         const val COLUMN_NAME = "name"
         const val COLUMN_PHOTO = "photo"
+        const val COLUMN_PREPARATION_TIME = "preparation_time"
         const val COLUMN_CUISINE_TYPE_ID = "cousine_type_id"
         const val COLUMN_ENERGETIC_VALUE = "energetic_value"
         const val COLUMN_PROTEINS = "proteins"
@@ -94,6 +96,7 @@ class AppSQLiteContract {
         const val TABLE_NAME = "meal_plan"
         const val COLUMN_ID = "id"
         const val COLUMN_DATE = "date"
+        const val COLUMN_MEAL_TYPE_ID = "meal_type_id"
     }
 
     object RecipesRecipeTypesJoinTable {
@@ -108,6 +111,7 @@ class AppSQLiteContract {
         const val COLUMN_INGREDIENT_ID = "ingredient_id"
         const val COLUMN_AMOUNT = "amount"
         const val COLUMN_IS_IN_SHOPPING_LIST = "is_in_shopping_list"
+        const val COLUMN_IS_CROSS_IN_SHOPPING_LIST = "is_cross_in_shopping_list"
         const val COLUMN_TOTAL_SUM_IS_IN_SHOPPING_LIST = "total_sum_is_in_shopping_list"
     }
 
@@ -121,12 +125,6 @@ class AppSQLiteContract {
         const val TABLE_NAME = "jt_meal_plan_recipes"
         const val COLUMN_MEAL_PLAN_ID = "meal_plan_id"
         const val COLUMN_RECIPE_ID = "recipe_id"
-    }
-
-    object MealPlanMealTypesJoinTable {
-        const val TABLE_NAME = "jt_meal_plan_meal_types"
-        const val COLUMN_MEAL_PLAN_ID = "meal_plan_id"
-        const val COLUMN_MEAL_TYPE_ID = "meal_type_id"
     }
 
     object RecipeIngredientsIngredientMeasuresJoinTable {
