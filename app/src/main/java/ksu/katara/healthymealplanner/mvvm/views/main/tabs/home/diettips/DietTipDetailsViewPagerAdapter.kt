@@ -5,14 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.databinding.ItemDietTipDetailsBinding
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
 
 class DietTipDetailsViewPagerAdapter(
-    private val dietTipsViewModel: DietTipDetailsViewModel,
-    private val dietTipDetailSteps: List<DietTipDetailSteps>,
+    private val dietTipDetailSteps: DietTipDetailsSteps,
 ) : RecyclerView.Adapter<DietTipDetailsViewPagerAdapter.DietTipDetailsViewPagerViewHolder>() {
 
-    override fun getItemCount() = dietTipDetailSteps.size
+    override fun getItemCount() = dietTipDetailSteps.steps.size
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -25,11 +23,10 @@ class DietTipDetailsViewPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: DietTipDetailsViewPagerViewHolder, position: Int) {
-        val dietTipDetailsId = dietTipDetailSteps[position].dietTipDetailId
-        val background = dietTipsViewModel.getDietTipDetailsById(dietTipDetailsId).background
-        holder.binding.dietTipDetailsTitleTextView.text = dietTipDetailSteps[position].title
+        val background = dietTipDetailSteps.dietTipDetails.background
+        holder.binding.dietTipDetailsTitleTextView.text = dietTipDetailSteps.steps[position].title
         holder.binding.dietTipDetailsDescriptionTextView.text =
-            dietTipDetailSteps[position].description
+            dietTipDetailSteps.steps[position].description
         Glide.with(holder.binding.dietTipDetailsBackgroundImageView.context)
             .load(background)
             .into(holder.binding.dietTipDetailsBackgroundImageView)

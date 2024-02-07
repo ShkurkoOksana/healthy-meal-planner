@@ -22,8 +22,7 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
     class Screen : BaseScreen
 
     private lateinit var binding: FragmentDietTipsChaptersBinding
-
-    private lateinit var dietTipsChaptersAdapter: DietTipsChaptersAdapter
+    private lateinit var chapterDietTipsListAdapter: ChapterDietTipsListAdapter
 
     override val viewModel by screenViewModel<DietTipsChaptersViewModel>()
 
@@ -43,26 +42,26 @@ class DietTipsChaptersFragment : BaseFragment(), HasScreenTitle {
     }
 
     private fun initView() {
-        dietTipsChaptersAdapter = DietTipsChaptersAdapter(
+        chapterDietTipsListAdapter = ChapterDietTipsListAdapter(
             requireActivity(),
-            viewModel,
+            viewModel
         )
-        viewModel.dietTipsChapters.observe(viewLifecycleOwner) { result ->
+        viewModel.chapterDietTipsList.observe(viewLifecycleOwner) { result ->
             renderSimpleResult(
                 root = binding.root,
                 result = result,
                 onSuccess = {
-                    dietTipsChaptersAdapter.dietTipsChapters = it
+                    chapterDietTipsListAdapter.chapterDietTipsList = it
                 }
             )
         }
         onTryAgain(binding.root) {
             viewModel.tryAgain()
         }
-        val dietTipsChaptersLayoutManager =
+        val chapterDietTipsListLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.dietTipChaptersRecyclerView.layoutManager = dietTipsChaptersLayoutManager
-        binding.dietTipChaptersRecyclerView.adapter = dietTipsChaptersAdapter
+        binding.dietTipChaptersRecyclerView.layoutManager = chapterDietTipsListLayoutManager
+        binding.dietTipChaptersRecyclerView.adapter = chapterDietTipsListAdapter
     }
 
     companion object {

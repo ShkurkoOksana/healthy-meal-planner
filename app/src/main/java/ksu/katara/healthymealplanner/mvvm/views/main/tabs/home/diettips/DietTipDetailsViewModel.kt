@@ -13,6 +13,11 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailS
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsFragment.Screen
 
+data class DietTipDetailsSteps(
+    val dietTipDetails: DietTipDetails,
+    val steps: List<DietTipDetailSteps>
+)
+
 class DietTipDetailsViewModel(
     screen: Screen,
     private val navigator: Navigator,
@@ -21,8 +26,8 @@ class DietTipDetailsViewModel(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
-    private val _dietTipDetailSteps = MutableLiveData<StatusResult<List<DietTipDetailSteps>>>()
-    val dietTipDetailSteps: LiveData<StatusResult<List<DietTipDetailSteps>>> = _dietTipDetailSteps
+    private val _dietTipDetailsSteps = MutableLiveData<StatusResult<DietTipDetailsSteps>>()
+    val dietTipDetailsSteps: LiveData<StatusResult<DietTipDetailsSteps>> = _dietTipDetailsSteps
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
@@ -31,18 +36,14 @@ class DietTipDetailsViewModel(
 
     init {
         _screenTitle.value = uiActions.getString(R.string.diet_tips_details_title)
-        loadDietTipDetails(dietTipId)
+        loadDietTipDetailsSteps(dietTipId)
     }
 
-    private fun loadDietTipDetails(id: Long) = into(_dietTipDetailSteps) {
-        dietTipsRepository.loadDietTipDetailStepsById(id)
-    }
-
-    fun getDietTipDetailsById(id: Long): DietTipDetails {
-        return dietTipsRepository.loadDietTipDetailsById(id)
+    private fun loadDietTipDetailsSteps(id: Long) = into(_dietTipDetailsSteps) {
+        dietTipsRepository.loadDietTipDetailsStepsById(id)
     }
 
     fun tryAgain() {
-        loadDietTipDetails(dietTipId)
+        loadDietTipDetailsSteps(dietTipId)
     }
 }

@@ -7,7 +7,7 @@ CREATE TABLE "diet_tips" (
 	"diet_tip_details_id" 			INTEGER,
 	"chapter_id" 						INTEGER,
 	FOREIGN KEY (diet_tip_details_id) REFERENCES diet_tip_details(id)
-	FOREIGN KEY  (chapter_id) REFERENCES chapter(id)
+	FOREIGN KEY  (chapter_id) REFERENCES diet_tip_chapters(id)
 );
 
 CREATE TABLE "diet_tip_chapters" (

@@ -2,6 +2,7 @@ package ksu.katara.healthymealplanner.mvvm
 
 import android.app.Application
 import android.database.sqlite.SQLiteDatabase
+import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import ksu.katara.healthymealplanner.foundation.BaseApplication
 import ksu.katara.healthymealplanner.foundation.model.Repository
@@ -12,6 +13,7 @@ import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesR
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.SQLiteMealPlanForDateRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.SQLiteRecipeCategoriesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.SQLiteRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.model.room.AppDatabase
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.SQLiteShoppingListRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
 import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteHelper
@@ -23,7 +25,9 @@ class App : Application(), BaseApplication {
 
     private lateinit var database: SQLiteDatabase
 
-    private lateinit var dietTipsRepository : Repository
+    private lateinit var roomDatabase: AppDatabase
+
+    private lateinit var dietTipsRepository: Repository
     private lateinit var recipeCategoriesRepository: Repository
     private lateinit var recipesRepository: SQLiteRecipesRepository
     private lateinit var mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository
@@ -47,15 +51,26 @@ class App : Application(), BaseApplication {
             calendarRepository,
         )
     }
+
     override fun onCreate() {
         super.onCreate()
         initDatabase()
-        dietTipsRepository = SQLiteDietTipsRepository(database, ioDispatcher)
+        initRoomDatabase()
+        dietTipsRepository =
+            SQLiteDietTipsRepository(roomDatabase.getDietTipsDao(), database, ioDispatcher)
         recipeCategoriesRepository = SQLiteRecipeCategoriesRepository(database, ioDispatcher)
         recipesRepository = SQLiteRecipesRepository(database, ioDispatcher)
-        mealPlanForDateRecipesRepository = SQLiteMealPlanForDateRecipesRepository(database, ioDispatcher)
+        mealPlanForDateRecipesRepository =
+            SQLiteMealPlanForDateRecipesRepository(database, ioDispatcher)
         shoppingListRepository =
             SQLiteShoppingListRepository(database, ioDispatcher)
+    }
+
+    private fun initRoomDatabase() {
+        roomDatabase =
+            Room.databaseBuilder(this, AppDatabase::class.java, "database.db")
+                .createFromAsset("room_temp.db")
+                .build()
     }
 
     private fun initDatabase() {

@@ -2,6 +2,7 @@
 buildscript {
     ext.hilt_version = "2.43.2"
     ext.nav_version = "2.5.3"
+    ext.room_version = "2.6.1"
     repositories {
         google()
         mavenCentral()
@@ -13,7 +14,10 @@ buildscript {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
     }
 }
+plugins {
+    id("org.jetbrains.kotlin.android") version "1.9.0" apply false
+}
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }

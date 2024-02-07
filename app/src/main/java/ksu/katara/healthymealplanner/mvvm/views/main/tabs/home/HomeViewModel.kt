@@ -37,7 +37,6 @@ class HomeViewModel(
     }
 
     private fun loadDietTips() = into(_dietTips) {
-        dietTipsRepository.loadChapters()
         dietTipsRepository.loadDietTipsByChapterId(CHAPTER_ID_FOR_HOME_FRAGMENT)
     }
 

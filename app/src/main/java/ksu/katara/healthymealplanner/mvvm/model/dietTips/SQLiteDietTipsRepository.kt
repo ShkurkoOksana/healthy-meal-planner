@@ -1,158 +1,79 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipChaptersTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipDetailStepsTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipDetailsTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipsTable
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.DietTipsDao
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.ChapterDietTips
+import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsSteps
 
 class SQLiteDietTipsRepository(
+
+
+    private val dietTipsDao: DietTipsDao,
     private val db: SQLiteDatabase,
     private val ioDispatcher: IoDispatcher
 ) : DietTipsRepository {
 
-    private lateinit var chapters: List<DietTipChapter>
-    private var chaptersLoaded = false
-    private val chapterListeners = mutableSetOf<DietTipChaptersListener>()
+    private lateinit var chapterDietTipsList: List<ChapterDietTips>
+    private var chapterDietTipsListLoaded = false
+    private val chapterDietTipsListListeners = mutableSetOf<ChapterDietTipsListListener>()
 
     private lateinit var dietTips: List<DietTip>
     private var dietTipsLoaded = false
     private val dietTipListeners = mutableSetOf<DietTipsListener>()
 
-    override suspend fun loadChapters(): List<DietTipChapter> = withContext(ioDispatcher.value) {
-        delay(1000L)
-        chapters = getChapters()
-        chaptersLoaded = true
-        notifyChaptersChanges()
-        return@withContext chapters
-    }
+    override suspend fun loadChapterDietTipsList(): List<ChapterDietTips> =
+        withContext(ioDispatcher.value) {
+            delay(1000L)
+            val chapters = dietTipsDao.findChapters().map { it.toDietTipChapter() }
+            val chapterDietTipsList: MutableList<ChapterDietTips> = mutableListOf()
+            chapters.forEach { chapter: DietTipChapter ->
+                val dietTips = dietTipsDao.findByChapterId(chapter.id).map { it.toDietTip() }
+                chapterDietTipsList.add(ChapterDietTips(chapter, dietTips))
+            }
+            dietTipsLoaded = true
+            notifyDietTipsChanges()
+            chapterDietTipsListLoaded = true
+            notifyChapterDietTipsListChanges()
+            return@withContext chapterDietTipsList
+        }
 
     override suspend fun loadDietTipsByChapterId(id: Long): List<DietTip> =
         withContext(ioDispatcher.value) {
             delay(1000L)
-            dietTips = getDietTipsByChapterId(id)
+            val dietTips = dietTipsDao.findByChapterId(id).map { it.toDietTip() }
             dietTipsLoaded = true
             notifyDietTipsChanges()
             return@withContext dietTips
         }
 
-    override fun getDietTipsByChapterId(id: Long): List<DietTip> {
-        val cursor = queryDietTipsByChapterId(id)
-        return cursor.use {
-            val list = mutableListOf<DietTip>()
-            while (cursor.moveToNext()) {
-                list.add(parseDietTip(cursor))
-            }
-            return@use list
-        }
-    }
-
-    override fun loadDietTipDetailsById(id: Long): DietTipDetails {
-        return getDietTipDetailsById(id)
-    }
-
-    override suspend fun loadDietTipDetailStepsById(id: Long): List<DietTipDetailSteps> =
+    override suspend fun loadDietTipDetailsStepsById(id: Long): DietTipDetailsSteps =
         withContext(ioDispatcher.value) {
             delay(1000L)
-            return@withContext getStepsByDietTipDetailsId(id)
+            val dietTipDetails = dietTipsDao.findDietTipDetailsById(id).toDietTipDetails()
+            val dietTipDetailSteps = dietTipsDao.findDietTipDetailStepsById(dietTipDetails.id)
+                .map { it.toDietTipDetailSteps() }
+            return@withContext DietTipDetailsSteps(dietTipDetails, dietTipDetailSteps)
         }
 
-    private fun getChapters(): List<DietTipChapter> {
-        val cursor = queryChapters()
-        return queryChapters().use {
-            val list = mutableListOf<DietTipChapter>()
-            while (cursor.moveToNext()) {
-                list.add(parseChapter(cursor))
-            }
-            return@use list
-        }
-    }
-
-    private fun queryChapters() =
-        db.rawQuery("SELECT * FROM ${DietTipChaptersTable.TABLE_NAME}", null)
-
-    private fun parseChapter(cursor: Cursor): DietTipChapter {
-        val id = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipChaptersTable.COLUMN_ID))
-        return DietTipChapter(
-            id = id,
-            name = cursor.getString(cursor.getColumnIndexOrThrow(DietTipChaptersTable.COLUMN_NAME)),
-        )
-    }
-
-    private fun queryDietTipsByChapterId(id: Long): Cursor {
-        return db.rawQuery(
-            "SELECT * FROM ${DietTipsTable.TABLE_NAME} " +
-                    "WHERE ${DietTipsTable.COLUMN_CHAPTER_ID}=?",
-            arrayOf(id.toString()))
-    }
-
-    private fun parseDietTip(cursor: Cursor): DietTip {
-        return DietTip(
-            id = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipsTable.COLUMN_ID)),
-            photo = cursor.getString(cursor.getColumnIndexOrThrow(DietTipsTable.COLUMN_PHOTO)),
-            name = cursor.getString(cursor.getColumnIndexOrThrow(DietTipsTable.COLUMN_NAME)),
-            dietTipDetailsId = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipsTable.COLUMN_DIET_TIP_DETAILS_ID)),
-            chapterId = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipsTable.COLUMN_CHAPTER_ID)),
-        )
-    }
-
-    private fun getDietTipDetailsById(id: Long): DietTipDetails {
-        val cursor = queryDietTipDetailsById(id)
-        cursor.use {
-            cursor.moveToFirst()
-            return parseDietTipDetail(cursor)
+    override fun addChapterDietTipsListListener(listener: ChapterDietTipsListListener) {
+        chapterDietTipsListListeners.add(listener)
+        if (chapterDietTipsListLoaded) {
+            listener.invoke(chapterDietTipsList)
         }
     }
 
-    private fun queryDietTipDetailsById(id: Long): Cursor {
-        return db.rawQuery(
-            "SELECT * FROM ${DietTipDetailsTable.TABLE_NAME} " +
-                    "WHERE ${DietTipDetailsTable.COLUMN_ID}=?",
-            arrayOf(id.toString()))
+    override fun removeChapterDietTipsListListener(listener: ChapterDietTipsListListener) {
+        chapterDietTipsListListeners.remove(listener)
     }
 
-    private fun parseDietTipDetail(cursor: Cursor): DietTipDetails {
-        return DietTipDetails(
-            id = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipDetailsTable.COLUMN_ID)),
-            background = cursor.getString(cursor.getColumnIndexOrThrow(DietTipDetailsTable.COLUMN_BACKGROUND)),
-        )
-    }
-
-    private fun getStepsByDietTipDetailsId(id: Long): List<DietTipDetailSteps> {
-        val cursor = queryStepsByDietTipDetailsId(id)
-        return cursor.use {
-            val list = mutableListOf<DietTipDetailSteps>()
-            while (cursor.moveToNext()) {
-                list.add(parseStep(cursor))
-            }
-            return@use list
-        }
-    }
-
-    private fun queryStepsByDietTipDetailsId(id: Long): Cursor {
-        return db.rawQuery(
-            "SELECT * FROM ${DietTipDetailStepsTable.TABLE_NAME} " +
-                    "WHERE ${DietTipDetailStepsTable.COLUMN_DIET_TIP_DETAILS_ID}=?",
-            arrayOf(id.toString())
-        )
-    }
-
-    private fun parseStep(cursor: Cursor): DietTipDetailSteps {
-        return DietTipDetailSteps(
-            id = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipDetailStepsTable.COLUMN_ID)),
-            indexNumber = cursor.getInt(cursor.getColumnIndexOrThrow(DietTipDetailStepsTable.COLUMN_INDEX_NUMBER)),
-            title = cursor.getString(cursor.getColumnIndexOrThrow(DietTipDetailStepsTable.COLUMN_TITLE_NAME)),
-            description = cursor.getString(cursor.getColumnIndexOrThrow(DietTipDetailStepsTable.COLUMN_TITLE_DESCRIPTION)),
-            dietTipDetailId = cursor.getLong(cursor.getColumnIndexOrThrow(DietTipDetailStepsTable.COLUMN_DIET_TIP_DETAILS_ID))
-        )
+    private fun notifyChapterDietTipsListChanges() {
+        if (!chapterDietTipsListLoaded) return
+        chapterDietTipsListListeners.forEach { it.invoke(chapterDietTipsList) }
     }
 
     override fun addDietTipsListener(listener: DietTipsListener) {
@@ -171,19 +92,4 @@ class SQLiteDietTipsRepository(
         dietTipListeners.forEach { it.invoke(dietTips) }
     }
 
-    override fun addChaptersListener(listener: DietTipChaptersListener) {
-        chapterListeners.add(listener)
-        if (chaptersLoaded) {
-            listener.invoke(chapters)
-        }
-    }
-
-    override fun removeChaptersListener(listener: DietTipChaptersListener) {
-        chapterListeners.remove(listener)
-    }
-
-    private fun notifyChaptersChanges() {
-        if (!chaptersLoaded) return
-        chapterListeners.forEach { it.invoke(chapters) }
-    }
 }
