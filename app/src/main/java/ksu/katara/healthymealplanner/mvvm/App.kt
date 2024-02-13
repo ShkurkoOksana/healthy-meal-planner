@@ -1,35 +1,31 @@
 package ksu.katara.healthymealplanner.mvvm
 
 import android.app.Application
-import android.database.sqlite.SQLiteDatabase
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import ksu.katara.healthymealplanner.foundation.BaseApplication
 import ksu.katara.healthymealplanner.foundation.model.Repository
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.calendar.InMemoryCalendarRepository
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.SQLiteDietTipsRepository
+import ksu.katara.healthymealplanner.mvvm.model.dietTips.RoomDietTipsRepository
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.mealplan.SQLiteMealPlanForDateRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.SQLiteRecipeCategoriesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipes.SQLiteRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.model.mealplan.RoomMealPlanForDateRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.model.recipecategories.RoomRecipeCategoriesRepository
+import ksu.katara.healthymealplanner.mvvm.model.recipes.RoomRecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.room.AppDatabase
-import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.SQLiteShoppingListRepository
+import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.RoomShoppingListRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteHelper
 
 /**
  * Here we store instances of model layer classes.
  */
 class App : Application(), BaseApplication {
 
-    private lateinit var database: SQLiteDatabase
-
     private lateinit var roomDatabase: AppDatabase
 
     private lateinit var dietTipsRepository: Repository
     private lateinit var recipeCategoriesRepository: Repository
-    private lateinit var recipesRepository: SQLiteRecipesRepository
+    private lateinit var recipesRepository: RoomRecipesRepository
     private lateinit var mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository
     private lateinit var shoppingListRepository: ShoppingListRepository
 
@@ -54,27 +50,31 @@ class App : Application(), BaseApplication {
 
     override fun onCreate() {
         super.onCreate()
-        initDatabase()
         initRoomDatabase()
         dietTipsRepository =
-            SQLiteDietTipsRepository(roomDatabase.getDietTipsDao(), database, ioDispatcher)
-        recipeCategoriesRepository = SQLiteRecipeCategoriesRepository(database, ioDispatcher)
-        recipesRepository = SQLiteRecipesRepository(database, ioDispatcher)
+            RoomDietTipsRepository(roomDatabase.getDietTipsDao(), ioDispatcher)
+        recipeCategoriesRepository =
+            RoomRecipeCategoriesRepository(roomDatabase.getRecipeCategoriesDao(), ioDispatcher)
+        recipesRepository = RoomRecipesRepository(roomDatabase.getRecipesDao(), ioDispatcher)
         mealPlanForDateRecipesRepository =
-            SQLiteMealPlanForDateRecipesRepository(database, ioDispatcher)
+            RoomMealPlanForDateRecipesRepository(
+                roomDatabase.getMealPlanDao(),
+                roomDatabase.getRecipesDao(),
+                ioDispatcher
+            )
         shoppingListRepository =
-            SQLiteShoppingListRepository(database, ioDispatcher)
+            RoomShoppingListRepository(
+                roomDatabase.getShoppingListDao(),
+                roomDatabase.getRecipesDao(),
+                ioDispatcher
+            )
     }
 
     private fun initRoomDatabase() {
         roomDatabase =
             Room.databaseBuilder(this, AppDatabase::class.java, "database.db")
-                .createFromAsset("room_temp.db")
+                .createFromAsset("temp_room.db")
                 .build()
-    }
-
-    private fun initDatabase() {
-        database = AppSQLiteHelper(this).writableDatabase
     }
 
 }

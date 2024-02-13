@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ItemRecipeInCategoryBinding
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
+import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.RecipeCategory
 
 interface RecipeCategoryActionListener {
 
-    fun onRecipeCategoryPressed(recipeCategory: Category)
+    fun onRecipeCategoryPressed(recipeCategory: RecipeCategory)
 
 }
 
 class RecipeCategoriesDiffCallback(
-    private val oldList: List<Category>,
-    private val newList: List<Category>,
+    private val oldList: List<RecipeCategory>,
+    private val newList: List<RecipeCategory>,
 ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
     override fun getNewListSize(): Int = newList.size
@@ -27,6 +27,7 @@ class RecipeCategoriesDiffCallback(
         val newRecipeCategory = newList[newItemPosition]
         return oldRecipeCategory.id == newRecipeCategory.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldRecipeCategory = oldList[oldItemPosition]
         val newRecipeCategory = newList[newItemPosition]
@@ -36,9 +37,10 @@ class RecipeCategoriesDiffCallback(
 
 class RecipeCategoriesAdapter(
     private val actionListener: RecipeCategoryActionListener
-) : RecyclerView.Adapter<RecipeCategoriesAdapter.RecipeCategoriesViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<RecipeCategoriesAdapter.RecipeCategoriesViewHolder>(),
+    View.OnClickListener {
 
-    var recipeCategories: List<Category> = emptyList()
+    var recipeCategories: List<RecipeCategory> = emptyList()
         set(newValue) {
             val diffCallback = RecipeCategoriesDiffCallback(field, newValue)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -47,7 +49,7 @@ class RecipeCategoriesAdapter(
         }
 
     override fun onClick(v: View) {
-        val recipeCategory = v.tag as Category
+        val recipeCategory = v.tag as RecipeCategory
         actionListener.onRecipeCategoryPressed(recipeCategory)
     }
 
@@ -74,7 +76,8 @@ class RecipeCategoriesAdapter(
                     .error(R.drawable.ic_recipe)
                     .into(recipeInCategoryPhotoImageView)
             } else {
-                Glide.with(recipeInCategoryPhotoImageView.context).clear(recipeInCategoryPhotoImageView)
+                Glide.with(recipeInCategoryPhotoImageView.context)
+                    .clear(recipeInCategoryPhotoImageView)
                 recipeInCategoryPhotoImageView.setImageResource(R.drawable.ic_recipe)
             }
         }

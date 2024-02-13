@@ -1,5 +1,6 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips.room.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
@@ -8,8 +9,9 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetails
     tableName = "diet_tip_details"
 )
 data class DietTipDetailDBEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val background: String
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "details_id") val id: Long,
+    @ColumnInfo(name = "details_background") val background: String
 ) {
 
     fun toDietTipDetails() = DietTipDetails(

@@ -10,33 +10,34 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 @Entity(
     tableName = "diet_tips",
     indices = [
-        Index("name", unique = true),
+        Index("diet_tip_name", unique = true),
         Index("diet_tip_details_id"),
-        Index("chapter_id")
+        Index("diet_tip_chapter_id")
     ],
     foreignKeys = [
         ForeignKey(
             entity = DietTipDetailDBEntity::class,
-            parentColumns = ["id"],
+            parentColumns = ["details_id"],
             childColumns = ["diet_tip_details_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = DietTipChapterDBEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["chapter_id"],
+            parentColumns = ["chapter_id"],
+            childColumns = ["diet_tip_chapter_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ]
 )
 data class DietTipDBEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val photo: String,
-    val name: String,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "diet_tip_id") val id: Long,
+    @ColumnInfo(name = "diet_tip_photo") val photo: String,
+    @ColumnInfo(name = "diet_tip_name") val name: String,
     @ColumnInfo(name = "diet_tip_details_id") val dietTipDetailsId: Long,
-    @ColumnInfo(name = "chapter_id") val chapterId: Long
+    @ColumnInfo(name = "diet_tip_chapter_id") val chapterId: Long
 ) {
 
     fun toDietTip(): DietTip = DietTip(

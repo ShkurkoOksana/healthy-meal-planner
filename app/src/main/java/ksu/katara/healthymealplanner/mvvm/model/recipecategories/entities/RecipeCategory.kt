@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
  * Represents recipe category data
  */
 @Parcelize
-data class Category(
+data class RecipeCategory(
     val id: Long,
     val photo: String,
     val name: String,

@@ -14,7 +14,7 @@ import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
 import ksu.katara.healthymealplanner.foundation.views.screenViewModel
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.Category
+import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.RecipeCategory
 
 class RecipesInCategoryFragment : BaseFragment(), HasScreenTitle {
 
@@ -22,7 +22,7 @@ class RecipesInCategoryFragment : BaseFragment(), HasScreenTitle {
      * This screen has 1 argument: selected recipeCategory.
      */
     class Screen(
-        val recipeCategory: Category
+        val recipeCategory: RecipeCategory
     ) : BaseScreen
 
     private lateinit var binding: FragmentRecipesInCategoryBinding

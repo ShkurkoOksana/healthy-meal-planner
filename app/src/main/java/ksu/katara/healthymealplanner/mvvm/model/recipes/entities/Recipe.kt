@@ -26,8 +26,8 @@ data class RecipeDetails(
     val proteins: Int,
     val fats: Int,
     val carbohydrates: Int,
-    val ingredients: MutableList<RecipeIngredient>,
-    val preparationSteps: MutableList<RecipePreparationStep>,
+    val ingredients: List<RecipeIngredient>,
+    val preparationSteps: List<RecipePreparationStep>,
     val isFavorite: Boolean,
 )
 

@@ -113,12 +113,15 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                     binding.recipeDetailsPreparationStepsRecyclerView.visibility = View.VISIBLE
                     preparationStepsAdapter.preparationSteps = it.data
                 }
+
                 is ErrorResult -> {
                     binding.recipeDetailsPreparationStepsTryAgainContainer.visibility = View.VISIBLE
                 }
+
                 is PendingResult -> {
                     binding.recipeDetailsPreparationStepsProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noRecipeDetailsPreparationStepsTextView.visibility = View.VISIBLE
                 }
@@ -129,7 +132,8 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
         }
         val preparationStepsLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recipeDetailsPreparationStepsRecyclerView.layoutManager = preparationStepsLayoutManager
+        binding.recipeDetailsPreparationStepsRecyclerView.layoutManager =
+            preparationStepsLayoutManager
         binding.recipeDetailsPreparationStepsRecyclerView.adapter = preparationStepsAdapter
     }
 
@@ -146,15 +150,20 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                 is SuccessResult -> {
                     binding.isAllIngredientsSelectedCheckBox.isChecked = statusResult.data
                     binding.isAllIngredientsSelectedCheckBox.visibility = View.VISIBLE
-                    binding.recipeDetailsIsAllIngredientsSelectedProgressBar.visibility = View.INVISIBLE
+                    binding.recipeDetailsIsAllIngredientsSelectedProgressBar.visibility =
+                        View.INVISIBLE
                     isAllIngredientsSelected = statusResult.data
                 }
+
                 is ErrorResult -> {
                 }
+
                 is PendingResult -> {
                     binding.isAllIngredientsSelectedCheckBox.visibility = View.INVISIBLE
-                    binding.recipeDetailsIsAllIngredientsSelectedProgressBar.visibility = View.VISIBLE
+                    binding.recipeDetailsIsAllIngredientsSelectedProgressBar.visibility =
+                        View.VISIBLE
                 }
+
                 is EmptyResult -> {
                 }
             }
@@ -177,12 +186,15 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                     binding.recipeDetailsIngredientsProgressBar.visibility = View.INVISIBLE
                     ingredientsAdapter.ingredients = statusResult.data
                 }
+
                 is ErrorResult -> {
                     binding.recipeDetailsIngredientsTryAgainContainer.visibility = View.VISIBLE
                 }
+
                 is PendingResult -> {
                     binding.recipeDetailsIngredientsProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noRecipeDetailsIngredientsTextView.visibility = View.VISIBLE
                 }
@@ -229,12 +241,15 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
                     binding.recipeDetailsTypesRecyclerView.visibility = View.VISIBLE
                     recipeTypesAdapter.recipeTypes = it.data
                 }
+
                 is ErrorResult -> {
                     binding.recipeDetailsTypesTryAgainContainer.visibility = View.VISIBLE
                 }
+
                 is PendingResult -> {
                     binding.recipeDetailsTypesProgressBar.visibility = View.VISIBLE
                 }
+
                 is EmptyResult -> {
                     binding.noRecipeDetailsTypesTextView.visibility = View.VISIBLE
                 }

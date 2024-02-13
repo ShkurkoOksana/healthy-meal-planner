@@ -27,6 +27,7 @@ class RecipesInCategoryDiffCallback(
         val newRecipeInCategory = newList[newItemPosition]
         return oldRecipeInCategory.id == newRecipeInCategory.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldRecipeInCategory = oldList[oldItemPosition]
         val newRecipeInCategory = newList[newItemPosition]
@@ -36,7 +37,8 @@ class RecipesInCategoryDiffCallback(
 
 class RecipesInCategoryAdapter(
     private val actionListener: RecipesInCategoryActionListener
-) : RecyclerView.Adapter<RecipesInCategoryAdapter.RecipesInCategoryViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<RecipesInCategoryAdapter.RecipesInCategoryViewHolder>(),
+    View.OnClickListener {
 
     var recipesInCategory: List<Recipe> = emptyList()
         set(newValue) {
@@ -74,7 +76,8 @@ class RecipesInCategoryAdapter(
                     .error(R.drawable.ic_recipe)
                     .into(recipeInCategoryPhotoImageView)
             } else {
-                Glide.with(recipeInCategoryPhotoImageView.context).clear(recipeInCategoryPhotoImageView)
+                Glide.with(recipeInCategoryPhotoImageView.context)
+                    .clear(recipeInCategoryPhotoImageView)
                 recipeInCategoryPhotoImageView.setImageResource(R.drawable.ic_recipe)
             }
         }

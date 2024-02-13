@@ -10,24 +10,25 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailS
 @Entity(
     tableName = "diet_tip_detail_steps",
     indices = [
-        Index("diet_tip_details_id")
-              ],
+        Index("detail_step_details_id")
+    ],
     foreignKeys = [
         ForeignKey(
             entity = DietTipDetailDBEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["diet_tip_details_id"],
+            parentColumns = ["details_id"],
+            childColumns = ["detail_step_details_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ]
 )
 data class DietTipDetailStepDBEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "index_number") val indexNumber: Int,
-    @ColumnInfo(name = "title_name") val titleName: String,
-    @ColumnInfo(name = "title_description") val titleDescription: String,
-    @ColumnInfo(name = "diet_tip_details_id") val dietTipDetailsId: Long
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "detail_step_id") val id: Long,
+    @ColumnInfo(name = "detail_step_index_number") val indexNumber: Int,
+    @ColumnInfo(name = "detail_step_title_name") val titleName: String,
+    @ColumnInfo(name = "detail_step_title_description") val titleDescription: String,
+    @ColumnInfo(name = "detail_step_details_id") val dietTipDetailsId: Long
 ) {
 
     fun toDietTipDetailSteps(): DietTipDetailSteps = DietTipDetailSteps(

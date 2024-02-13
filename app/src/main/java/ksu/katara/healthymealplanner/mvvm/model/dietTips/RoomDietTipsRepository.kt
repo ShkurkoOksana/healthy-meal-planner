@@ -1,6 +1,5 @@
 package ksu.katara.healthymealplanner.mvvm.model.dietTips
 
-import android.database.sqlite.SQLiteDatabase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
@@ -10,11 +9,8 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.DietTipsDao
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.ChapterDietTips
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsSteps
 
-class SQLiteDietTipsRepository(
-
-
+class RoomDietTipsRepository(
     private val dietTipsDao: DietTipsDao,
-    private val db: SQLiteDatabase,
     private val ioDispatcher: IoDispatcher
 ) : DietTipsRepository {
 
