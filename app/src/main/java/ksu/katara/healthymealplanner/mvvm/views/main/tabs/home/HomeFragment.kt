@@ -65,32 +65,59 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
     }
 
     private fun onDiaryDetailsButtonPressed() {
-        Toast.makeText(requireContext(), R.string.toast_functionality_is_not_available, Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            R.string.toast_functionality_is_not_available,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun onProfileDetailsButtonPressed() {
-        Toast.makeText(requireContext(), R.string.toast_functionality_is_not_available, Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            R.string.toast_functionality_is_not_available,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun initMealPlanForToday(currentDate: Date) = with(binding) {
         breakfastForDateDetailsButton.setOnClickListener {
-            viewModel.onMealPlanForDateItemPressed(R.id.mealPlanForDateRecipesFragment, currentDate, MealTypes.BREAKFAST)
+            viewModel.onMealPlanForDateItemPressed(
+                R.id.mealPlanForDateRecipesFragment,
+                currentDate,
+                MealTypes.BREAKFAST
+            )
         }
         lunchForDateDetailsButton.setOnClickListener {
-            viewModel.onMealPlanForDateItemPressed(R.id.mealPlanForDateRecipesFragment, currentDate, MealTypes.LUNCH)
+            viewModel.onMealPlanForDateItemPressed(
+                R.id.mealPlanForDateRecipesFragment,
+                currentDate,
+                MealTypes.LUNCH
+            )
         }
         dinnerForDateDetailsButton.setOnClickListener {
-            viewModel.onMealPlanForDateItemPressed(R.id.mealPlanForDateRecipesFragment, currentDate, MealTypes.DINNER)
+            viewModel.onMealPlanForDateItemPressed(
+                R.id.mealPlanForDateRecipesFragment,
+                currentDate,
+                MealTypes.DINNER
+            )
         }
         snackForDateDetailsButton.setOnClickListener {
-            viewModel.onMealPlanForDateItemPressed(R.id.mealPlanForDateRecipesFragment, currentDate, MealTypes.SNACK)
+            viewModel.onMealPlanForDateItemPressed(
+                R.id.mealPlanForDateRecipesFragment,
+                currentDate,
+                MealTypes.SNACK
+            )
         }
     }
 
     private fun initDietTips() {
         binding.dietTipsMoreTextView.setOnClickListener {
             val screen = DietTipsChaptersFragment.Screen()
-            viewModel.onMorePressed(R.id.dietTipsChaptersFragment, DietTipsChaptersFragment.createArgs(screen))
+            viewModel.onMorePressed(
+                R.id.dietTipsChaptersFragment,
+                DietTipsChaptersFragment.createArgs(screen)
+            )
         }
         initDietTipsRecycleView()
         onTryAgain(binding.root) {

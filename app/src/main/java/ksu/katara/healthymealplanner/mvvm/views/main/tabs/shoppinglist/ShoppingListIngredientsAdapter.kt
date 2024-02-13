@@ -27,6 +27,7 @@ class ShoppingListIngredientsDiffCallback(
         val newShoppingListIngredientsItem = newList[newItemPosition]
         return oldShoppingListIngredientsItem.shoppingListRecipeIngredient.ingredient.id == newShoppingListIngredientsItem.shoppingListRecipeIngredient.ingredient.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldShoppingListIngredientsItem = oldList[oldItemPosition]
         val newShoppingListIngredientsItem = newList[newItemPosition]
@@ -37,7 +38,8 @@ class ShoppingListIngredientsDiffCallback(
 class ShoppingListIngredientsAdapter(
     private val shoppingListRecipe: ShoppingListRecipe,
     private val shoppingListViewModel: ShoppingListViewModel,
-) : RecyclerView.Adapter<ShoppingListIngredientsAdapter.ShoppingListIngredientsViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<ShoppingListIngredientsAdapter.ShoppingListIngredientsViewHolder>(),
+    View.OnClickListener {
     var shoppingListIngredients: MutableList<ShoppingListIngredientsItem> = mutableListOf()
         set(newValue) {
             val diffCallback = ShoppingListIngredientsDiffCallback(field, newValue)
@@ -51,31 +53,46 @@ class ShoppingListIngredientsAdapter(
 
         when (v.id) {
             R.id.shoppingListIngredientsItemDeleteViewButton -> {
-                shoppingListViewModel.onShoppingListIngredientsRecipeDelete(shoppingListRecipe, shoppingListRecipeIngredient)
+                shoppingListViewModel.onShoppingListIngredientsRecipeDelete(
+                    shoppingListRecipe,
+                    shoppingListRecipeIngredient
+                )
             }
 
             R.id.isShoppingListIngredientsItemSelectedCheckBox -> {
                 val checkBox = v as CheckBox
-                shoppingListViewModel.onShoppingListIngredientsRecipeSelect(shoppingListRecipe, shoppingListRecipeIngredient, checkBox.isChecked)
+                shoppingListViewModel.onShoppingListIngredientsRecipeSelect(
+                    shoppingListRecipe,
+                    shoppingListRecipeIngredient,
+                    checkBox.isChecked
+                )
             }
 
             else -> {
                 val container = v as ConstraintLayout
                 var checkBox: CheckBox? = null
                 container.forEach { if (it is CheckBox) checkBox = it }
-                shoppingListViewModel.onShoppingListIngredientsRecipeSelect(shoppingListRecipe, shoppingListRecipeIngredient, !checkBox!!.isChecked)
+                shoppingListViewModel.onShoppingListIngredientsRecipeSelect(
+                    shoppingListRecipe,
+                    shoppingListRecipeIngredient,
+                    !checkBox!!.isChecked
+                )
             }
         }
     }
 
     override fun getItemCount(): Int = shoppingListIngredients.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingListIngredientsViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShoppingListIngredientsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemShoppingListIngredientsBinding.inflate(inflater, parent, false)
         binding.root.setOnClickListener(this)
         binding.shoppingListIngredientsItemDeleteProgressBar.progressDrawable.setColorFilter(
-            Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN)
+            Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN
+        )
         binding.isShoppingListIngredientsItemSelectedCheckBox.setOnClickListener(this)
         binding.shoppingListIngredientsItemDeleteViewButton.setOnClickListener(this)
         return ShoppingListIngredientsViewHolder(binding)
@@ -96,7 +113,8 @@ class ShoppingListIngredientsAdapter(
                 isShoppingListIngredientsItemSelectedCheckBox.visibility = View.VISIBLE
                 isShoppingListIngredientsItemSelectedProgressBar.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
-                isShoppingListIngredientsItemSelectedCheckBox.isChecked = shoppingListRecipeIngredient.isSelectAndCross
+                isShoppingListIngredientsItemSelectedCheckBox.isChecked =
+                    shoppingListRecipeIngredient.isSelectAndCross
                 if (shoppingListRecipeIngredient.isSelectAndCross) {
                     shoppingListIngredientsItemCrossView.visibility = View.VISIBLE
                 } else {
@@ -107,21 +125,26 @@ class ShoppingListIngredientsAdapter(
                 shoppingListIngredientsItemCrossView.visibility = View.INVISIBLE
                 componentWithoutDeleteGroup.visibility = View.INVISIBLE
                 deleteProgressGroup.visibility = View.VISIBLE
-                shoppingListIngredientsItemDeleteProgressBar.progress = shoppingListIngredientsItem.isDeleteInProgress.getPercentage()
-                deletingPercentageTextView.text = shoppingListIngredientsItem.isDeleteInProgress.getPercentage().toString()
+                shoppingListIngredientsItemDeleteProgressBar.progress =
+                    shoppingListIngredientsItem.isDeleteInProgress.getPercentage()
+                deletingPercentageTextView.text =
+                    shoppingListIngredientsItem.isDeleteInProgress.getPercentage().toString()
                 holder.binding.root.setOnClickListener(null)
             } else {
                 componentWithoutDeleteGroup.visibility = View.VISIBLE
                 deleteProgressGroup.visibility = View.GONE
                 holder.binding.root.setOnClickListener(this@ShoppingListIngredientsAdapter)
             }
-            shoppingListIngredientsItemNameTextView.text = shoppingListRecipeIngredient.ingredient.product
+            shoppingListIngredientsItemNameTextView.text =
+                shoppingListRecipeIngredient.ingredient.product
             if (shoppingListRecipeIngredient.ingredient.amount == 0.0) {
                 shoppingListIngredientsItemAmountTextView.text = ""
             } else {
-                shoppingListIngredientsItemAmountTextView.text = shoppingListRecipeIngredient.ingredient.amount.toString()
+                shoppingListIngredientsItemAmountTextView.text =
+                    shoppingListRecipeIngredient.ingredient.amount.toString()
             }
-            shoppingListIngredientsItemMeasureTextView.text = shoppingListRecipeIngredient.ingredient.measure
+            shoppingListIngredientsItemMeasureTextView.text =
+                shoppingListRecipeIngredient.ingredient.measure
         }
     }
 

@@ -5,25 +5,25 @@
     android:id="@+id/main_graph"
     app:startDestination="@id/tabsFragment">
 
-<!--    <fragment
-        android:id="@+id/signInFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.auth.SignInFragment"
-        android:label="@string/screen_sign_in"
-        tools:layout="@layout/fragment_sign_in">
-        <action
-            android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-        <action
-            android:id="@+id/action_signInFragment_to_tabsFragment"
-            app:destination="@id/tabsFragment"
-            app:popUpTo="@id/signInFragment"
-            app:popUpToInclusive="true" />
-    </fragment>-->
+    <!--    <fragment
+            android:id="@+id/signInFragment"
+            android:name="ksu.katara.healthymealplanner.mvvm.views.main.auth.SignInFragment"
+            android:label="@string/screen_sign_in"
+            tools:layout="@layout/fragment_sign_in">
+            <action
+                android:id="@+id/action_signInFragment_to_signUpFragment"
+                app:destination="@id/signUpFragment" />
+            <action
+                android:id="@+id/action_signInFragment_to_tabsFragment"
+                app:destination="@id/tabsFragment"
+                app:popUpTo="@id/signInFragment"
+                app:popUpToInclusive="true" />
+        </fragment>-->
     <fragment
         android:id="@+id/tabsFragment"
         android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.TabsFragment"
         android:label=""
-        tools:layout="@layout/fragment_tabs" >
+        tools:layout="@layout/fragment_tabs">
         <action
             android:id="@+id/action_tabsFragment_to_mealPlanDetailsFragment"
             app:destination="@id/mealPlanForDateRecipesFragment" />
@@ -40,21 +40,21 @@
             android:id="@+id/action_tabsFragment_to_shoppingListFragment2"
             app:destination="@id/shoppingListFragment" />
     </fragment>
-<!--    <fragment
-        android:id="@+id/signUpFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.auth.SignUpFragment"
-        android:label="@string/screen_sign_up"
-        tools:layout="@layout/fragment_sign_up">
-        <argument
-            android:name="email"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>-->
+    <!--    <fragment
+            android:id="@+id/signUpFragment"
+            android:name="ksu.katara.healthymealplanner.mvvm.views.main.auth.SignUpFragment"
+            android:label="@string/screen_sign_up"
+            tools:layout="@layout/fragment_sign_up">
+            <argument
+                android:name="email"
+                app:argType="string"
+                app:nullable="true" />
+        </fragment>-->
     <fragment
         android:id="@+id/mealPlanForDateRecipesFragment"
         android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment"
         android:label="@string/meal_plan_for_date_title"
-        tools:layout="@layout/fragment_meal_plan_for_date_recipes" >
+        tools:layout="@layout/fragment_meal_plan_for_date_recipes">
         <action
             android:id="@+id/action_mealPlanForDateRecipesFragment_to_recipeDetailsFragment"
             app:destination="@id/recipeDetailsFragment" />
@@ -70,7 +70,7 @@
         android:id="@+id/recipesInCategoryFragment"
         android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment"
         android:label="Recipes in category"
-        tools:layout="@layout/fragment_recipes_in_category" >
+        tools:layout="@layout/fragment_recipes_in_category">
         <action
             android:id="@+id/action_recipesInCategoryFragment_to_recipeDetailsFragment"
             app:destination="@id/recipeDetailsFragment" />

@@ -32,7 +32,8 @@ class RecipesInCategoryViewModel(
     private val recipeCategoryName = screen.recipeCategory.name
 
     init {
-        _screenTitle.value = uiActions.getString(R.string.recipe_in_category_title, recipeCategoryName)
+        _screenTitle.value =
+            uiActions.getString(R.string.recipe_in_category_title, recipeCategoryName)
         loadRecipesInCategory(recipeCategoryId)
     }
 

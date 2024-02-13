@@ -25,6 +25,7 @@ class IngredientsDiffCallback(
         val newIngredientsItem = newList[newItemPosition]
         return oldIngredientsItem.ingredient.id == newIngredientsItem.ingredient.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldIngredientsItem = oldList[oldItemPosition]
         val newIngredientsItem = newList[newItemPosition]

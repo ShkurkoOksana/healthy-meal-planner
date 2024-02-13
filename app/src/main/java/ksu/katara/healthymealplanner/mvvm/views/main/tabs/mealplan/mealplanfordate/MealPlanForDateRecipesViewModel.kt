@@ -41,7 +41,8 @@ class MealPlanForDateRecipesViewModel(
 ) : BaseViewModel(), MealPlanDateRecipeActionListener {
 
     private val _mealPlanForDateRecipes = MutableLiveResult<List<MealPlanForDateRecipesItem>>()
-    val mealPlanForDateRecipes: LiveResult<List<MealPlanForDateRecipesItem>> = _mealPlanForDateRecipes
+    val mealPlanForDateRecipes: LiveResult<List<MealPlanForDateRecipesItem>> =
+        _mealPlanForDateRecipes
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
@@ -65,7 +66,11 @@ class MealPlanForDateRecipesViewModel(
     private val mealType = screen.mealType
 
     init {
-        _screenTitle.value = uiActions.getString(R.string.meal_plan_for_date_title, mealType.mealName , sdf.format(selectedDate))
+        _screenTitle.value = uiActions.getString(
+            R.string.meal_plan_for_date_title,
+            mealType.mealName,
+            sdf.format(selectedDate)
+        )
         mealPlanForDateRecipesRepository.addMealPlanForDateListener(mealPlanForDateRecipesListener)
         loadMealPlanForDateRecipes(selectedDate, mealType)
     }
@@ -76,7 +81,8 @@ class MealPlanForDateRecipesViewModel(
             try {
                 mealPlanForDateRecipesRepository.loadMealPlanForDate(selectedDate, mealType)
             } catch (e: Exception) {
-                if (e !is CancellationException) mealPlanRecipesResult = ErrorResult(IllegalArgumentException())
+                if (e !is CancellationException) mealPlanRecipesResult =
+                    ErrorResult(IllegalArgumentException())
             }
         }
     }
@@ -88,26 +94,33 @@ class MealPlanForDateRecipesViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        mealPlanForDateRecipesRepository.removeMealPlanForDateListener(mealPlanForDateRecipesListener)
+        mealPlanForDateRecipesRepository.removeMealPlanForDateListener(
+            mealPlanForDateRecipesListener
+        )
     }
-override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
-    if (isDeleteInProgress(recipe)) return
-    addDeleteProgressTo(recipe)
-    viewModelScope.launch {
-        try {
-            val result = mealPlanForDateRecipesRepository.deleteRecipeFromMealPlanForDate(selectedDate, mealType, recipe)
-            removeDeleteProgressFrom(recipe)
-            if (result == null) {
-                mealPlanRecipesResult = EmptyResult()
-            }
-        } catch (e: Exception) {
-            if (e !is CancellationException) {
-                val message = uiActions.getString(R.string.cant_delete_recipe_from_meal_plan)
-                uiActions.toast(message)
+
+    override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
+        if (isDeleteInProgress(recipe)) return
+        addDeleteProgressTo(recipe)
+        viewModelScope.launch {
+            try {
+                val result = mealPlanForDateRecipesRepository.deleteRecipeFromMealPlanForDate(
+                    selectedDate,
+                    mealType,
+                    recipe
+                )
+                removeDeleteProgressFrom(recipe)
+                if (result == null) {
+                    mealPlanRecipesResult = EmptyResult()
+                }
+            } catch (e: Exception) {
+                if (e !is CancellationException) {
+                    val message = uiActions.getString(R.string.cant_delete_recipe_from_meal_plan)
+                    uiActions.toast(message)
+                }
             }
         }
     }
-}
 
     private fun addDeleteProgressTo(recipe: Recipe) {
         mealPlanForDateRecipesDeleteItemIdsInProgress.add(recipe.id)
@@ -125,7 +138,12 @@ override fun onMealPlanForDateRecipesItemDelete(recipe: Recipe) {
 
     private fun notifyUpdates() {
         _mealPlanForDateRecipes.postValue(mealPlanRecipesResult.resultMap { mealPlanForDateRecipes ->
-            mealPlanForDateRecipes.recipes.map { recipe -> MealPlanForDateRecipesItem(recipe, isDeleteInProgress(recipe)) }
+            mealPlanForDateRecipes.recipes.map { recipe ->
+                MealPlanForDateRecipesItem(
+                    recipe,
+                    isDeleteInProgress(recipe)
+                )
+            }
         })
     }
 

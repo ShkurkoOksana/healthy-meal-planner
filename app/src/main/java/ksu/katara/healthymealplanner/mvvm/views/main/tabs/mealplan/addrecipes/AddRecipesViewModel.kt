@@ -88,14 +88,19 @@ class AddRecipesListViewModel(
         addDeleteProgressTo(recipe)
         viewModelScope.launch {
             try {
-                mealPlanForDateRecipesRepository.addRecipeToMealPlanForDate(selectedDate, mealType, recipe)
+                mealPlanForDateRecipesRepository.addRecipeToMealPlanForDate(
+                    selectedDate,
+                    mealType,
+                    recipe
+                )
                 viewModelScope.launch {
                     try {
                         mealPlanForDateRecipesRepository.deleteRecipeFromAddRecipes(recipe)
                         removeDeleteProgressFrom(recipe)
                     } catch (e: Exception) {
                         if (e !is CancellationException) {
-                            val message = uiActions.getString(R.string.cant_delete_recipe_from_add_recipes)
+                            val message =
+                                uiActions.getString(R.string.cant_delete_recipe_from_add_recipes)
                             uiActions.toast(message)
                         }
                     }
@@ -126,7 +131,8 @@ class AddRecipesListViewModel(
 
     private fun notifyUpdates() {
         _addRecipes.postValue(addRecipesResult.resultMap { addRecipes ->
-            addRecipes.map { recipe -> AddRecipesItem(recipe, isDeleteInProgress(recipe)) }.toMutableList()
+            addRecipes.map { recipe -> AddRecipesItem(recipe, isDeleteInProgress(recipe)) }
+                .toMutableList()
         })
     }
 

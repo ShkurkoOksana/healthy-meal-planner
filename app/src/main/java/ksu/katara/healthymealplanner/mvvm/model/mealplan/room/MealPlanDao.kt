@@ -6,10 +6,10 @@ import androidx.room.Query
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.room.entities.MealPlanAndRecipesTuple
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.room.entities.MealPlanDBEntity
 import ksu.katara.healthymealplanner.mvvm.model.mealplan.room.entities.MealPlanRecipesJoinTableDBEntity
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealPlanRecipesJoinTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealPlanTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.MealTypesTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipesTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.MealPlanRecipesJoinTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.MealPlanTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.MealTypesTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipesTable
 
 @Dao
 interface MealPlanDao {

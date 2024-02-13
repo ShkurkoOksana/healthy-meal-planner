@@ -31,6 +31,7 @@ class HomeViewModel(
 
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
+
     init {
         _screenTitle.value = uiActions.getString(R.string.home_title)
         loadDietTips()

@@ -14,7 +14,7 @@ sealed class StatusResult<T> {
      * - success result of type T is converted to success result of type R, where conversion
      *   of ([SuccessResult.data] from T to R is conducted by [mapper]
      */
-    fun <R> resultMap(mapper: Mapper<T, R>? = null): StatusResult<R> = when(this) {
+    fun <R> resultMap(mapper: Mapper<T, R>? = null): StatusResult<R> = when (this) {
         is EmptyResult -> EmptyResult()
         is PendingResult -> PendingResult()
         is ErrorResult -> ErrorResult(this.exception)

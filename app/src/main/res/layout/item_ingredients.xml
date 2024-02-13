@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ingredientItemContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="?android:attr/selectableItemBackground">
 
     <CheckBox
@@ -16,7 +16,7 @@
         android:buttonTint="@drawable/check_box_tint"
         android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ingredientNameTextView"
@@ -33,8 +33,8 @@
         android:id="@+id/ingredientCrossView"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/grey"
         android:layout_marginEnd="@dimen/small_space"
+        android:background="@color/grey"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/ingredientNameTextView"
         app:layout_constraintEnd_toEndOf="@+id/ingredientMeasureTextView"
@@ -47,8 +47,8 @@
         android:layout_marginEnd="@dimen/small_space"
         app:layout_constraintBottom_toBottomOf="@id/ingredientNameTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintEnd_toStartOf="@id/ingredientMeasureTextView"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintTop_toTopOf="@id/ingredientNameTextView"
         tools:text="100" />
 
@@ -56,8 +56,8 @@
         android:id="@+id/ingredientsAmountBarrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="isIngredientSelectedCheckBox"
-        app:barrierDirection="right"/>
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="isIngredientSelectedCheckBox" />
 
     <TextView
         android:id="@+id/ingredientMeasureTextView"
@@ -75,12 +75,12 @@
         android:id="@+id/isIngredientSelectedProgressBar"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:indeterminateTint="@color/green"
         android:padding="4dp"
         android:visibility="gone"
-        android:indeterminateTint="@color/green"
-        app:layout_constraintTop_toTopOf="@id/isIngredientSelectedCheckBox"
-        app:layout_constraintEnd_toEndOf="@id/isIngredientSelectedCheckBox"
         app:layout_constraintBottom_toBottomOf="@id/isIngredientSelectedCheckBox"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintEnd_toEndOf="@id/isIngredientSelectedCheckBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/isIngredientSelectedCheckBox" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

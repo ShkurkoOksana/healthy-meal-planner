@@ -29,7 +29,8 @@ class TabsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTabsBinding.inflate(layoutInflater, container, false)
-        val navHost = childFragmentManager.findFragmentById(R.id.tabsFragmentContainer) as NavHostFragment
+        val navHost =
+            childFragmentManager.findFragmentById(R.id.tabsFragmentContainer) as NavHostFragment
         val navController = navHost.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
         return binding.root

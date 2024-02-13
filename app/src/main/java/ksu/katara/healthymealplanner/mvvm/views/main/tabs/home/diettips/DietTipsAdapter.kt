@@ -27,6 +27,7 @@ class DietTipsDiffCallback(
         val newDietTip = newList[newItemPosition]
         return oldDietTip.id == newDietTip.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldDietTip = oldList[oldItemPosition]
         val newDietTip = newList[newItemPosition]

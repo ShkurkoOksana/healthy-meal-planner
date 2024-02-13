@@ -31,4 +31,5 @@ fun Progress.isInProgress() = this !is EmptyProgress
 /**
  * @return percentage of operation if possible; otherwise [PercentageProgress.START].
  */
-fun Progress.getPercentage() = (this as? PercentageProgress)?.percentage ?: PercentageProgress.START.percentage
+fun Progress.getPercentage() =
+    (this as? PercentageProgress)?.percentage ?: PercentageProgress.START.percentage

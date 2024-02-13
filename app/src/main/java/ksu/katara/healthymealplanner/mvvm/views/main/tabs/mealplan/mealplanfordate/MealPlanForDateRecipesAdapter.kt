@@ -39,7 +39,8 @@ class MealPlanForDateRecipesDiffCallback(
 
 class MealPlanForDateRecipesAdapter(
     private val mealPlanDateRecipeActionListener: MealPlanDateRecipeActionListener
-) : RecyclerView.Adapter<MealPlanForDateRecipesAdapter.MealPlanForDateRecipesViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<MealPlanForDateRecipesAdapter.MealPlanForDateRecipesViewHolder>(),
+    View.OnClickListener {
 
     var mealPlanForDateRecipes: List<MealPlanForDateRecipesItem> = emptyList()
         set(newValue) {
@@ -65,7 +66,10 @@ class MealPlanForDateRecipesAdapter(
 
     override fun getItemCount(): Int = mealPlanForDateRecipes.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealPlanForDateRecipesViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MealPlanForDateRecipesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMealPlanForDateRecipeBinding.inflate(inflater, parent, false)
         binding.root.setOnClickListener(this)
@@ -97,7 +101,8 @@ class MealPlanForDateRecipesAdapter(
                     .error(R.drawable.ic_recipe)
                     .into(mealPlanForDateRecipePhotoImageView)
             } else {
-                Glide.with(mealPlanForDateRecipePhotoImageView.context).clear(mealPlanForDateRecipePhotoImageView)
+                Glide.with(mealPlanForDateRecipePhotoImageView.context)
+                    .clear(mealPlanForDateRecipePhotoImageView)
                 mealPlanForDateRecipePhotoImageView.setImageResource(R.drawable.ic_diet_tip)
             }
         }

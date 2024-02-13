@@ -66,6 +66,7 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return false
                 }
+
                 override fun onQueryTextChange(newText: String?): Boolean {
                     filterString = newText
                     addRecipesAdapter.filter.filter(newText)

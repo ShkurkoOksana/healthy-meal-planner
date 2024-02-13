@@ -3,7 +3,7 @@ package ksu.katara.healthymealplanner.mvvm.model.recipecategories.room
 import androidx.room.Dao
 import androidx.room.Query
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.room.entities.RecipeCategoryDBEntity
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipeCategoriesTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipeCategoriesTable
 
 @Dao
 interface RecipeCategoriesDao {

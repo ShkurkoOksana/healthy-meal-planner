@@ -25,7 +25,8 @@ interface ShoppingListRepository : Repository {
     /**
      * Set for ingredient property isInShoppingList equals isChecked for recipe in shopping list.
      */
-    suspend fun selectIngredient(shoppingListRecipe: ShoppingListRecipe,
+    suspend fun selectIngredient(
+        shoppingListRecipe: ShoppingListRecipe,
         shoppingListIngredient: ShoppingListRecipeIngredient,
         isChecked: Boolean
     )

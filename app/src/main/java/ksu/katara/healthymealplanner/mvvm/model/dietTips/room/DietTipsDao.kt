@@ -6,10 +6,10 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.entities.DietTipCh
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.entities.DietTipDBEntity
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.entities.DietTipDetailDBEntity
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.entities.DietTipDetailStepDBEntity
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipChaptersTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipDetailStepsTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipDetailsTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.DietTipsTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.DietTipChaptersTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.DietTipDetailStepsTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.DietTipDetailsTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.DietTipsTable
 
 @Dao
 interface DietTipsDao {

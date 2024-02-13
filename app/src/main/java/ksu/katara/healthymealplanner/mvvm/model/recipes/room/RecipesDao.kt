@@ -7,16 +7,16 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesAnd
 import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesAndIngredientsTuple
 import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesAndPreparationStepsTuple
 import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesAndRecipeTypesTuple
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.IngredientMeasuresTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipeCuisineTypesTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipeIngredientsIngredientMeasuresJoinTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipeIngredientsTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipePreparationStepsTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipeTypesTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipesIngredientsJoinTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipesPreparationStepsJoinTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipesRecipeTypesJoinTable
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract.RecipesTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.IngredientMeasuresTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipeCuisineTypesTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipeIngredientsIngredientMeasuresJoinTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipeIngredientsTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipePreparationStepsTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipeTypesTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipesIngredientsJoinTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipesPreparationStepsJoinTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipesRecipeTypesJoinTable
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract.RecipesTable
 
 @Dao
 interface RecipesDao {

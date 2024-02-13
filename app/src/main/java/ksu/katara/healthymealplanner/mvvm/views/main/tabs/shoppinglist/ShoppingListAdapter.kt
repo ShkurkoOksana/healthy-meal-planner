@@ -18,7 +18,10 @@ interface ShoppingListRecipeActionListener {
 
     fun onShoppingListRecipeDetails(shoppingListRecipe: ShoppingListRecipe)
 
-    fun onShoppingListIngredientsRecipeDelete(shoppingListRecipe: ShoppingListRecipe, shoppingListRecipeIngredient: ShoppingListRecipeIngredient)
+    fun onShoppingListIngredientsRecipeDelete(
+        shoppingListRecipe: ShoppingListRecipe,
+        shoppingListRecipeIngredient: ShoppingListRecipeIngredient
+    )
 
     fun onShoppingListIngredientsRecipeSelect(
         shoppingListRecipe: ShoppingListRecipe,
@@ -39,6 +42,7 @@ class ShoppingListDiffCallback(
         val newShoppingListRecipeItem = newList[newItemPosition]
         return oldShoppingListRecipeItem.recipe.recipe.id == newShoppingListRecipeItem.recipe.recipe.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldShoppingListRecipeItem = oldList[oldItemPosition]
         val newShoppingListRecipeItem = newList[newItemPosition]
@@ -101,12 +105,16 @@ class ShoppingListAdapter(
         shoppingListRecipeIngredients: MutableList<ShoppingListIngredientsItem>,
         holder: ShoppingListViewHolder
     ) {
-        val shoppingListIngredientsAdapter = ShoppingListIngredientsAdapter(shoppingListRecipe, shoppingListViewModel)
+        val shoppingListIngredientsAdapter =
+            ShoppingListIngredientsAdapter(shoppingListRecipe, shoppingListViewModel)
         shoppingListIngredientsAdapter.shoppingListIngredients = shoppingListRecipeIngredients
-        val shoppingListIngredientsLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        holder.binding.shoppingListIngredientsRecyclerView.layoutManager = shoppingListIngredientsLayoutManager
+        val shoppingListIngredientsLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        holder.binding.shoppingListIngredientsRecyclerView.layoutManager =
+            shoppingListIngredientsLayoutManager
         holder.binding.shoppingListIngredientsRecyclerView.adapter = shoppingListIngredientsAdapter
-        val shoppingListIngredientsAnimator = holder.binding.shoppingListIngredientsRecyclerView.itemAnimator
+        val shoppingListIngredientsAnimator =
+            holder.binding.shoppingListIngredientsRecyclerView.itemAnimator
         if (shoppingListIngredientsAnimator is DefaultItemAnimator) {
             shoppingListIngredientsAnimator.supportsChangeAnimations = false
         }

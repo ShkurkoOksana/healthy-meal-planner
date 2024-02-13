@@ -2,48 +2,48 @@ package ksu.katara.healthymealplanner.mvvm.model.shoppinglist.room
 
 import androidx.room.Dao
 import androidx.room.Query
+import ksu.katara.healthymealplanner.mvvm.model.room.DatabaseContract
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.room.entities.ShoppingListTuples
-import ksu.katara.healthymealplanner.mvvm.model.sqlite.AppSQLiteContract
 
 @Dao
 interface ShoppingListDao {
 
     @Query(
-        "SELECT *FROM ${AppSQLiteContract.RecipesTable.TABLE_NAME} " +
-                "INNER JOIN ${AppSQLiteContract.RecipesIngredientsJoinTable.TABLE_NAME} " +
-                "ON ${AppSQLiteContract.RecipesIngredientsJoinTable.TABLE_NAME}.${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} " +
-                "= ${AppSQLiteContract.RecipesTable.TABLE_NAME}.${AppSQLiteContract.RecipesTable.COLUMN_ID} " +
-                "INNER JOIN ${AppSQLiteContract.RecipeIngredientsTable.TABLE_NAME} " +
-                "ON ${AppSQLiteContract.RecipeIngredientsTable.TABLE_NAME}.${AppSQLiteContract.RecipeIngredientsTable.COLUMN_ID} " +
-                "= ${AppSQLiteContract.RecipesIngredientsJoinTable.TABLE_NAME}.${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} " +
-                "INNER JOIN ${AppSQLiteContract.RecipeIngredientsIngredientMeasuresJoinTable.TABLE_NAME} " +
-                "ON ${AppSQLiteContract.RecipeIngredientsIngredientMeasuresJoinTable.TABLE_NAME}.${AppSQLiteContract.RecipeIngredientsIngredientMeasuresJoinTable.COLUMN_RECIPE_INGREDIENT_ID} " +
-                "= ${AppSQLiteContract.RecipeIngredientsTable.TABLE_NAME}.${AppSQLiteContract.RecipeIngredientsTable.COLUMN_ID} " +
-                "INNER JOIN ${AppSQLiteContract.IngredientMeasuresTable.TABLE_NAME} " +
-                "ON ${AppSQLiteContract.IngredientMeasuresTable.TABLE_NAME}.${AppSQLiteContract.IngredientMeasuresTable.COLUMN_ID} " +
-                "= ${AppSQLiteContract.RecipeIngredientsIngredientMeasuresJoinTable.TABLE_NAME}.${AppSQLiteContract.RecipeIngredientsIngredientMeasuresJoinTable.COLUMN_INGREDIENT_MEASURE_ID} " +
-                "WHERE ${AppSQLiteContract.RecipesTable.TABLE_NAME}.${AppSQLiteContract.RecipesTable.COLUMN_ID} = :recipeId " +
+        "SELECT *FROM ${DatabaseContract.RecipesTable.TABLE_NAME} " +
+                "INNER JOIN ${DatabaseContract.RecipesIngredientsJoinTable.TABLE_NAME} " +
+                "ON ${DatabaseContract.RecipesIngredientsJoinTable.TABLE_NAME}.${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} " +
+                "= ${DatabaseContract.RecipesTable.TABLE_NAME}.${DatabaseContract.RecipesTable.COLUMN_ID} " +
+                "INNER JOIN ${DatabaseContract.RecipeIngredientsTable.TABLE_NAME} " +
+                "ON ${DatabaseContract.RecipeIngredientsTable.TABLE_NAME}.${DatabaseContract.RecipeIngredientsTable.COLUMN_ID} " +
+                "= ${DatabaseContract.RecipesIngredientsJoinTable.TABLE_NAME}.${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} " +
+                "INNER JOIN ${DatabaseContract.RecipeIngredientsIngredientMeasuresJoinTable.TABLE_NAME} " +
+                "ON ${DatabaseContract.RecipeIngredientsIngredientMeasuresJoinTable.TABLE_NAME}.${DatabaseContract.RecipeIngredientsIngredientMeasuresJoinTable.COLUMN_RECIPE_INGREDIENT_ID} " +
+                "= ${DatabaseContract.RecipeIngredientsTable.TABLE_NAME}.${DatabaseContract.RecipeIngredientsTable.COLUMN_ID} " +
+                "INNER JOIN ${DatabaseContract.IngredientMeasuresTable.TABLE_NAME} " +
+                "ON ${DatabaseContract.IngredientMeasuresTable.TABLE_NAME}.${DatabaseContract.IngredientMeasuresTable.COLUMN_ID} " +
+                "= ${DatabaseContract.RecipeIngredientsIngredientMeasuresJoinTable.TABLE_NAME}.${DatabaseContract.RecipeIngredientsIngredientMeasuresJoinTable.COLUMN_INGREDIENT_MEASURE_ID} " +
+                "WHERE ${DatabaseContract.RecipesTable.TABLE_NAME}.${DatabaseContract.RecipesTable.COLUMN_ID} = :recipeId " +
                 "AND " +
-                "${AppSQLiteContract.RecipesIngredientsJoinTable.TABLE_NAME}.${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} = 1"
+                "${DatabaseContract.RecipesIngredientsJoinTable.TABLE_NAME}.${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} = 1"
     )
     fun findShoppingListIngredients(recipeId: Long): List<ShoppingListTuples>
 
     @Query(
-        "UPDATE ${AppSQLiteContract.RecipesIngredientsJoinTable.TABLE_NAME} " +
-                "SET ${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} = :isChecked " +
-                "WHERE ${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} = :recipeId " +
+        "UPDATE ${DatabaseContract.RecipesIngredientsJoinTable.TABLE_NAME} " +
+                "SET ${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} = :isChecked " +
+                "WHERE ${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} = :recipeId " +
                 "AND " +
-                "${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} = :ingredientId"
+                "${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} = :ingredientId"
     )
     fun updateShoppingListIngredient(recipeId: Long, ingredientId: Long, isChecked: String)
 
     @Query(
-        "UPDATE ${AppSQLiteContract.RecipesIngredientsJoinTable.TABLE_NAME} " +
-                "SET ${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} = 0, " +
-                "${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} = 0 " +
-                "WHERE ${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} = :recipeId " +
+        "UPDATE ${DatabaseContract.RecipesIngredientsJoinTable.TABLE_NAME} " +
+                "SET ${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_IS_IN_SHOPPING_LIST} = 0, " +
+                "${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_IS_CROSS_IN_SHOPPING_LIST} = 0 " +
+                "WHERE ${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_RECIPE_ID} = :recipeId " +
                 "AND " +
-                "${AppSQLiteContract.RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} = :ingredientId"
+                "${DatabaseContract.RecipesIngredientsJoinTable.COLUMN_INGREDIENT_ID} = :ingredientId"
     )
     fun deleteShoppingListIngredient(recipeId: Long, ingredientId: Long)
 

@@ -4,15 +4,15 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/small_space"
-    android:orientation="vertical"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/dayOfWeekLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/ic_calendar_border_shape">
+        android:background="@drawable/ic_calendar_border_shape"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/monthTextView"
@@ -21,9 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/small_space"
-            android:textSize="15sp"
             android:textColor="@color/black"
-            tools:text="Мая"/>
+            android:textSize="15sp"
+            tools:text="Мая" />
 
         <TextView
             android:id="@+id/dayTextView"
@@ -32,8 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/small_space"
-            android:textSize="15sp"
             android:textColor="@color/black"
+            android:textSize="15sp"
             tools:text="10" />
 
         <TextView
@@ -43,9 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/small_space"
-            android:textSize="15sp"
             android:textColor="@color/black"
-            tools:text="СР"/>
+            android:textSize="15sp"
+            tools:text="СР" />
 
 
     </LinearLayout>

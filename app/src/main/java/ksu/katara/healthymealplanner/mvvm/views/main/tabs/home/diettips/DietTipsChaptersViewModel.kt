@@ -38,7 +38,7 @@ class DietTipsChaptersViewModel(
         loadDietTipsChapters()
     }
 
-    private fun loadDietTipsChapters() = into(_chapterDietTipsList){
+    private fun loadDietTipsChapters() = into(_chapterDietTipsList) {
         dietTipsRepository.loadChapterDietTipsList()
     }
 

@@ -54,7 +54,13 @@ class CalendarAdapter(
         holder.binding.monthTextView.text = displayMonth
         holder.binding.dayTextView.text = displayDay
         setCalendarListener(holder, position)
-        changeVisibilityOfCalendarSelectedItem(holder, displayDay, displayMonth, displayYear, position)
+        changeVisibilityOfCalendarSelectedItem(
+            holder,
+            displayDay,
+            displayMonth,
+            displayYear,
+            position
+        )
     }
 
     private fun setCalendarListener(

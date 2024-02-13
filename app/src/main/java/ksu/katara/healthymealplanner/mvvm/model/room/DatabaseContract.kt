@@ -1,6 +1,6 @@
-package ksu.katara.healthymealplanner.mvvm.model.sqlite
+package ksu.katara.healthymealplanner.mvvm.model.room
 
-class AppSQLiteContract {
+class DatabaseContract {
 
     object DietTipChaptersTable {
         const val TABLE_NAME = "diet_tip_chapters"

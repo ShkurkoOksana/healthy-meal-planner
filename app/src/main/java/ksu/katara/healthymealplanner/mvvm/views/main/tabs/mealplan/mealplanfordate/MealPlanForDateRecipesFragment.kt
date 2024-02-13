@@ -73,7 +73,8 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
             mealPlanForDateRecipesLayoutManager
         binding.mealPlanForDateRecyclerView.adapter =
             mealPlanForDateRecipesAdapter
-        val mealPlanForDateRecipesViewModelAnimator = binding.mealPlanForDateRecyclerView.itemAnimator
+        val mealPlanForDateRecipesViewModelAnimator =
+            binding.mealPlanForDateRecyclerView.itemAnimator
         if (mealPlanForDateRecipesViewModelAnimator is DefaultItemAnimator) {
             mealPlanForDateRecipesViewModelAnimator.supportsChangeAnimations = false
         }

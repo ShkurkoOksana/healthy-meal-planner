@@ -17,6 +17,7 @@ class RecipeTypesDiffCallback(
         val newRecipeType = newList[newItemPosition]
         return oldRecipeType == newRecipeType
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldRecipeType = oldList[oldItemPosition]
         val newRecipeType = newList[newItemPosition]

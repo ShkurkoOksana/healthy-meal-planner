@@ -117,8 +117,13 @@ class StackFragmentNavigator(
     private fun getCurrentFragment() = currentFragment
 
     private val fragmentCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
-        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-            if(f is NavHostFragment) return
+        override fun onFragmentViewCreated(
+            fm: FragmentManager,
+            f: Fragment,
+            v: View,
+            savedInstanceState: Bundle?
+        ) {
+            if (f is NavHostFragment) return
             currentFragment = f
             notifyScreenUpdates()
             publishResults(f)

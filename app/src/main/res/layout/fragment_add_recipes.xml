@@ -14,10 +14,10 @@
         android:layout_marginStart="@dimen/medium_space"
         android:layout_marginEnd="@dimen/medium_space"
         android:inputType="text"
-        app:queryHint="@string/recipe_search"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryHint="@string/recipe_search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/addRecipesRecyclerView"
@@ -25,13 +25,13 @@
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/medium_space"
         android:orientation="vertical"
-        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_add_recipes_recipe"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addRecipeSearchView"/>
+        app:layout_constraintTop_toBottomOf="@id/addRecipeSearchView"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_add_recipes_recipe" />
 
-    <include layout="@layout/part_result"/>
+    <include layout="@layout/part_result" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

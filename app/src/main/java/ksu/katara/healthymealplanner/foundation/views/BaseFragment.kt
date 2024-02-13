@@ -36,11 +36,13 @@ abstract class BaseFragment : Fragment() {
      * - [onSuccess] is called when [result] is [SuccessResult]
      * - [onError] is called when [result] is [ErrorResult]
      */
-    fun <T> renderResult(root: ViewGroup, result: StatusResult<T>,
-                         onEmpty: () -> Unit,
-                         onPending: () -> Unit,
-                         onError: (Exception) -> Unit,
-                         onSuccess: (T) -> Unit) {
+    fun <T> renderResult(
+        root: ViewGroup, result: StatusResult<T>,
+        onEmpty: () -> Unit,
+        onPending: () -> Unit,
+        onError: (Exception) -> Unit,
+        onSuccess: (T) -> Unit
+    ) {
 
         root.children.forEach { it.visibility = View.GONE }
         when (result) {

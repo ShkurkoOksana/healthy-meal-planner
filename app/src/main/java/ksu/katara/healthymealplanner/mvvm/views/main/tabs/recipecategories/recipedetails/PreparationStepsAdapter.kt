@@ -20,6 +20,7 @@ class RecipePreparationStepsDiffCallback(
         val newRecipePreparationStep = newList[newItemPosition]
         return oldRecipePreparationStep.id == newRecipePreparationStep.id
     }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldRecipePreparationStep = oldList[oldItemPosition]
         val newRecipePreparationStep = newList[newItemPosition]
@@ -27,7 +28,8 @@ class RecipePreparationStepsDiffCallback(
     }
 }
 
-class PreparationStepsAdapter : RecyclerView.Adapter<PreparationStepsAdapter.PreparationStepsHolder>() {
+class PreparationStepsAdapter :
+    RecyclerView.Adapter<PreparationStepsAdapter.PreparationStepsHolder>() {
 
     var preparationSteps: List<RecipePreparationStep> = emptyList()
         set(newValue) {
@@ -56,7 +58,8 @@ class PreparationStepsAdapter : RecyclerView.Adapter<PreparationStepsAdapter.Pre
                     .error(R.drawable.ic_recipe)
                     .into(preparationStepPhotoImageView)
             } else {
-                Glide.with(preparationStepPhotoImageView.context).clear(preparationStepPhotoImageView)
+                Glide.with(preparationStepPhotoImageView.context)
+                    .clear(preparationStepPhotoImageView)
                 preparationStepPhotoImageView.setImageResource(R.drawable.ic_recipe)
             }
             preparationStepTitleTextView.text = preparationStep.step.toString()

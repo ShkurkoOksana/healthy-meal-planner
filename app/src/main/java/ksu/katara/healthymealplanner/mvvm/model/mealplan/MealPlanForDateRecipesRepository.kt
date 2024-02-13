@@ -40,7 +40,11 @@ interface MealPlanForDateRecipesRepository : Repository {
     /**
      * Delete recipe from meal plan for selected date and meal type.
      */
-    suspend fun deleteRecipeFromMealPlanForDate(selectedDate: Date, mealType: MealTypes, recipe: Recipe): MealPlanRecipes?
+    suspend fun deleteRecipeFromMealPlanForDate(
+        selectedDate: Date,
+        mealType: MealTypes,
+        recipe: Recipe
+    ): MealPlanRecipes?
 
     /**
      * Load the list of all added available recipes that may be chosen by the user.

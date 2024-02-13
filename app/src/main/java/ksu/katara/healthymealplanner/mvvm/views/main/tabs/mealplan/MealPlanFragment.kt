@@ -63,7 +63,8 @@ class MealPlanFragment : BaseFragment(), HasScreenTitle {
             selectedDate = it
             initMealPlanForDate(it)
         }
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.calendarRecyclerView.layoutManager = layoutManager
         binding.calendarRecyclerView.adapter = calendarAdapter
     }

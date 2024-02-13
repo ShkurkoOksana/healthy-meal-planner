@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity(), FragmentsHolder {
     }
 
     private fun getRootNavController(): NavController {
-        val navHost = supportFragmentManager.findFragmentById(R.id.mainFragmentContainer) as NavHostFragment
+        val navHost =
+            supportFragmentManager.findFragmentById(R.id.mainFragmentContainer) as NavHostFragment
         return navHost.navController
     }
 
@@ -62,7 +63,8 @@ class MainActivity : AppCompatActivity(), FragmentsHolder {
         super.onBackPressed()
     }
 
-    override fun onSupportNavigateUp(): Boolean = (navController?.navigateUp() ?: false) || super.onSupportNavigateUp()
+    override fun onSupportNavigateUp(): Boolean =
+        (navController?.navigateUp() ?: false) || super.onSupportNavigateUp()
 
     override fun onResume() {
         super.onResume()

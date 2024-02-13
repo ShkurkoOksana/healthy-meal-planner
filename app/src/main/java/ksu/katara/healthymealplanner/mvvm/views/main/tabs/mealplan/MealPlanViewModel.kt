@@ -51,7 +51,10 @@ class MealPlanViewModel(
 
     fun onMealPlanForSelectedDateItemPressed(selectedDate: Date, mealType: MealTypes) {
         val screen = MealPlanForDateRecipesFragment.Screen(selectedDate, mealType)
-        navigator.launch(R.id.mealPlanForDateRecipesFragment, MealPlanForDateRecipesFragment.createArgs(screen))
+        navigator.launch(
+            R.id.mealPlanForDateRecipesFragment,
+            MealPlanForDateRecipesFragment.createArgs(screen)
+        )
     }
 
     override fun onCleared() {

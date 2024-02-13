@@ -24,7 +24,12 @@ import ksu.katara.healthymealplanner.foundation.model.SuccessResult
  * - if [result] is [ErrorResult] -> only error container is displayed
  * - if [result] is [SuccessResult] -> error container & progress-bar is hidden, all other views are visible
  */
-fun <T> BaseFragment.renderSimpleResult(root: ViewGroup, result: StatusResult<T>, onEmpty: () -> Unit = {}, onSuccess: (T) -> Unit) {
+fun <T> BaseFragment.renderSimpleResult(
+    root: ViewGroup,
+    result: StatusResult<T>,
+    onEmpty: () -> Unit = {},
+    onSuccess: (T) -> Unit
+) {
     val binding = PartResultBinding.bind(root)
     renderResult(
         root = root,
@@ -41,7 +46,7 @@ fun <T> BaseFragment.renderSimpleResult(root: ViewGroup, result: StatusResult<T>
         },
         onSuccess = { successData ->
             root.children
-                .filter { it.id != R.id.progressBar && it.id != R.id.errorContainer && it.id != R.id.noData}
+                .filter { it.id != R.id.progressBar && it.id != R.id.errorContainer && it.id != R.id.noData }
                 .forEach { it.visibility = View.VISIBLE }
             onSuccess(successData)
         }

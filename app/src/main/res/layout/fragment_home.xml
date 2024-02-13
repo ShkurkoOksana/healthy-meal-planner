@@ -15,12 +15,12 @@
         <Button
             android:id="@+id/profileDetailsButton"
             style="@style/GlobalTextInputStyle.Big"
-            android:backgroundTint="@color/grey"
-            android:shadowColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_space"
             android:layout_marginTop="@dimen/medium_space"
+            android:backgroundTint="@color/grey"
+            android:shadowColor="@color/black"
             android:text="@string/action_go_to_profile_details"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/dietTipsTitleTextView"
@@ -43,11 +43,11 @@
                 android:id="@+id/dietTipsMoreTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
                 android:layout_marginTop="@dimen/medium_space"
                 android:layout_marginEnd="@dimen/large_space"
-                android:layout_gravity="end|bottom"
-                android:textColor="@color/green"
-                android:text="@string/diet_tips_more" />
+                android:text="@string/diet_tips_more"
+                android:textColor="@color/green" />
 
         </FrameLayout>
 
@@ -56,22 +56,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_space"
-            android:layout_marginEnd="@dimen/medium_space"
-            android:layout_marginTop="@dimen/medium_space" >
+            android:layout_marginTop="@dimen/medium_space"
+            android:layout_marginEnd="@dimen/medium_space">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dietTipsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_diet_tip"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_diet_tip" />
 
-            <include layout="@layout/part_result"/>
+            <include layout="@layout/part_result" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -154,18 +154,18 @@
             android:layout_marginTop="@dimen/medium_space"
             android:text="@string/statistics_title" />
 
-            <Button
-                android:id="@+id/diaryDetailsButton"
-                style="@style/GlobalTextInputStyle.Big"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/grey"
-                android:layout_margin="@dimen/medium_space"
-                android:text="@string/action_go_diary_details"
-                app:layout_constraintBottom_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/diaryDetailsButton"
+            style="@style/GlobalTextInputStyle.Big"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/medium_space"
+            android:backgroundTint="@color/grey"
+            android:text="@string/action_go_diary_details"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
