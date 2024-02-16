@@ -2,7 +2,7 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
@@ -12,19 +12,18 @@ import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment.Screen
+import javax.inject.Inject
 
 data class ChapterDietTips(
     val chapter: DietTipChapter,
     val dietTips: List<DietTip>
 )
 
-class DietTipsChaptersViewModel(
-    screen: Screen,
+@HiltViewModel
+class DietTipsChaptersViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val uiActions: UiActions,
+    uiActions: UiActions,
     private val dietTipsRepository: DietTipsRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), DietTipActionListener {
 
     private val _chapterDietTipsList = MutableLiveResult<List<ChapterDietTips>>()

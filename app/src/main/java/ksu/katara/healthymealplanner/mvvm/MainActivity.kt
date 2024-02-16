@@ -1,26 +1,22 @@
 package ksu.katara.healthymealplanner.mvvm
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.ActivityMainBinding
 import ksu.katara.healthymealplanner.foundation.ActivityScopeViewModel
-import ksu.katara.healthymealplanner.foundation.navigator.IntermediateNavigator
 import ksu.katara.healthymealplanner.foundation.navigator.StackFragmentNavigator
-import ksu.katara.healthymealplanner.foundation.uiactions.AndroidUiActions
-import ksu.katara.healthymealplanner.foundation.utils.viewModelCreator
 import ksu.katara.healthymealplanner.foundation.views.FragmentsHolder
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.TabsFragment
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), FragmentsHolder {
-    private val activityViewModel by viewModelCreator<ActivityScopeViewModel> {
-        ActivityScopeViewModel(
-            uiActions = AndroidUiActions(applicationContext),
-            navigator = IntermediateNavigator()
-        )
-    }
+
+    private val activityViewModel by viewModels<ActivityScopeViewModel>()
 
     private lateinit var navigator: StackFragmentNavigator
 

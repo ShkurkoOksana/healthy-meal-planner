@@ -13,11 +13,12 @@ import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
 /**
  * Simple in-memory implementation of [MealPlanForDateRecipesRepository]
  */
-class RoomMealPlanForDateRecipesRepository(
+class RoomMealPlanForDateRecipesRepository @Inject constructor(
     private val mealPlanDao: MealPlanDao,
     private val recipesDao: RecipesDao,
     private val ioDispatcher: IoDispatcher

@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.FragmentTabsBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
 class TabsFragment : BaseFragment() {
 
@@ -21,7 +21,7 @@ class TabsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentTabsBinding
 
-    override val viewModel by screenViewModel<TabsViewModel>()
+    override val viewModel by viewModels<TabsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

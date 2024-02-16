@@ -5,14 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.databinding.FragmentDietTipDetailsBinding
+import ksu.katara.healthymealplanner.foundation.utils.viewModelCreator
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DietTipDetailsFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -24,7 +27,12 @@ class DietTipDetailsFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var binding: FragmentDietTipDetailsBinding
 
-    override val viewModel by screenViewModel<DietTipDetailsViewModel>()
+    @Inject
+    lateinit var factory: DietTipDetailsViewModel.Factory
+
+    override val viewModel by viewModelCreator<DietTipDetailsViewModel> {
+        factory.create(requireArguments().getSerializable(BaseScreen.ARG_SCREEN) as BaseScreen)
+    }
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

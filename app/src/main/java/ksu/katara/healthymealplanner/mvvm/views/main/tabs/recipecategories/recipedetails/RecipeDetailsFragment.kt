@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.FragmentRecipeDetailsBinding
 import ksu.katara.healthymealplanner.databinding.PartResultBinding
@@ -16,16 +17,18 @@ import ksu.katara.healthymealplanner.foundation.model.EmptyResult
 import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
+import ksu.katara.healthymealplanner.foundation.utils.viewModelCreator
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@AndroidEntryPoint
 class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -44,7 +47,12 @@ class RecipeDetailsFragment : BaseFragment(), HasScreenTitle {
 
     private var isAllIngredientsSelected by Delegates.notNull<Boolean>()
 
-    override val viewModel by screenViewModel<RecipeDetailsViewModel>()
+    @Inject
+    lateinit var factory: RecipeDetailsViewModel.Factory
+
+    override val viewModel by viewModelCreator<RecipeDetailsViewModel> {
+        factory.create(requireArguments().getSerializable(BaseScreen.ARG_SCREEN) as BaseScreen)
+    }
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

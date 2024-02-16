@@ -5,11 +5,12 @@ import kotlinx.coroutines.withContext
 import ksu.katara.healthymealplanner.foundation.model.coroutines.IoDispatcher
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.RecipeCategory
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.room.RecipeCategoriesDao
+import javax.inject.Inject
 
 /**
  * Simple in-memory implementation of [RecipeCategoriesRepository]
  */
-class RoomRecipeCategoriesRepository(
+class RoomRecipeCategoriesRepository @Inject constructor(
     private val recipeCategoriesDao: RecipeCategoriesDao,
     private val ioDispatcher: IoDispatcher
 ) : RecipeCategoriesRepository {

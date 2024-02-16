@@ -2,7 +2,9 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.addrecipes
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
@@ -11,8 +13,8 @@ import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
-import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
+import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
@@ -28,12 +30,10 @@ data class AddRecipesItem(
     val isDeleteInProgress: Boolean,
 )
 
-class AddRecipesListViewModel(
-    screen: Screen,
-    private val navigator: Navigator,
+class AddRecipesListViewModel @AssistedInject constructor(
+    @Assisted screen: BaseScreen,
     private val uiActions: UiActions,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), AddRecipesActionListener {
 
     private val _addRecipes = MutableLiveResult<List<AddRecipesItem>>()
@@ -58,8 +58,8 @@ class AddRecipesListViewModel(
         }
     }
 
-    private val mealType = screen.mealType
-    private val selectedDate = screen.selectedDate
+    private val mealType = (screen as Screen).mealType
+    private val selectedDate = (screen as Screen).selectedDate
 
     init {
         _screenTitle.value = uiActions.getString(R.string.add_recipe_title)
@@ -138,5 +138,10 @@ class AddRecipesListViewModel(
 
     fun tryAgain() {
         loadAddRecipes(selectedDate, mealType)
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(screen: BaseScreen): AddRecipesListViewModel
     }
 }

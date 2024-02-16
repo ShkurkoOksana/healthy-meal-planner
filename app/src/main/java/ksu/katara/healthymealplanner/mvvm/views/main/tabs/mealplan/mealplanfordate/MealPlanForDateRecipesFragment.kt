@@ -7,16 +7,20 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.databinding.FragmentMealPlanForDateRecipesBinding
+import ksu.katara.healthymealplanner.foundation.utils.viewModelCreator
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
+import ksu.katara.healthymealplanner.foundation.views.FragmentsHolder
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
 import java.util.Date
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -31,7 +35,15 @@ class MealPlanForDateRecipesFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var mealPlanForDateRecipesAdapter: MealPlanForDateRecipesAdapter
 
-    override val viewModel by screenViewModel<MealPlanForDateRecipesViewModel>()
+    @Inject
+    lateinit var factory: MealPlanForDateRecipesViewModel.Factory
+
+    override val viewModel by viewModelCreator<MealPlanForDateRecipesViewModel> {
+        factory.create(
+            requireArguments().getSerializable(BaseScreen.ARG_SCREEN) as BaseScreen,
+            (requireActivity() as FragmentsHolder).getActivityScopeViewModel().navigator
+        )
+    }
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

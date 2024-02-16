@@ -2,11 +2,14 @@ package ksu.katara.healthymealplanner.foundation.navigator
 
 import android.os.Bundle
 import ksu.katara.healthymealplanner.foundation.utils.ResourceActions
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Mediator that holds nav actions in the queue if real navigator is not active.
  */
-class IntermediateNavigator : Navigator {
+@Singleton
+class IntermediateNavigator @Inject constructor() : Navigator {
 
     private val targetNavigator = ResourceActions<Navigator>()
 

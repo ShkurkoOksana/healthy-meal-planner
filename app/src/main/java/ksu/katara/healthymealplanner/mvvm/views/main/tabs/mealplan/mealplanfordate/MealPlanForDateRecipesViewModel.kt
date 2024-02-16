@@ -2,7 +2,9 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanford
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
@@ -13,6 +15,7 @@ import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
+import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
@@ -32,12 +35,11 @@ data class MealPlanForDateRecipesItem(
     val isInProgress: Boolean,
 )
 
-class MealPlanForDateRecipesViewModel(
-    screen: Screen,
-    private val navigator: Navigator,
+class MealPlanForDateRecipesViewModel @AssistedInject constructor(
+    @Assisted screen: BaseScreen,
+    @Assisted private val navigator: Navigator,
     private val uiActions: UiActions,
     private val mealPlanForDateRecipesRepository: MealPlanForDateRecipesRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), MealPlanDateRecipeActionListener {
 
     private val _mealPlanForDateRecipes = MutableLiveResult<List<MealPlanForDateRecipesItem>>()
@@ -62,8 +64,8 @@ class MealPlanForDateRecipesViewModel(
         }
     }
 
-    private val selectedDate = screen.selectedDate
-    private val mealType = screen.mealType
+    private val selectedDate = (screen as Screen).selectedDate
+    private val mealType = (screen as Screen).mealType
 
     init {
         _screenTitle.value = uiActions.getString(
@@ -155,4 +157,10 @@ class MealPlanForDateRecipesViewModel(
     fun loadAgain() {
         loadMealPlanForDateRecipes(selectedDate, mealType)
     }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(screen: BaseScreen, navigator: Navigator): MealPlanForDateRecipesViewModel
+    }
+
 }

@@ -2,10 +2,13 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.reci
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
+import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
@@ -14,12 +17,11 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.Recipe
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment.Screen
 
-class RecipesInCategoryViewModel(
-    screen: Screen,
-    private val navigator: Navigator,
-    private val uiActions: UiActions,
+class RecipesInCategoryViewModel @AssistedInject constructor(
+    @Assisted screen: BaseScreen,
+    @Assisted private val navigator: Navigator,
+    uiActions: UiActions,
     private val recipesRepository: RecipesRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), RecipesInCategoryActionListener {
 
     private val _recipesInCategory = MutableLiveResult<List<Recipe>>()
@@ -28,8 +30,8 @@ class RecipesInCategoryViewModel(
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
 
-    private val recipeCategoryId = screen.recipeCategory.id
-    private val recipeCategoryName = screen.recipeCategory.name
+    private val recipeCategoryId = (screen as Screen).recipeCategory.id
+    private val recipeCategoryName = (screen as Screen).recipeCategory.name
 
     init {
         _screenTitle.value =
@@ -48,5 +50,10 @@ class RecipesInCategoryViewModel(
 
     fun tryAgain() {
         loadRecipesInCategory(recipeCategoryId)
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(screen: BaseScreen, navigator: Navigator): RecipesInCategoryViewModel
     }
 }

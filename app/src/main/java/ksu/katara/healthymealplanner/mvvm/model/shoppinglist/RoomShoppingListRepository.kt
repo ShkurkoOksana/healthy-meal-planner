@@ -15,11 +15,12 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.room.RecipesDao
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.room.ShoppingListDao
+import javax.inject.Inject
 
 /**
  * Simple in-memory implementation of [ShoppingListRepository]
  */
-class RoomShoppingListRepository(
+class RoomShoppingListRepository @Inject constructor(
     private val shoppingListDao: ShoppingListDao,
     private val recipesDao: RecipesDao,
     private val ioDispatcher: IoDispatcher

@@ -3,11 +3,12 @@ package ksu.katara.healthymealplanner.mvvm.model.calendar
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
 /**
  * Simple in-memory implementation of [CalendarRepository]
  */
-class InMemoryCalendarRepository : CalendarRepository {
+class InMemoryCalendarRepository @Inject constructor()  : CalendarRepository {
 
     private var calendar = mutableListOf<Date>()
     private val listeners = mutableSetOf<CalendarListener>()

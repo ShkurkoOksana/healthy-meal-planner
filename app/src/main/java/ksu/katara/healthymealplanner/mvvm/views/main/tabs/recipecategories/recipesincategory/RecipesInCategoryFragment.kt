@@ -7,15 +7,19 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.databinding.FragmentRecipesInCategoryBinding
+import ksu.katara.healthymealplanner.foundation.utils.viewModelCreator
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
+import ksu.katara.healthymealplanner.foundation.views.FragmentsHolder
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.RecipeCategory
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RecipesInCategoryFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -29,7 +33,15 @@ class RecipesInCategoryFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var recipesInCategoryAdapter: RecipesInCategoryAdapter
 
-    override val viewModel by screenViewModel<RecipesInCategoryViewModel>()
+    @Inject
+    lateinit var factory: RecipesInCategoryViewModel.Factory
+
+    override val viewModel by viewModelCreator<RecipesInCategoryViewModel> {
+        factory.create(
+            requireArguments().getSerializable(BaseScreen.ARG_SCREEN) as BaseScreen,
+            (requireActivity() as FragmentsHolder).getActivityScopeViewModel().navigator
+        )
+    }
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

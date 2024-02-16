@@ -25,6 +25,7 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesPre
 import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesRecipeIngredientsJoinTableDBEntity
 import ksu.katara.healthymealplanner.mvvm.model.recipes.room.entities.RecipesRecipeTypesJoinTableDBEntity
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.room.ShoppingListDao
+import javax.inject.Singleton
 
 @Database(
     version = 3,
@@ -49,6 +50,7 @@ import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.room.ShoppingListDa
         MealPlanRecipesJoinTableDBEntity::class,
     ]
 )
+@Singleton
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getDietTipsDao(): DietTipsDao

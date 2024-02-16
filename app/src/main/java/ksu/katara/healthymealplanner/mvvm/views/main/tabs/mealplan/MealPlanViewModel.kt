@@ -3,6 +3,7 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
@@ -10,16 +11,15 @@ import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.mvvm.model.calendar.CalendarListener
 import ksu.katara.healthymealplanner.mvvm.model.calendar.CalendarRepository
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.MealPlanFragment.Screen
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment
 import java.util.Date
+import javax.inject.Inject
 
-class MealPlanViewModel(
-    screen: Screen,
+@HiltViewModel
+class MealPlanViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val uiActions: UiActions,
+    uiActions: UiActions,
     private val calendarRepository: CalendarRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), OnCalendarItemClickListener {
     private val _daysInMonth = MutableLiveData<MutableList<Date>>()
     val daysInMonth: LiveData<MutableList<Date>> = _daysInMonth

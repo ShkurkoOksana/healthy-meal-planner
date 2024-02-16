@@ -3,7 +3,7 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.home
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
@@ -12,18 +12,17 @@ import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTip
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.HomeFragment.Screen
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipActionListener
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsFragment
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment
 import java.util.Date
+import javax.inject.Inject
 
-class HomeViewModel(
-    private val screen: Screen,
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val uiActions: UiActions,
+    uiActions: UiActions,
     private val dietTipsRepository: DietTipsRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), DietTipActionListener {
 
     private val _dietTips = MutableLiveResult<List<DietTip>>()

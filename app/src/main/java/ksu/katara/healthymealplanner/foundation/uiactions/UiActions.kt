@@ -1,8 +1,11 @@
 package ksu.katara.healthymealplanner.foundation.uiactions
 
+import javax.inject.Singleton
+
 /**
  * Common actions that can be performed in the view-model
  */
+@Singleton
 interface UiActions {
 
     /**

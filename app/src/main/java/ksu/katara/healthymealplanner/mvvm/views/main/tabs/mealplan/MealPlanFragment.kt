@@ -5,16 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.databinding.FragmentMealPlanBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
 import java.util.Date
 
+@AndroidEntryPoint
 class MealPlanFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -26,7 +28,7 @@ class MealPlanFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var calendarAdapter: CalendarAdapter
 
-    override val viewModel by screenViewModel<MealPlanViewModel>()
+    override val viewModel by viewModels<MealPlanViewModel>()
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

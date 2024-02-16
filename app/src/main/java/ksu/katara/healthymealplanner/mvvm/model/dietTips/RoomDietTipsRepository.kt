@@ -8,8 +8,11 @@ import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipChapter
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.DietTipsDao
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.ChapterDietTips
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsSteps
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RoomDietTipsRepository(
+@Singleton
+class RoomDietTipsRepository @Inject constructor(
     private val dietTipsDao: DietTipsDao,
     private val ioDispatcher: IoDispatcher
 ) : DietTipsRepository {

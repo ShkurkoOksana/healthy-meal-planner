@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.mvvm.views.splash.SplashFragment
 
@@ -15,6 +16,7 @@ import ksu.katara.healthymealplanner.mvvm.views.splash.SplashFragment
  * Splash activity contains only window background, all other initialization logic is placed to
  * [SplashFragment].
  */
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

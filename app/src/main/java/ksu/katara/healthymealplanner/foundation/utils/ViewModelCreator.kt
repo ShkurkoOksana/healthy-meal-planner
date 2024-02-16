@@ -1,7 +1,7 @@
 package ksu.katara.healthymealplanner.foundation.utils
 
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
@@ -20,6 +20,6 @@ class ViewModelFactory(
 /**
  * Create view-model directly by calling its constructor.
  */
-inline fun <reified VM : ViewModel> ComponentActivity.viewModelCreator(noinline creator: ViewModelCreator): Lazy<VM> {
+inline fun <reified VM : ViewModel> Fragment.viewModelCreator(noinline creator: ViewModelCreator): Lazy<VM> {
     return viewModels { ViewModelFactory(creator) }
 }

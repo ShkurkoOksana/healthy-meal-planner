@@ -2,12 +2,16 @@ package ksu.katara.healthymealplanner.foundation.uiactions
 
 import android.content.Context
 import android.widget.Toast
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Android implementation of [UiActions]. Displaying simple toast message and getting string from resources.
  */
-class AndroidUiActions(
-    private val appContext: Context
+@Singleton
+class AndroidUiActions @Inject constructor(
+    @ApplicationContext private val appContext: Context
 ) : UiActions {
 
     override fun toast(message: String) {

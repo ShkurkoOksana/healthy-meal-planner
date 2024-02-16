@@ -2,7 +2,9 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.reci
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import ksu.katara.healthymealplanner.R
@@ -11,8 +13,8 @@ import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
-import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
+import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
@@ -21,7 +23,6 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparationStep
-import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment.Screen
 
 data class IngredientsItem(
@@ -29,13 +30,10 @@ data class IngredientsItem(
     val isInProgress: Boolean,
 )
 
-class RecipeDetailsViewModel(
-    screen: Screen,
-    private val navigator: Navigator,
+class RecipeDetailsViewModel @AssistedInject constructor(
+    @Assisted screen: BaseScreen,
     private val uiActions: UiActions,
     private val recipesRepository: RecipesRepository,
-    private val shoppingListRepository: ShoppingListRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), IngredientSelectedActionListener {
 
     private val _recipeDetails = MutableLiveResult<RecipeDetails>()
@@ -74,8 +72,8 @@ class RecipeDetailsViewModel(
         }
     }
 
-    private val recipeId = screen.recipe.id
-    private val recipeName = screen.recipe.name
+    private val recipeId = (screen as Screen).recipe.id
+    private val recipeName = (screen as Screen).recipe.name
 
     init {
         _screenTitle.value = uiActions.getString(R.string.recipe_details_title, recipeName)
@@ -203,5 +201,10 @@ class RecipeDetailsViewModel(
 
     fun loadPreparationStepsTryAgain() {
         loadPreparationSteps(recipeId)
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(screen: BaseScreen): RecipeDetailsViewModel
     }
 }

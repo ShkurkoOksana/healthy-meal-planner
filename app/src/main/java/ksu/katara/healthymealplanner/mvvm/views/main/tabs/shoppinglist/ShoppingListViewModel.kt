@@ -2,7 +2,7 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -19,12 +19,11 @@ import ksu.katara.healthymealplanner.foundation.model.isInProgress
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
-import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipe
 import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.entity.ShoppingListRecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist.ShoppingListFragment.Screen
+import javax.inject.Inject
 import kotlin.collections.set
 
 data class ShoppingListRecipeItem(
@@ -44,13 +43,11 @@ data class ShoppingListIngredientsDeleteItem(
     var percentage: Int
 )
 
-class ShoppingListViewModel(
-    screen: Screen,
+@HiltViewModel
+class ShoppingListViewModel @Inject constructor(
     private val navigator: Navigator,
     private val uiActions: UiActions,
     private val shoppingListRepository: ShoppingListRepository,
-    private val recipesRepository: RecipesRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), ShoppingListRecipeActionListener {
 
     private val _shoppingList =

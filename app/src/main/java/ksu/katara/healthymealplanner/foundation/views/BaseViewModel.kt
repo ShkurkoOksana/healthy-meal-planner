@@ -12,6 +12,7 @@ import ksu.katara.healthymealplanner.foundation.model.ErrorResult
 import ksu.katara.healthymealplanner.foundation.model.PendingResult
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
 import ksu.katara.healthymealplanner.foundation.model.SuccessResult
+import javax.inject.Singleton
 
 typealias LiveResult<T> = LiveData<StatusResult<T>>
 typealias MutableLiveResult<T> = MutableLiveData<StatusResult<T>>
@@ -19,6 +20,7 @@ typealias MutableLiveResult<T> = MutableLiveData<StatusResult<T>>
 /**
  * Base class for all view-models.
  */
+@Singleton
 open class BaseViewModel : ViewModel() {
 
     private val coroutineContext = SupervisorJob() + Dispatchers.Main.immediate

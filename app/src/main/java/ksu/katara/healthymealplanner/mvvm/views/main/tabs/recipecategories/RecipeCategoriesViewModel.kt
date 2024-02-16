@@ -2,7 +2,7 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
@@ -11,15 +11,14 @@ import ksu.katara.healthymealplanner.foundation.views.LiveResult
 import ksu.katara.healthymealplanner.foundation.views.MutableLiveResult
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.RecipeCategoriesRepository
 import ksu.katara.healthymealplanner.mvvm.model.recipecategories.entities.RecipeCategory
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.RecipeCategoriesFragment.Screen
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment
+import javax.inject.Inject
 
-class RecipeCategoriesViewModel(
-    screen: Screen,
+@HiltViewModel
+class RecipeCategoriesViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val uiActions: UiActions,
+    uiActions: UiActions,
     private val recipeCategoriesRepository: RecipeCategoriesRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(), RecipeCategoryActionListener {
 
     private val _recipeCategories = MutableLiveResult<List<RecipeCategory>>()

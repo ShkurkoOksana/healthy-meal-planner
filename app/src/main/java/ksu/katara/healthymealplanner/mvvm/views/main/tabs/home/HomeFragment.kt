@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.databinding.FragmentHomeBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
@@ -14,7 +16,6 @@ import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsAdapter
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment
 import java.text.SimpleDateFormat
@@ -23,6 +24,7 @@ import java.util.Locale
 
 val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -34,7 +36,7 @@ class HomeFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var dietTipsAdapter: DietTipsAdapter
 
-    override val viewModel by screenViewModel<HomeViewModel>()
+    override val viewModel by viewModels<HomeViewModel>()
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

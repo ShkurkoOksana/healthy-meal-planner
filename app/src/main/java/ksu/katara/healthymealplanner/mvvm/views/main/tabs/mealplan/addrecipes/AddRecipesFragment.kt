@@ -8,16 +8,19 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.databinding.FragmentAddRecipesBinding
+import ksu.katara.healthymealplanner.foundation.utils.viewModelCreator
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.MealTypes
 import java.util.Date
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AddRecipesFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -32,7 +35,12 @@ class AddRecipesFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var addRecipesAdapter: AddRecipesAdapter
 
-    override val viewModel by screenViewModel<AddRecipesListViewModel>()
+    @Inject
+    lateinit var factory: AddRecipesListViewModel.Factory
+
+    override val viewModel by viewModelCreator<AddRecipesListViewModel> {
+        factory.create(requireArguments().getSerializable(BaseScreen.ARG_SCREEN) as BaseScreen)
+    }
 
     /**
      * Dynamic screen title

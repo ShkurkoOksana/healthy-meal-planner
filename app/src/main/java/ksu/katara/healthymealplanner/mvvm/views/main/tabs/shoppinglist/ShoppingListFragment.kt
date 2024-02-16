@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.databinding.FragmentShoppingListBinding
 import ksu.katara.healthymealplanner.foundation.views.BaseFragment
 import ksu.katara.healthymealplanner.foundation.views.BaseScreen
@@ -14,8 +16,8 @@ import ksu.katara.healthymealplanner.foundation.views.HasScreenTitle
 import ksu.katara.healthymealplanner.foundation.views.collectFlow
 import ksu.katara.healthymealplanner.foundation.views.onTryAgain
 import ksu.katara.healthymealplanner.foundation.views.renderSimpleResult
-import ksu.katara.healthymealplanner.foundation.views.screenViewModel
 
+@AndroidEntryPoint
 class ShoppingListFragment : BaseFragment(), HasScreenTitle {
 
     /**
@@ -27,7 +29,7 @@ class ShoppingListFragment : BaseFragment(), HasScreenTitle {
 
     private lateinit var shoppingListAdapter: ShoppingListAdapter
 
-    override val viewModel by screenViewModel<ShoppingListViewModel>()
+    override val viewModel by viewModels<ShoppingListViewModel>()
 
     override fun getScreenTitle(): String? = viewModel.screenTitle.value
 

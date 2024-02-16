@@ -8,11 +8,12 @@ import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeDetails
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipeIngredient
 import ksu.katara.healthymealplanner.mvvm.model.recipes.entities.RecipePreparationStep
 import ksu.katara.healthymealplanner.mvvm.model.recipes.room.RecipesDao
+import javax.inject.Inject
 
 /**
  * Simple in-memory implementation of [RecipesRepository]
  */
-class RoomRecipesRepository(
+class RoomRecipesRepository @Inject constructor(
     private val recipesDao: RecipesDao,
     private val ioDispatcher: IoDispatcher
 ) : RecipesRepository {

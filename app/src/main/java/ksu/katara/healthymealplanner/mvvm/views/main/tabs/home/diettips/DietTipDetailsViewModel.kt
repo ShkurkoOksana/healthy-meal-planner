@@ -2,11 +2,13 @@ package ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import ksu.katara.healthymealplanner.R
 import ksu.katara.healthymealplanner.foundation.model.StatusResult
-import ksu.katara.healthymealplanner.foundation.navigator.Navigator
 import ksu.katara.healthymealplanner.foundation.uiactions.UiActions
+import ksu.katara.healthymealplanner.foundation.views.BaseScreen
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
 import ksu.katara.healthymealplanner.mvvm.model.dietTips.entities.DietTipDetailSteps
@@ -18,12 +20,10 @@ data class DietTipDetailsSteps(
     val steps: List<DietTipDetailSteps>
 )
 
-class DietTipDetailsViewModel(
-    screen: Screen,
-    private val navigator: Navigator,
-    private val uiActions: UiActions,
+class DietTipDetailsViewModel @AssistedInject constructor(
+    @Assisted screen: BaseScreen,
+    uiActions: UiActions,
     private val dietTipsRepository: DietTipsRepository,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
     private val _dietTipDetailsSteps = MutableLiveData<StatusResult<DietTipDetailsSteps>>()
@@ -32,7 +32,7 @@ class DietTipDetailsViewModel(
     private val _screenTitle = MutableLiveData<String>()
     val screenTitle: LiveData<String> = _screenTitle
 
-    private val dietTipId = screen.dietTipId
+    private val dietTipId = (screen as Screen).dietTipId
 
     init {
         _screenTitle.value = uiActions.getString(R.string.diet_tips_details_title)
@@ -46,4 +46,10 @@ class DietTipDetailsViewModel(
     fun tryAgain() {
         loadDietTipDetailsSteps(dietTipId)
     }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(screen: BaseScreen): DietTipDetailsViewModel
+    }
+
 }
