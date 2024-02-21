@@ -21,7 +21,7 @@
         </fragment>-->
     <fragment
         android:id="@+id/tabsFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.TabsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.TabsFragment"
         android:label=""
         tools:layout="@layout/fragment_tabs">
         <action
@@ -52,7 +52,7 @@
         </fragment>-->
     <fragment
         android:id="@+id/mealPlanForDateRecipesFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.mealplan.mealplanfordate.MealPlanForDateRecipesFragment"
         android:label="@string/meal_plan_for_date_title"
         tools:layout="@layout/fragment_meal_plan_for_date_recipes">
         <action
@@ -64,11 +64,11 @@
     </fragment>
     <fragment
         android:id="@+id/dietTipDetailsFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipDetailsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.home.diettips.DietTipDetailsFragment"
         android:label="@string/diet_tips_details_title" />
     <fragment
         android:id="@+id/recipesInCategoryFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.recipecategories.recipesincategory.RecipesInCategoryFragment"
         android:label="Recipes in category"
         tools:layout="@layout/fragment_recipes_in_category">
         <action
@@ -77,22 +77,22 @@
     </fragment>
     <fragment
         android:id="@+id/dietTipsChaptersFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.home.diettips.DietTipsChaptersFragment"
         android:label="@string/diet_tips_chapters_title"
         tools:layout="@layout/fragment_diet_tips_chapters" />
     <fragment
         android:id="@+id/shoppingListFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.shoppinglist.ShoppingListFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.shoppinglist.ShoppingListFragment"
         android:label="fragment_shopping_list"
         tools:layout="@layout/fragment_shopping_list" />
     <fragment
         android:id="@+id/recipeDetailsFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment"
         android:label="fragment_recipe_details"
         tools:layout="@layout/fragment_recipe_details" />
     <fragment
         android:id="@+id/addRecipesFragment"
-        android:name="ksu.katara.healthymealplanner.mvvm.views.main.tabs.mealplan.addrecipes.AddRecipesFragment"
+        android:name="ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.mealplan.addrecipes.AddRecipesFragment"
         android:label="@string/add_recipe_title"
         tools:layout="@layout/fragment_add_recipes" />
 </navigation>

@@ -7,12 +7,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.room.DietTipsDao
-import ksu.katara.healthymealplanner.mvvm.model.mealplan.room.MealPlanDao
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.room.RecipeCategoriesDao
-import ksu.katara.healthymealplanner.mvvm.model.recipes.room.RecipesDao
-import ksu.katara.healthymealplanner.mvvm.model.room.AppDatabase
-import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.room.ShoppingListDao
+import ksu.katara.healthymealplanner.mvvm.data.dietTips.DietTipsDao
+import ksu.katara.healthymealplanner.mvvm.data.mealplan.MealPlanDao
+import ksu.katara.healthymealplanner.mvvm.data.recipecategories.RecipeCategoriesDao
+import ksu.katara.healthymealplanner.mvvm.data.recipes.RecipesDao
+import ksu.katara.healthymealplanner.mvvm.data.room.AppDatabase
+import ksu.katara.healthymealplanner.mvvm.data.shoppinglist.ShoppingListDao
 import javax.inject.Singleton
 
 @Module

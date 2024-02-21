@@ -1,7 +1,6 @@
 package ksu.katara.healthymealplanner.foundation.model.coroutines
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".mvvm.views.main.tabs.mealplan.addrecipes.AddRecipesFragment">
+    tools:context=".mvvm.presentation.main.tabs.mealplan.addrecipes.AddRecipesFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/addRecipeSearchView"

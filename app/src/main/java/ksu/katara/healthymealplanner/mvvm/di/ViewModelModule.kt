@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ksu.katara.healthymealplanner.foundation.ActivityScopeViewModel
 import ksu.katara.healthymealplanner.foundation.views.BaseViewModel
-import ksu.katara.healthymealplanner.mvvm.views.main.tabs.home.HomeViewModel
+import ksu.katara.healthymealplanner.mvvm.presentation.main.tabs.home.HomeViewModel
 
 @Module
 @InstallIn(SingletonComponent::class)

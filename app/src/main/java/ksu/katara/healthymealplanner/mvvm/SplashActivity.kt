@@ -7,7 +7,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import ksu.katara.healthymealplanner.R
-import ksu.katara.healthymealplanner.mvvm.views.splash.SplashFragment
+import ksu.katara.healthymealplanner.mvvm.presentation.splash.SplashFragment
 
 
 /**

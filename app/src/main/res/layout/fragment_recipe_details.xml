@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".mvvm.views.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment">
+    tools:context=".mvvm.presentation.main.tabs.recipecategories.recipedetails.RecipeDetailsFragment">
 
     <ScrollView
         android:layout_width="match_parent"

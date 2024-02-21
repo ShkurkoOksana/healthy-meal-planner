@@ -4,18 +4,18 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ksu.katara.healthymealplanner.mvvm.model.calendar.CalendarRepository
-import ksu.katara.healthymealplanner.mvvm.model.calendar.InMemoryCalendarRepository
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.DietTipsRepository
-import ksu.katara.healthymealplanner.mvvm.model.dietTips.RoomDietTipsRepository
-import ksu.katara.healthymealplanner.mvvm.model.mealplan.MealPlanForDateRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.mealplan.RoomMealPlanForDateRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.RecipeCategoriesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipecategories.RoomRecipeCategoriesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipes.RecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.recipes.RoomRecipesRepository
-import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.RoomShoppingListRepository
-import ksu.katara.healthymealplanner.mvvm.model.shoppinglist.ShoppingListRepository
+import ksu.katara.healthymealplanner.mvvm.data.calendar.InMemoryCalendarRepository
+import ksu.katara.healthymealplanner.mvvm.data.dietTips.RoomDietTipsRepository
+import ksu.katara.healthymealplanner.mvvm.data.mealplan.RoomMealPlanForDateRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.data.recipecategories.RoomRecipeCategoriesRepository
+import ksu.katara.healthymealplanner.mvvm.data.recipes.RoomRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.domain.calendar.CalendarRepository
+import ksu.katara.healthymealplanner.mvvm.domain.dietTips.DietTipsRepository
+import ksu.katara.healthymealplanner.mvvm.domain.mealplan.MealPlanForDateRecipesRepository
+import ksu.katara.healthymealplanner.mvvm.domain.recipecategories.RecipeCategoriesRepository
+import ksu.katara.healthymealplanner.mvvm.domain.recipes.RecipesRepository
+import ksu.katara.healthymealplanner.mvvm.data.shoppinglist.RoomShoppingListRepository
+import ksu.katara.healthymealplanner.mvvm.domain.shoppinglist.ShoppingListRepository
 
 @Module
 @InstallIn(SingletonComponent::class)

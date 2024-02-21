@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mvvm.views.main.tabs.recipecategories.RecipeCategoriesFragment">
+    tools:context=".mvvm.presentation.main.tabs.recipecategories.RecipeCategoriesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeCategoriesRecyclerView"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".mvvm.views.main.tabs.home.diettips.DietTipsChaptersFragment">
+    tools:context=".mvvm.presentation.main.tabs.home.diettips.DietTipsChaptersFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dietTipChaptersRecyclerView"

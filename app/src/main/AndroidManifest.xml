@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".mvvm.MainActivity" />
+        <activity android:name=".mvvm.presentation.main.MainActivity" />
 
     </application>
 
